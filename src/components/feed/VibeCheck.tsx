@@ -24,7 +24,7 @@ const VIBES: VibeDef[] = [
   {
     type:        'morrei',
     emoji:       '💀',
-    label:       'Morrei',
+    label:       'Morri',
     activeTitle: 'Você morreu — clique para remover',
     addTitle:    'Morri nesse post',
   },

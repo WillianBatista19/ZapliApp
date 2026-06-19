@@ -1,0 +1,14 @@
+{
+  "node": {
+    "87efd72f119f32022d79cf95393b8f36ac2619e2": {
+      "workers": {
+        "app/(app)/feed/page": "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cfeed%5C%5Cpage.tsx%22%2C%5B%22%24%24ACTION_0%22%5D%5D%5D&__client_imported__=!"
+      },
+      "layer": {
+        "app/(app)/feed/page": "rsc"
+      }
+    }
+  },
+  "edge": {},
+  "encryptionKey": "EaxD1ENIu0rBqbqXnHgelj0Dl9/4auWvbv5Fi8g4fFY="
+}
