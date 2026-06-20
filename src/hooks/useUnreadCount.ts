@@ -19,7 +19,11 @@ export function useUnreadCount(userId: string | null) {
     if (!userId) return
     fetchCount()
     const interval = setInterval(fetchCount, 15000)
-    return () => clearInterval(interval)
+    window.addEventListener('notifications:read', fetchCount)
+    return () => {
+      clearInterval(interval)
+      window.removeEventListener('notifications:read', fetchCount)
+    }
   }, [userId, fetchCount])
 
   return count

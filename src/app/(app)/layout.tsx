@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import Link from 'next/link'
 import AppNav from '@/components/AppNav'
 import BottomNav from '@/components/BottomNav'
 import LeftSidebar from '@/components/LeftSidebar'
@@ -15,6 +16,23 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             {children}
           </div>
         </div>
+
+        {/* Mobile-only footer links — hidden on xl where LeftSidebar handles this */}
+        <footer className="mt-8 flex items-center justify-center gap-6 xl:hidden">
+          <Link
+            href="/status"
+            className="text-xs text-zinc-600 transition-colors hover:text-zinc-400"
+          >
+            Status
+          </Link>
+          <span className="text-zinc-800" aria-hidden>·</span>
+          <Link
+            href="/changelog"
+            className="text-xs text-zinc-600 transition-colors hover:text-zinc-400"
+          >
+            Novidades
+          </Link>
+        </footer>
       </div>
       <BottomNav />
     </>

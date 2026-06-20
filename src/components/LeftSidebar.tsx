@@ -87,6 +87,23 @@ export default function LeftSidebar() {
           Sair
         </button>
       </div>
+
+      <div className="mt-2 flex flex-col gap-0.5">
+        <Link
+          href="/status"
+          className="flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs text-zinc-600 transition-colors hover:text-zinc-400"
+        >
+          <StatusDotIcon className="h-3.5 w-3.5 shrink-0" />
+          Status
+        </Link>
+        <Link
+          href="/changelog"
+          className="flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs text-zinc-600 transition-colors hover:text-zinc-400"
+        >
+          <SparklesIcon className="h-3.5 w-3.5 shrink-0" />
+          Novidades
+        </Link>
+      </div>
     </aside>
   )
 }
@@ -134,6 +151,32 @@ function LogOutIcon({ className }: { className?: string }) {
       <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
       <polyline points="16 17 21 12 16 7" />
       <line x1="21" y1="12" x2="9" y2="12" />
+    </svg>
+  )
+}
+
+function StatusDotIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+      <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+    </svg>
+  )
+}
+
+function SparklesIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M16 18a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2z" />
+      <path d="M12 4a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2z" />
+      <path d="M3 14a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2z" />
+      <path d="M12 14a2 2 0 0 0 -2 2" />
+      <path d="M14 6a2 2 0 0 0 2 2" />
+      <path d="M5 16a2 2 0 0 0 2 -2" />
+      <path d="M9 12l2 2" />
+      <path d="M14 8l2 2" />
     </svg>
   )
 }

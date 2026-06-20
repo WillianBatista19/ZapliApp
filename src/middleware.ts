@@ -53,7 +53,7 @@ export async function middleware(request: NextRequest) {
     return redirect
   }
 
-  // Everything else — pass through
+  // Public pages (/status, /changelog) and everything else — pass through
   return supabaseResponse
 }
 

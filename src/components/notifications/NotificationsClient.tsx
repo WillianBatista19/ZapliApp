@@ -28,6 +28,7 @@ export default function NotificationsClient({ initialNotifications, userId }: Pr
       .eq('read', false)
 
     setNotifications(prev => prev.map(n => ({ ...n, read: true })))
+    window.dispatchEvent(new Event('notifications:read'))
     setMarking(false)
   }
 

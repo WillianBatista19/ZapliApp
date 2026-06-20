@@ -21,10 +21,15 @@
       "static/chunks/main-app.js",
       "static/chunks/app/(app)/profile/[username]/page.js"
     ],
-    "/_not-found/page": [
+    "/status/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/_not-found/page.js"
+      "static/chunks/app/status/page.js"
+    ],
+    "/changelog/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/changelog/page.js"
     ]
   }
 }
