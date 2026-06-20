@@ -34,6 +34,8 @@ export interface Profile {
   lastfm_username: string | null
   watching_now:    WatchingNow | null
   reading_now:     ReadingNow  | null
+  anime_title:     string | null
+  anime_cover_url: string | null
 }
 
 export interface Vibe {

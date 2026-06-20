@@ -17,12 +17,18 @@ export default async function ProfilePage({ params }: Props) {
 
   const { username } = params
 
-  const { data: profile } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from('profiles')
-    .select('id, username, display_name, avatar_url, bio, created_at, lastfm_username, watching_now, reading_now')
+    .select('id, username, display_name, avatar_url, bio, created_at, lastfm_username, watching_now, reading_now, anime_title, anime_cover_url')
     .eq('username', username)
     .single()
 
+  if (profileError) {
+    // PGRST116 = row not found (single() with no match) → genuine 404
+    // Any other code = DB/column error → throw so it surfaces in logs
+    if (profileError.code !== 'PGRST116') throw new Error(`[profile] DB error: ${profileError.message} (${profileError.code})`)
+    notFound()
+  }
   if (!profile) notFound()
 
   const isOwnProfile = user.id === profile.id
@@ -59,6 +65,8 @@ export default async function ProfilePage({ params }: Props) {
       <MediaNowWidgets
         watching={profile.watching_now as WatchingNow | null}
         reading={profile.reading_now  as ReadingNow  | null}
+        animeTitle={profile.anime_title    as string | null}
+        animeCoverUrl={profile.anime_cover_url as string | null}
       />
       {profile.lastfm_username && (
         <LastfmWidget username={profile.lastfm_username} />

@@ -8,12 +8,13 @@ export default async function EditProfilePage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: profile } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from('profiles')
-    .select('id, username, display_name, avatar_url, bio, created_at, lastfm_username, watching_now, reading_now')
+    .select('id, username, display_name, avatar_url, bio, created_at, lastfm_username, watching_now, reading_now, anime_title, anime_cover_url')
     .eq('id', user.id)
     .single()
 
+  if (profileError) throw new Error(`[profile/edit] DB error: ${profileError.message} (${profileError.code})`)
   if (!profile) redirect('/feed')
 
   return (

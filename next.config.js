@@ -6,6 +6,7 @@ const nextConfig = {
       { protocol: 'https', hostname: 'lastfm.freetls.fastly.net' },
       { protocol: 'https', hostname: 'image.tmdb.org' },
       { protocol: 'https', hostname: 'books.google.com' },
+      { protocol: 'https', hostname: '*.anilist.co' },
     ],
   },
 }

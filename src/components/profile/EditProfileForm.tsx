@@ -6,7 +6,9 @@ import { createClient } from '@/lib/supabase/client'
 import Avatar from '@/components/Avatar'
 import ConfirmModal from '@/components/ui/ConfirmModal'
 import MediaSearchModal, { BookIcon, MovieIcon } from '@/components/ui/MediaSearchModal'
+import AniListSearchModal, { TvIcon } from '@/components/ui/AniListSearchModal'
 import type { MediaResult } from '@/components/ui/MediaSearchModal'
+import type { AniListResult } from '@/components/ui/AniListSearchModal'
 import type { Profile, WatchingNow, ReadingNow } from '@/types'
 
 export default function EditProfileForm({ profile }: { profile: Profile }) {
@@ -26,6 +28,9 @@ export default function EditProfileForm({ profile }: { profile: Profile }) {
   const [readingNow,         setReadingNow]         = useState<ReadingNow  | null>(profile.reading_now  ?? null)
   const [showWatchingSearch, setShowWatchingSearch] = useState(false)
   const [showReadingSearch,  setShowReadingSearch]  = useState(false)
+  const [animeTitle,         setAnimeTitle]         = useState<string | null>(profile.anime_title ?? null)
+  const [animeCoverUrl,      setAnimeCoverUrl]      = useState<string | null>(profile.anime_cover_url ?? null)
+  const [showAnimeSearch,    setShowAnimeSearch]    = useState(false)
 
   const fileRef  = useRef<HTMLInputElement>(null)
   const supabase = useMemo(() => createClient(), [])
@@ -51,6 +56,12 @@ export default function EditProfileForm({ profile }: { profile: Profile }) {
   function handleReadingSelect(r: MediaResult) {
     setReadingNow({ id: r.id, title: r.title, author: r.subtitle, cover_url: r.imageUrl })
     setShowReadingSearch(false)
+  }
+
+  function handleAnimeSelect(r: AniListResult) {
+    setAnimeTitle(r.title)
+    setAnimeCoverUrl(r.coverUrl)
+    setShowAnimeSearch(false)
   }
 
   function handleUsernameChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -109,6 +120,8 @@ export default function EditProfileForm({ profile }: { profile: Profile }) {
         lastfm_username: lastfmUsername.trim() || null,
         watching_now:    watchingNow,
         reading_now:     readingNow,
+        anime_title:     animeTitle     || null,
+        anime_cover_url: animeCoverUrl  || null,
       })
       .eq('id', profile.id)
 
@@ -342,6 +355,49 @@ export default function EditProfileForm({ profile }: { profile: Profile }) {
             )}
           </FormField>
 
+          <FormField label="Anime favorito">
+            {animeTitle ? (
+              <div className="flex items-center gap-3 rounded-xl border border-zinc-700 bg-zinc-800/50 p-3">
+                {animeCoverUrl && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={animeCoverUrl}
+                    alt=""
+                    className="h-14 w-10 flex-shrink-0 rounded-lg object-cover"
+                  />
+                )}
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium text-zinc-100">{animeTitle}</p>
+                </div>
+                <div className="flex flex-shrink-0 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowAnimeSearch(true)}
+                    className="rounded-lg border border-zinc-600 px-3 py-1.5 text-xs text-zinc-300 transition-colors hover:border-zinc-400"
+                  >
+                    Trocar
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setAnimeTitle(null); setAnimeCoverUrl(null) }}
+                    className="rounded-lg border border-zinc-700 px-3 py-1.5 text-xs text-red-400 transition-colors hover:border-red-800/60"
+                  >
+                    Remover
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setShowAnimeSearch(true)}
+                className="flex w-full items-center gap-2 rounded-xl border border-dashed border-zinc-700 px-4 py-3 text-sm text-zinc-500 transition-colors hover:border-zinc-500 hover:text-zinc-300"
+              >
+                <TvIcon className="h-4 w-4" />
+                Buscar anime ou manga
+              </button>
+            )}
+          </FormField>
+
         </div>
 
         {error && (
@@ -403,6 +459,13 @@ export default function EditProfileForm({ profile }: { profile: Profile }) {
           type="book"
           onSelect={handleReadingSelect}
           onClose={() => setShowReadingSearch(false)}
+        />
+      )}
+
+      {showAnimeSearch && (
+        <AniListSearchModal
+          onSelect={handleAnimeSelect}
+          onClose={() => setShowAnimeSearch(false)}
         />
       )}
     </>

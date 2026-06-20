@@ -4,6 +4,8 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Avatar from '@/components/Avatar'
 import MediaSearchModal, { BookIcon, MovieIcon } from '@/components/ui/MediaSearchModal'
+import AniListSearchModal, { TvIcon } from '@/components/ui/AniListSearchModal'
+import type { AniListResult } from '@/components/ui/AniListSearchModal'
 import type { Category, Profile } from '@/types'
 
 const MAX = 500
@@ -35,6 +37,7 @@ export default function PostComposer({ profile }: { profile: Profile }) {
   const [lastfmLoading,  setLastfmLoading]  = useState(false)
   const [toast,          setToast]          = useState<string | null>(null)
   const [mediaSearch,    setMediaSearch]    = useState<'movie' | 'book' | null>(null)
+  const [showAnimeSearch, setShowAnimeSearch] = useState(false)
 
   const textareaRef   = useRef<HTMLTextAreaElement>(null)
   const galleryRef    = useRef<HTMLInputElement>(null)
@@ -115,6 +118,27 @@ export default function PostComposer({ profile }: { profile: Profile }) {
     input.capture  = 'environment'
     input.onchange = (e) => handleMedia((e.target as HTMLInputElement).files?.[0] ?? null)
     input.click()
+  }
+
+  function handleAnimeSelect(result: AniListResult) {
+    const label = result.kind === 'ANIME' ? 'Assistindo' : 'Lendo'
+    const text  = `${label}: ${result.title}${result.year ? ` (${result.year})` : ''}`
+
+    setContent(text)
+    requestAnimationFrame(() => resize())
+    setCategory('anime')
+
+    if (result.coverUrl) {
+      if (previewUrlRef.current) { URL.revokeObjectURL(previewUrlRef.current); previewUrlRef.current = null }
+      setMediaFile(null)
+      setMediaError(null)
+      setAlbumArtUrl(result.coverUrl)
+      setAlbumArtSquare(false)
+      setMediaPreview(result.coverUrl)
+      setMediaType('image')
+    }
+
+    setShowAnimeSearch(false)
   }
 
   function handleMediaSelect(result: import('@/components/ui/MediaSearchModal').MediaResult) {
@@ -262,6 +286,12 @@ export default function PostComposer({ profile }: { profile: Profile }) {
         onClose={() => setMediaSearch(null)}
       />
     )}
+    {showAnimeSearch && (
+      <AniListSearchModal
+        onSelect={handleAnimeSelect}
+        onClose={() => setShowAnimeSearch(false)}
+      />
+    )}
     <div className="rounded-2xl border border-zinc-700 bg-zinc-900 p-4 shadow-lg">
       {/* Hidden file inputs */}
       <input
@@ -347,6 +377,15 @@ export default function PostComposer({ profile }: { profile: Profile }) {
             className="rounded-lg p-1.5 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-[#D4537E] active:scale-95"
           >
             <BookIcon className="h-5 w-5" />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setShowAnimeSearch(true)}
+            title="Buscar anime ou manga"
+            className="rounded-lg p-1.5 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-[#D4537E] active:scale-95"
+          >
+            <TvIcon className="h-5 w-5" />
           </button>
         </div>
 

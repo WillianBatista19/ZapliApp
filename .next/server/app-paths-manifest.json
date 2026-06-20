@@ -1,6 +1,7 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/api/lastfm/route": "app/api/lastfm/route.js",
   "/icon.svg/route": "app/icon.svg/route.js",
-  "/(app)/feed/page": "app/(app)/feed/page.js"
+  "/api/lastfm/route": "app/api/lastfm/route.js",
+  "/(app)/feed/page": "app/(app)/feed/page.js",
+  "/(app)/profile/[username]/page": "app/(app)/profile/[username]/page.js"
 }
