@@ -2,6 +2,7 @@ import { notFound, redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import ProfileInteractive from '@/components/profile/ProfileInteractive'
 import PostGrid from '@/components/profile/PostGrid'
+import LastfmWidget from '@/components/profile/LastfmWidget'
 
 type Props = {
   params: { username: string }
@@ -16,7 +17,7 @@ export default async function ProfilePage({ params }: Props) {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('id, username, display_name, avatar_url, bio, created_at')
+    .select('id, username, display_name, avatar_url, bio, created_at, lastfm_username')
     .eq('username', username)
     .single()
 
@@ -53,6 +54,9 @@ export default async function ProfilePage({ params }: Props) {
         initialFollowerCount={followerCount}
         followingCount={followingCount}
       />
+      {profile.lastfm_username && (
+        <LastfmWidget username={profile.lastfm_username} />
+      )}
       <PostGrid
         userId={profile.id}
         displayName={profile.display_name || profile.username}

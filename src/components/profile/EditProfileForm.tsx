@@ -7,14 +7,15 @@ import Avatar from '@/components/Avatar'
 import type { Profile } from '@/types'
 
 export default function EditProfileForm({ profile }: { profile: Profile }) {
-  const [displayName, setDisplayName] = useState(profile.display_name ?? '')
-  const [username,    setUsername]    = useState(profile.username ?? '')
-  const [bio,         setBio]         = useState(profile.bio ?? '')
-  const [avatarUrl,   setAvatarUrl]   = useState(profile.avatar_url)
-  const [preview,     setPreview]     = useState<string | null>(null)
-  const [avatarFile,  setAvatarFile]  = useState<File | null>(null)
-  const [saving,      setSaving]      = useState(false)
-  const [error,       setError]       = useState<string | null>(null)
+  const [displayName,    setDisplayName]    = useState(profile.display_name ?? '')
+  const [username,       setUsername]       = useState(profile.username ?? '')
+  const [bio,            setBio]            = useState(profile.bio ?? '')
+  const [lastfmUsername, setLastfmUsername] = useState(profile.lastfm_username ?? '')
+  const [avatarUrl,      setAvatarUrl]      = useState(profile.avatar_url)
+  const [preview,        setPreview]        = useState<string | null>(null)
+  const [avatarFile,     setAvatarFile]     = useState<File | null>(null)
+  const [saving,         setSaving]         = useState(false)
+  const [error,          setError]          = useState<string | null>(null)
 
   const fileRef  = useRef<HTMLInputElement>(null)
   const supabase = useMemo(() => createClient(), [])
@@ -82,10 +83,11 @@ export default function EditProfileForm({ profile }: { profile: Profile }) {
     const { error: updateErr } = await supabase
       .from('profiles')
       .update({
-        display_name: trimmedName,
-        username:     trimmedUsername,
-        bio:          bio.trim() || null,
-        avatar_url:   finalAvatarUrl,
+        display_name:    trimmedName,
+        username:        trimmedUsername,
+        bio:             bio.trim() || null,
+        avatar_url:      finalAvatarUrl,
+        lastfm_username: lastfmUsername.trim() || null,
       })
       .eq('id', profile.id)
 
@@ -182,6 +184,32 @@ export default function EditProfileForm({ profile }: { profile: Profile }) {
           />
           <p className="mt-1 text-right text-xs text-zinc-600">
             {bio.length}/160
+          </p>
+        </FormField>
+
+        <FormField label="Last.fm">
+          <div className="relative">
+            <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm text-zinc-500">
+              🎵
+            </span>
+            <input
+              value={lastfmUsername}
+              onChange={(e) => setLastfmUsername(e.target.value.trim())}
+              maxLength={50}
+              placeholder="seu_usuario_lastfm"
+              className="input-base pl-9"
+            />
+          </div>
+          <p className="mt-1 text-xs text-zinc-600">
+            Aparece seu histórico no perfil.{' '}
+            <a
+              href="https://www.last.fm"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#D4537E] hover:underline"
+            >
+              last.fm
+            </a>
           </p>
         </FormField>
 

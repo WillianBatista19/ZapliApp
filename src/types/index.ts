@@ -11,12 +11,13 @@ export type NotificationType =
   | 'mention'
 
 export interface Profile {
-  id: string
-  username: string
-  display_name: string
-  avatar_url: string | null
-  bio: string | null
-  created_at: string
+  id:               string
+  username:         string
+  display_name:     string
+  avatar_url:       string | null
+  bio:              string | null
+  created_at:       string
+  lastfm_username:  string | null
 }
 
 export interface Vibe {
