@@ -8,45 +8,79 @@ import { translateAuthError } from '@/lib/auth-errors'
 
 type Status = 'idle' | 'loading' | 'success'
 
+const SUFFIX_WORDS = ['pop', 'icon', 'bbb', 'real', 'vibe', 'br']
+
+function generateUsernameSuggestions(base: string): string[] {
+  const year    = new Date().getFullYear()
+  const rand2   = String(Math.floor(Math.random() * 90) + 10)
+  const randBirth = String(Math.floor(Math.random() * 30) + 80)
+  const word    = SUFFIX_WORDS[Math.floor(Math.random() * SUFFIX_WORDS.length)]
+
+  const seen = new Set<string>()
+  const out: string[] = []
+  for (const s of [`${base}${rand2}`, `${base}${year}`, `${base}_${word}`, `${base}${randBirth}`]) {
+    if (!seen.has(s)) { seen.add(s); out.push(s) }
+  }
+  return out
+}
+
 export default function SignupPage() {
-  const [username,  setUsername]  = useState('')
-  const [email,     setEmail]     = useState('')
-  const [password,  setPassword]  = useState('')
-  const [confirm,   setConfirm]   = useState('')
-  const [error,     setError]     = useState<string | null>(null)
-  const [status,    setStatus]    = useState<Status>('idle')
+  const [username,    setUsername]    = useState('')
+  const [email,       setEmail]       = useState('')
+  const [password,    setPassword]    = useState('')
+  const [confirm,     setConfirm]     = useState('')
+  const [error,       setError]       = useState<string | null>(null)
+  const [status,      setStatus]      = useState<Status>('idle')
+  const [suggestions, setSuggestions] = useState<string[]>([])
 
   const supabase = createClient()
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
+    setSuggestions([])
 
     if (password !== confirm) {
       setError('As senhas não batem. Confere aí!')
       return
     }
-    if (username.trim().length < 3) {
+
+    const cleanUsername = username.trim().toLowerCase()
+
+    if (cleanUsername.length < 3) {
       setError('Username precisa ter pelo menos 3 caracteres.')
       return
     }
 
     setStatus('loading')
 
-    const { error } = await supabase.auth.signUp({
+    // Check if username is already taken before creating the auth user
+    const { data: existing } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('username', cleanUsername)
+      .maybeSingle()
+
+    if (existing) {
+      setSuggestions(generateUsernameSuggestions(cleanUsername))
+      setStatus('idle')
+      return
+    }
+
+    const { error: authError } = await supabase.auth.signUp({
       email,
       password,
       options: {
         data: {
-          username:     username.trim().toLowerCase(),
+          username:     cleanUsername,
           display_name: username.trim(),
         },
         emailRedirectTo: `${location.origin}/auth/callback`,
       },
     })
 
-    if (error) {
-      setError(translateAuthError(error.message))
+    if (authError) {
+      setError(translateAuthError(authError.message))
       setStatus('idle')
       return
     }
@@ -100,10 +134,34 @@ export default function SignupPage() {
               required
               placeholder="seunome"
               value={username}
-              onChange={(e) => setUsername(e.target.value.replace(/\s/g, ''))}
+              onChange={(e) => {
+                setUsername(e.target.value.replace(/\s/g, ''))
+                if (suggestions.length > 0) setSuggestions([])
+              }}
               className="input-base pl-8"
             />
           </div>
+
+          {/* Username taken — suggestions */}
+          {suggestions.length > 0 && (
+            <div className="pt-2">
+              <p className="mb-2 text-xs text-zinc-400">
+                Esse username já existe. Que tal um desses?
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {suggestions.map(s => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => { setUsername(s); setSuggestions([]) }}
+                    className="rounded-full border border-zinc-700 bg-zinc-800 px-3 py-1 text-xs font-medium text-zinc-300 transition-colors hover:border-pink hover:text-pink active:scale-95"
+                  >
+                    @{s}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="space-y-1">

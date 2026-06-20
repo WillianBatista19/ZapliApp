@@ -4,18 +4,22 @@ import { useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Avatar from '@/components/Avatar'
+import ConfirmModal from '@/components/ui/ConfirmModal'
 import type { Profile } from '@/types'
 
 export default function EditProfileForm({ profile }: { profile: Profile }) {
-  const [displayName,    setDisplayName]    = useState(profile.display_name ?? '')
-  const [username,       setUsername]       = useState(profile.username ?? '')
-  const [bio,            setBio]            = useState(profile.bio ?? '')
-  const [lastfmUsername, setLastfmUsername] = useState(profile.lastfm_username ?? '')
-  const [avatarUrl,      setAvatarUrl]      = useState(profile.avatar_url)
-  const [preview,        setPreview]        = useState<string | null>(null)
-  const [avatarFile,     setAvatarFile]     = useState<File | null>(null)
-  const [saving,         setSaving]         = useState(false)
-  const [error,          setError]          = useState<string | null>(null)
+  const [displayName,      setDisplayName]      = useState(profile.display_name ?? '')
+  const [username,         setUsername]         = useState(profile.username ?? '')
+  const [bio,              setBio]              = useState(profile.bio ?? '')
+  const [lastfmUsername,   setLastfmUsername]   = useState(profile.lastfm_username ?? '')
+  const [avatarUrl,        setAvatarUrl]        = useState(profile.avatar_url)
+  const [preview,          setPreview]          = useState<string | null>(null)
+  const [avatarFile,       setAvatarFile]       = useState<File | null>(null)
+  const [saving,           setSaving]           = useState(false)
+  const [error,            setError]            = useState<string | null>(null)
+  const [showDeleteModal,  setShowDeleteModal]  = useState(false)
+  const [deleting,         setDeleting]         = useState(false)
+  const [deleteError,      setDeleteError]      = useState<string | null>(null)
 
   const fileRef  = useRef<HTMLInputElement>(null)
   const supabase = useMemo(() => createClient(), [])
@@ -34,7 +38,6 @@ export default function EditProfileForm({ profile }: { profile: Profile }) {
   }
 
   function handleUsernameChange(e: React.ChangeEvent<HTMLInputElement>) {
-    // Allow only lowercase letters, numbers, and underscores
     setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))
   }
 
@@ -107,129 +110,180 @@ export default function EditProfileForm({ profile }: { profile: Profile }) {
     router.refresh()
   }
 
+  async function handleDeleteAccount() {
+    setDeleting(true)
+    setDeleteError(null)
+
+    const { error: deleteErr } = await supabase
+      .from('profiles')
+      .delete()
+      .eq('id', profile.id)
+
+    if (deleteErr) {
+      setDeleteError('Não foi possível excluir a conta. Tenta de novo!')
+      setDeleting(false)
+      return
+    }
+
+    await supabase.auth.signOut()
+    router.push('/login')
+  }
+
   const previewSrc = preview ?? avatarUrl
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <>
+      <form onSubmit={handleSubmit} className="space-y-6">
 
-      {/* Avatar picker */}
-      <div className="flex flex-col items-center gap-3">
+        {/* Avatar picker */}
+        <div className="flex flex-col items-center gap-3">
+          <button
+            type="button"
+            onClick={() => fileRef.current?.click()}
+            className="group relative"
+            aria-label="Trocar foto de perfil"
+          >
+            <Avatar
+              src={previewSrc}
+              name={displayName || username}
+              size="lg"
+              className="ring-4 ring-zinc-800 transition-all group-hover:ring-pink"
+            />
+            <span className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-full bg-black/60 text-xs font-semibold text-white opacity-0 transition-opacity group-hover:opacity-100">
+              Trocar
+            </span>
+          </button>
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/png,image/jpeg,image/webp,image/gif"
+            className="hidden"
+            onChange={onFileChange}
+          />
+          <p className="text-xs text-zinc-600">Clique na foto para trocar · máx. 5 MB</p>
+        </div>
+
+        {/* Fields */}
+        <div className="space-y-4 rounded-2xl border border-zinc-800 bg-zinc-900 p-5">
+
+          <FormField label="Nome">
+            <input
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              maxLength={50}
+              required
+              placeholder="Seu nome"
+              className="input-base"
+            />
+          </FormField>
+
+          <FormField label="Usuário">
+            <div className="relative">
+              <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm text-zinc-500">
+                @
+              </span>
+              <input
+                value={username}
+                onChange={handleUsernameChange}
+                maxLength={30}
+                required
+                placeholder="seuusuario"
+                className="input-base pl-8"
+              />
+            </div>
+            <p className="mt-1 text-xs text-zinc-600">
+              Apenas letras minúsculas, números e _
+            </p>
+          </FormField>
+
+          <FormField label="Bio">
+            <textarea
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              maxLength={160}
+              rows={3}
+              placeholder="Conta algo sobre você…"
+              className="input-base resize-none"
+            />
+            <p className="mt-1 text-right text-xs text-zinc-600">
+              {bio.length}/160
+            </p>
+          </FormField>
+
+          <FormField label="Last.fm">
+            <div className="relative">
+              <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm text-zinc-500">
+                🎵
+              </span>
+              <input
+                value={lastfmUsername}
+                onChange={(e) => setLastfmUsername(e.target.value.trim())}
+                maxLength={50}
+                placeholder="seu_usuario_lastfm"
+                className="input-base pl-9"
+              />
+            </div>
+            <p className="mt-1 text-xs text-zinc-600">
+              Aparece seu histórico no perfil.{' '}
+              <a
+                href="https://www.last.fm"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#D4537E] hover:underline"
+              >
+                last.fm
+              </a>
+            </p>
+          </FormField>
+
+        </div>
+
+        {error && (
+          <div className="rounded-xl border border-red-800/40 bg-red-950/40 px-4 py-3 text-sm text-red-400">
+            {error}
+          </div>
+        )}
+
+        <button
+          type="submit"
+          disabled={saving}
+          className="btn-primary"
+        >
+          {saving ? 'Salvando…' : 'Salvar alterações'}
+        </button>
+
+      </form>
+
+      {/* ── Danger zone ── */}
+      <div className="mt-10 rounded-2xl border border-red-900/40 bg-red-950/10 p-5">
+        <h3 className="mb-1 text-sm font-semibold text-red-400">Zona de perigo</h3>
+        <p className="mb-4 text-xs text-zinc-500">
+          Excluir sua conta apaga permanentemente seus posts, comentários e todos os seus dados. Esta ação não pode ser desfeita.
+        </p>
+        {deleteError && (
+          <p className="mb-3 text-xs text-red-400">{deleteError}</p>
+        )}
         <button
           type="button"
-          onClick={() => fileRef.current?.click()}
-          className="group relative"
-          aria-label="Trocar foto de perfil"
+          onClick={() => setShowDeleteModal(true)}
+          className="rounded-xl border border-red-800/60 bg-transparent px-4 py-2 text-sm font-semibold text-red-400 transition-colors hover:bg-red-950/60 hover:text-red-300"
         >
-          <Avatar
-            src={previewSrc}
-            name={displayName || username}
-            size="lg"
-            className="ring-4 ring-zinc-800 transition-all group-hover:ring-pink"
-          />
-          <span className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-full bg-black/60 text-xs font-semibold text-white opacity-0 transition-opacity group-hover:opacity-100">
-            Trocar
-          </span>
+          Excluir minha conta
         </button>
-        <input
-          ref={fileRef}
-          type="file"
-          accept="image/png,image/jpeg,image/webp,image/gif"
-          className="hidden"
-          onChange={onFileChange}
+      </div>
+
+      {showDeleteModal && (
+        <ConfirmModal
+          title="Tem certeza que quer excluir sua conta?"
+          message="Esta ação é permanente e irá apagar todos os seus posts, comentários, stories, vibes e seguidores. Não tem como desfazer."
+          confirmLabel="Excluir conta"
+          loading={deleting}
+          variant="danger"
+          onConfirm={handleDeleteAccount}
+          onCancel={() => { setShowDeleteModal(false); setDeleteError(null) }}
         />
-        <p className="text-xs text-zinc-600">Clique na foto para trocar · máx. 5 MB</p>
-      </div>
-
-      {/* Fields */}
-      <div className="space-y-4 rounded-2xl border border-zinc-800 bg-zinc-900 p-5">
-
-        <FormField label="Nome">
-          <input
-            value={displayName}
-            onChange={(e) => setDisplayName(e.target.value)}
-            maxLength={50}
-            required
-            placeholder="Seu nome"
-            className="input-base"
-          />
-        </FormField>
-
-        <FormField label="Usuário">
-          <div className="relative">
-            <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm text-zinc-500">
-              @
-            </span>
-            <input
-              value={username}
-              onChange={handleUsernameChange}
-              maxLength={30}
-              required
-              placeholder="seuusuario"
-              className="input-base pl-8"
-            />
-          </div>
-          <p className="mt-1 text-xs text-zinc-600">
-            Apenas letras minúsculas, números e _
-          </p>
-        </FormField>
-
-        <FormField label="Bio">
-          <textarea
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
-            maxLength={160}
-            rows={3}
-            placeholder="Conta algo sobre você…"
-            className="input-base resize-none"
-          />
-          <p className="mt-1 text-right text-xs text-zinc-600">
-            {bio.length}/160
-          </p>
-        </FormField>
-
-        <FormField label="Last.fm">
-          <div className="relative">
-            <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm text-zinc-500">
-              🎵
-            </span>
-            <input
-              value={lastfmUsername}
-              onChange={(e) => setLastfmUsername(e.target.value.trim())}
-              maxLength={50}
-              placeholder="seu_usuario_lastfm"
-              className="input-base pl-9"
-            />
-          </div>
-          <p className="mt-1 text-xs text-zinc-600">
-            Aparece seu histórico no perfil.{' '}
-            <a
-              href="https://www.last.fm"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[#D4537E] hover:underline"
-            >
-              last.fm
-            </a>
-          </p>
-        </FormField>
-
-      </div>
-
-      {error && (
-        <div className="rounded-xl border border-red-800/40 bg-red-950/40 px-4 py-3 text-sm text-red-400">
-          {error}
-        </div>
       )}
-
-      <button
-        type="submit"
-        disabled={saving}
-        className="btn-primary"
-      >
-        {saving ? 'Salvando…' : 'Salvar alterações'}
-      </button>
-
-    </form>
+    </>
   )
 }
 

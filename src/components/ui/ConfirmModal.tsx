@@ -3,14 +3,16 @@
 import { useEffect } from 'react'
 
 type Props = {
+  title?:       string
   message:      string
   confirmLabel: string
   onConfirm:    () => void
   onCancel:     () => void
   loading?:     boolean
+  variant?:     'default' | 'danger'
 }
 
-export default function ConfirmModal({ message, confirmLabel, onConfirm, onCancel, loading = false }: Props) {
+export default function ConfirmModal({ title, message, confirmLabel, onConfirm, onCancel, loading = false, variant = 'default' }: Props) {
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key === 'Escape') onCancel()
@@ -30,7 +32,10 @@ export default function ConfirmModal({ message, confirmLabel, onConfirm, onCance
         className="w-full max-w-sm rounded-2xl border border-zinc-800 bg-zinc-900 p-6 shadow-2xl"
         onClick={e => e.stopPropagation()}
       >
-        <p className="text-sm text-zinc-300">{message}</p>
+        {title && (
+          <h2 className="mb-2 text-base font-bold text-zinc-100">{title}</h2>
+        )}
+        <p className="text-sm text-zinc-400">{message}</p>
 
         <div className="mt-5 flex justify-end gap-3">
           <button
@@ -47,7 +52,12 @@ export default function ConfirmModal({ message, confirmLabel, onConfirm, onCance
             type="button"
             onClick={onConfirm}
             disabled={loading}
-            className="rounded-xl bg-[#D4537E] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#c0446e] disabled:opacity-50"
+            className={[
+              'rounded-xl px-4 py-2 text-sm font-semibold text-white transition-colors disabled:opacity-50',
+              variant === 'danger'
+                ? 'bg-red-700 hover:bg-red-600'
+                : 'bg-[#D4537E] hover:bg-[#c0446e]',
+            ].join(' ')}
           >
             {loading ? '…' : confirmLabel}
           </button>

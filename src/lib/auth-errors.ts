@@ -1,7 +1,8 @@
 const errorMap: Record<string, string> = {
   'Invalid login credentials':      'Email ou senha incorretos. Tenta de novo, incelica!',
   'Email not confirmed':            'Confirma seu email antes de entrar. Checa tua caixa de entrada!',
-  'User already registered':        'Esse email já tem conta. Entra direto!',
+  'User already registered':        'Este email já está sendo usado por outra conta.',
+  'email address already registered': 'Este email já está sendo usado por outra conta.',
   'Password should be at least 6 characters': 'Senha muito fraca. Usa pelo menos 6 caracteres.',
   'Unable to validate email address: invalid format': 'Email inválido.',
   'For security purposes, you can only request this after':
