@@ -4,8 +4,13 @@ import type { Post } from '@/types'
 
 const POST_SELECT = `
   id, user_id, content, image_url, spotify_url, youtube_url, category, created_at,
+  repost_comment, repost_count,
   profiles (id, username, display_name, avatar_url, bio, created_at),
-  vibes    (id, post_id, user_id, type, created_at)
+  vibes    (id, post_id, user_id, type, created_at),
+  original_post:repost_of (
+    id, user_id, content, image_url, spotify_url, youtube_url, category, created_at,
+    profiles (id, username, display_name, avatar_url, bio, created_at)
+  )
 `.trim()
 
 type Props = {

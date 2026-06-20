@@ -4,16 +4,18 @@ import { useEffect, useMemo, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Avatar from '@/components/Avatar'
 import { relativeTime } from '@/lib/utils'
+import MentionInput from '@/components/feed/MentionInput'
+
+type CommentLike = { id: string; user_id: string }
 
 type CommentRow = {
-  id:         string
-  content:    string
-  created_at: string
-  profiles: {
-    display_name: string | null
-    username:     string
-    avatar_url:   string | null
-  }
+  id:            string
+  user_id:       string
+  parent_id:     string | null
+  content:       string
+  created_at:    string
+  profiles:      { display_name: string | null; username: string; avatar_url: string | null }
+  comment_likes: CommentLike[]
 }
 
 type Props = {
@@ -21,59 +23,164 @@ type Props = {
   currentUserId: string | null
 }
 
+const SELECT = [
+  'id, user_id, parent_id, content, created_at',
+  'profiles (display_name, username, avatar_url)',
+  'comment_likes (id, user_id)',
+].join(', ') as const
+
+const BLANK_PROFILE = { display_name: null, username: '', avatar_url: null } as const
+
 export default function CommentsSection({ postId, currentUserId }: Props) {
-  const [comments,   setComments]   = useState<CommentRow[]>([])
-  const [text,       setText]       = useState('')
-  const [loading,    setLoading]    = useState(true)
-  const [submitting, setSubmitting] = useState(false)
   const supabase = useMemo(() => createClient(), [])
+
+  const [all,             setAll]             = useState<CommentRow[]>([])
+  const [loading,         setLoading]         = useState(true)
+  const [text,            setText]            = useState('')
+  const [submitting,      setSubmitting]      = useState(false)
+  const [replyingTo,      setReplyingTo]      = useState<string | null>(null)
+  const [replyText,       setReplyText]       = useState('')
+  const [replySubmitting, setReplySubmitting] = useState(false)
+  const [expandedReplies, setExpandedReplies] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     supabase
       .from('comments')
-      .select('id, content, created_at, profiles(display_name, username, avatar_url)')
+      .select(SELECT)
       .eq('post_id', postId)
-      .is('parent_id', null)
       .order('created_at', { ascending: true })
       .then(({ data }) => {
-        setComments((data as unknown as CommentRow[]) ?? [])
+        setAll((data as unknown as CommentRow[]) ?? [])
         setLoading(false)
       })
   }, [supabase, postId])
 
-  async function submit(e: React.FormEvent) {
-    e.preventDefault()
+  const topLevel = useMemo(() => all.filter(c => c.parent_id === null), [all])
+  const byParent = useMemo(
+    () => all.reduce<Record<string, CommentRow[]>>((acc, c) => {
+      if (c.parent_id) acc[c.parent_id] = [...(acc[c.parent_id] ?? []), c]
+      return acc
+    }, {}),
+    [all],
+  )
+
+  // ── top-level comment ───────────────────────────────────────────────────────
+  async function submitComment() {
     const trimmed = text.trim()
     if (!trimmed || !currentUserId || submitting) return
-
     setSubmitting(true)
     setText('')
 
-    // Optimistic entry while the insert is in-flight
     const optimistic: CommentRow = {
-      id:         `opt-${Date.now()}`,
-      content:    trimmed,
-      created_at: new Date().toISOString(),
-      profiles:   { display_name: null, username: '', avatar_url: null },
+      id: `opt-${Date.now()}`, user_id: currentUserId, parent_id: null,
+      content: trimmed, created_at: new Date().toISOString(),
+      profiles: { ...BLANK_PROFILE }, comment_likes: [],
     }
-    setComments((prev) => [...prev, optimistic])
+    setAll(prev => [...prev, optimistic])
 
     const { data, error } = await supabase
       .from('comments')
       .insert({ post_id: postId, user_id: currentUserId, content: trimmed })
-      .select('id, content, created_at, profiles(display_name, username, avatar_url)')
+      .select(SELECT)
       .single()
 
-    if (error) {
-      setComments((prev) => prev.filter((c) => c.id !== optimistic.id))
-      setText(trimmed)                      // restore text so user can retry
-    } else {
-      setComments((prev) =>
-        prev.map((c) => (c.id === optimistic.id ? (data as unknown as CommentRow) : c)),
-      )
-    }
-
+    setAll(prev =>
+      error
+        ? prev.filter(c => c.id !== optimistic.id)
+        : prev.map(c => c.id === optimistic.id ? (data as unknown as CommentRow) : c)
+    )
+    if (error) setText(trimmed)
     setSubmitting(false)
+  }
+
+  // ── reply ───────────────────────────────────────────────────────────────────
+  async function submitReply(parentId: string) {
+    const trimmed = replyText.trim()
+    if (!trimmed || !currentUserId || replySubmitting) return
+    setReplySubmitting(true)
+    setReplyText('')
+    setReplyingTo(null)
+    setExpandedReplies(prev => new Set([...prev, parentId]))
+
+    const optimistic: CommentRow = {
+      id: `opt-${Date.now()}`, user_id: currentUserId, parent_id: parentId,
+      content: trimmed, created_at: new Date().toISOString(),
+      profiles: { ...BLANK_PROFILE }, comment_likes: [],
+    }
+    setAll(prev => [...prev, optimistic])
+
+    const { data, error } = await supabase
+      .from('comments')
+      .insert({ post_id: postId, user_id: currentUserId, content: trimmed, parent_id: parentId })
+      .select(SELECT)
+      .single()
+
+    setAll(prev =>
+      error
+        ? prev.filter(c => c.id !== optimistic.id)
+        : prev.map(c => c.id === optimistic.id ? (data as unknown as CommentRow) : c)
+    )
+    if (error) { setReplyingTo(parentId); setReplyText(trimmed) }
+    setReplySubmitting(false)
+  }
+
+  // ── like / unlike ───────────────────────────────────────────────────────────
+  async function toggleLike(commentId: string) {
+    if (!currentUserId) return
+    const comment = all.find(c => c.id === commentId)
+    if (!comment) return
+    const liked = comment.comment_likes.some(l => l.user_id === currentUserId)
+
+    if (liked) {
+      // Optimistic unlike
+      setAll(prev => prev.map(c => c.id !== commentId ? c : {
+        ...c, comment_likes: c.comment_likes.filter(l => l.user_id !== currentUserId),
+      }))
+      const { error } = await supabase
+        .from('comment_likes')
+        .delete()
+        .eq('comment_id', commentId)
+        .eq('user_id', currentUserId)
+      if (error) {
+        setAll(prev => prev.map(c => c.id !== commentId ? c : {
+          ...c, comment_likes: [...c.comment_likes, { id: 'rb', user_id: currentUserId }],
+        }))
+      }
+    } else {
+      // Optimistic like
+      const optId = `opt-${Date.now()}`
+      setAll(prev => prev.map(c => c.id !== commentId ? c : {
+        ...c, comment_likes: [...c.comment_likes, { id: optId, user_id: currentUserId }],
+      }))
+      const { data, error } = await supabase
+        .from('comment_likes')
+        .insert({ comment_id: commentId, user_id: currentUserId })
+        .select('id, user_id')
+        .single()
+      if (error) {
+        setAll(prev => prev.map(c => c.id !== commentId ? c : {
+          ...c, comment_likes: c.comment_likes.filter(l => l.id !== optId),
+        }))
+      } else if (data) {
+        setAll(prev => prev.map(c => c.id !== commentId ? c : {
+          ...c, comment_likes: c.comment_likes.map(l => l.id === optId ? (data as CommentLike) : l),
+        }))
+      }
+    }
+  }
+
+  function startReply(comment: CommentRow) {
+    if (replyingTo === comment.id) { setReplyingTo(null); return }
+    setReplyingTo(comment.id)
+    setReplyText(`@${comment.profiles.username} `)
+  }
+
+  function toggleReplies(commentId: string) {
+    setExpandedReplies(prev => {
+      const next = new Set(prev)
+      next.has(commentId) ? next.delete(commentId) : next.add(commentId)
+      return next
+    })
   }
 
   return (
@@ -81,55 +188,188 @@ export default function CommentsSection({ postId, currentUserId }: Props) {
 
       {loading ? (
         <p className="text-xs text-zinc-600">Carregando comentários…</p>
-      ) : comments.length === 0 ? (
-        <p className="text-xs text-zinc-600">
-          Nenhum comentário ainda. Seja o primeiro!
-        </p>
+      ) : topLevel.length === 0 ? (
+        <p className="text-xs text-zinc-600">Nenhum comentário ainda. Seja o primeiro!</p>
       ) : (
-        <ul className="space-y-3">
-          {comments.map((c) => (
-            <li key={c.id} className="flex gap-2">
-              <Avatar
-                src={c.profiles.avatar_url}
-                name={c.profiles.display_name || c.profiles.username}
-                size="sm"
-              />
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-baseline gap-x-2">
-                  <span className="text-xs font-semibold text-zinc-300">
-                    {c.profiles.display_name || c.profiles.username || 'Incelica'}
-                  </span>
-                  <span className="text-[10px] text-zinc-600">
-                    {relativeTime(c.created_at)}
-                  </span>
+        <ul className="space-y-4">
+          {topLevel.map(comment => {
+            const replies     = byParent[comment.id] ?? []
+            const showReplies = expandedReplies.has(comment.id)
+            const isReplying  = replyingTo === comment.id
+            const authorName  = comment.profiles.display_name || comment.profiles.username || 'Incelica'
+            const liked       = currentUserId
+              ? comment.comment_likes.some(l => l.user_id === currentUserId)
+              : false
+
+            return (
+              <li key={comment.id}>
+                {/* Comment */}
+                <div className="flex gap-2">
+                  <Avatar src={comment.profiles.avatar_url} name={authorName} size="sm" />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-baseline gap-x-2">
+                      <span className="text-xs font-semibold text-zinc-300">{authorName}</span>
+                      <span className="text-[10px] text-zinc-600">{relativeTime(comment.created_at)}</span>
+                    </div>
+                    <CommentText text={comment.content} />
+                    <div className="mt-1 flex items-center gap-3">
+                      {currentUserId && (
+                        <button
+                          type="button"
+                          onClick={() => startReply(comment)}
+                          className="text-[10px] font-medium text-zinc-600 transition-colors hover:text-[#D4537E]"
+                        >
+                          {isReplying ? 'Cancelar' : 'Responder'}
+                        </button>
+                      )}
+                      <LikeButton
+                        liked={liked}
+                        count={comment.comment_likes.length}
+                        disabled={!currentUserId}
+                        onClick={() => toggleLike(comment.id)}
+                      />
+                    </div>
+                  </div>
                 </div>
-                <p className="text-xs leading-relaxed text-zinc-400">{c.content}</p>
-              </div>
-            </li>
-          ))}
+
+                {/* "ver X respostas" toggle */}
+                {replies.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => toggleReplies(comment.id)}
+                    className="ml-8 mt-1.5 text-[10px] font-medium text-[#7F77DD] transition-colors hover:text-[#9f99ee]"
+                  >
+                    {showReplies
+                      ? 'Ocultar respostas'
+                      : `Ver ${replies.length} ${replies.length === 1 ? 'resposta' : 'respostas'}`}
+                  </button>
+                )}
+
+                {/* Replies */}
+                {showReplies && (
+                  <ul className="ml-8 mt-2 space-y-3 border-l border-zinc-800 pl-3">
+                    {replies.map(reply => {
+                      const replyAuthor = reply.profiles.display_name || reply.profiles.username || 'Incelica'
+                      const replyLiked  = currentUserId
+                        ? reply.comment_likes.some(l => l.user_id === currentUserId)
+                        : false
+                      return (
+                        <li key={reply.id} className="flex gap-2">
+                          <Avatar src={reply.profiles.avatar_url} name={replyAuthor} size="sm" />
+                          <div className="min-w-0 flex-1">
+                            <div className="flex flex-wrap items-baseline gap-x-2">
+                              <span className="text-xs font-semibold text-zinc-300">{replyAuthor}</span>
+                              <span className="text-[10px] text-zinc-600">{relativeTime(reply.created_at)}</span>
+                            </div>
+                            <CommentText text={reply.content} />
+                            <div className="mt-1">
+                              <LikeButton
+                                liked={replyLiked}
+                                count={reply.comment_likes.length}
+                                disabled={!currentUserId}
+                                onClick={() => toggleLike(reply.id)}
+                              />
+                            </div>
+                          </div>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                )}
+
+                {/* Inline reply input */}
+                {isReplying && (
+                  <div className="ml-8 mt-2 flex gap-2">
+                    <MentionInput
+                      value={replyText}
+                      onChange={setReplyText}
+                      onSubmit={() => submitReply(comment.id)}
+                      placeholder={`Responder para @${comment.profiles.username}…`}
+                      disabled={replySubmitting}
+                      autoFocus
+                      rows={1}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => submitReply(comment.id)}
+                      disabled={!replyText.trim() || replySubmitting}
+                      className="shrink-0 self-end rounded-xl bg-[#D4537E] px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#c0446e] disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      {replySubmitting ? '…' : 'Enviar'}
+                    </button>
+                  </div>
+                )}
+              </li>
+            )
+          })}
         </ul>
       )}
 
+      {/* Top-level input */}
       {currentUserId && (
-        <form onSubmit={submit} className="flex gap-2">
-          <input
-            type="text"
+        <form onSubmit={(e) => { e.preventDefault(); submitComment() }} className="flex gap-2">
+          <MentionInput
             value={text}
-            onChange={(e) => setText(e.target.value)}
+            onChange={setText}
+            onSubmit={submitComment}
             placeholder="Adicionar comentário…"
             disabled={submitting}
-            className="min-w-0 flex-1 rounded-xl border border-zinc-700 bg-zinc-800 px-3 py-2 text-xs text-zinc-100 placeholder-zinc-600 outline-none focus:border-[#D4537E]/50 focus:ring-1 focus:ring-[#D4537E] disabled:opacity-50"
+            rows={1}
           />
           <button
             type="submit"
             disabled={!text.trim() || submitting}
-            className="shrink-0 rounded-xl bg-[#D4537E] px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#c0446e] disabled:cursor-not-allowed disabled:opacity-40"
+            className="shrink-0 self-end rounded-xl bg-[#D4537E] px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#c0446e] disabled:cursor-not-allowed disabled:opacity-40"
           >
             {submitting ? '…' : 'Enviar'}
           </button>
         </form>
       )}
-
     </div>
+  )
+}
+
+// ── Inline helpers ────────────────────────────────────────────────────────────
+
+function LikeButton({ liked, count, disabled, onClick }: {
+  liked:    boolean
+  count:    number
+  disabled: boolean
+  onClick:  () => void
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={[
+        'flex items-center gap-1 text-[10px] font-medium transition-colors disabled:opacity-40',
+        liked ? 'text-[#D4537E]' : 'text-zinc-600 hover:text-[#D4537E]',
+      ].join(' ')}
+    >
+      <HeartIcon filled={liked} className="h-3 w-3" />
+      {count > 0 && <span>{count}</span>}
+    </button>
+  )
+}
+
+function CommentText({ text }: { text: string }) {
+  const parts = text.split(/(@[A-Za-z0-9_]+)/g)
+  return (
+    <p className="text-xs leading-relaxed text-zinc-400">
+      {parts.map((part, i) =>
+        /^@[A-Za-z0-9_]+$/.test(part)
+          ? <span key={i} className="font-medium text-[#D4537E]">{part}</span>
+          : part,
+      )}
+    </p>
+  )
+}
+
+function HeartIcon({ filled, className }: { filled: boolean; className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill={filled ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+    </svg>
   )
 }

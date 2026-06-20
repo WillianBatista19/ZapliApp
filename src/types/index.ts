@@ -6,6 +6,7 @@ export type NotificationType =
   | 'vibe'
   | 'comment'
   | 'comment_reply'
+  | 'comment_like'
   | 'repost'
   | 'mention'
 
@@ -49,15 +50,31 @@ export interface NotificationRow {
   comment:      Pick<Comment, 'content'> | null
 }
 
-export interface Post {
-  id: string
-  user_id: string
-  content: string
-  image_url: string | null
+export interface OriginalPost {
+  id:          string
+  user_id:     string
+  content:     string
+  image_url:   string | null
   spotify_url: string | null
   youtube_url: string | null
-  category: Category | null
-  created_at: string
-  profiles: Profile
-  vibes: Vibe[]
+  category:    Category | null
+  created_at:  string
+  profiles:    Profile
+}
+
+export interface Post {
+  id:             string
+  user_id:        string
+  content:        string
+  image_url:      string | null
+  spotify_url:    string | null
+  youtube_url:    string | null
+  category:       Category | null
+  created_at:     string
+  repost_of?:     string | null
+  repost_comment: string | null
+  repost_count:   number
+  profiles:       Profile
+  vibes:          Vibe[]
+  original_post:  OriginalPost | null
 }

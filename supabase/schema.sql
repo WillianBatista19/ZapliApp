@@ -14,6 +14,7 @@ create type notification_type as enum (
   'vibe',
   'comment',
   'comment_reply',
+  'comment_like',
   'repost',
   'mention'
 );
@@ -66,14 +67,20 @@ create trigger on_auth_user_created
 -- ------------------------------------------------------------
 
 create table posts (
-  id           uuid primary key default gen_random_uuid(),
-  user_id      uuid not null references profiles (id) on delete cascade,
-  content      text not null,
-  image_url    text,
-  spotify_url  text,
-  youtube_url  text,
-  category     post_category,
-  created_at   timestamptz not null default now()
+  id             uuid primary key default gen_random_uuid(),
+  user_id        uuid not null references profiles (id) on delete cascade,
+  content        text not null,
+  image_url      text,
+  spotify_url    text,
+  youtube_url    text,
+  category       post_category,
+  created_at     timestamptz not null default now(),
+  -- Repost ("incelicar") columns
+  repost_of      uuid references posts (id) on delete cascade,
+  repost_comment text,
+  repost_count   integer not null default 0,
+
+  constraint posts_no_self_repost check (repost_of is null or repost_of <> id)
 );
 
 -- ------------------------------------------------------------
@@ -137,6 +144,7 @@ create table notifications (
 
 create index posts_user_id_idx        on posts         (user_id, created_at desc);
 create index posts_category_idx       on posts         (category, created_at desc);
+create index posts_repost_of_idx      on posts         (repost_of) where repost_of is not null;
 create index vibes_post_id_idx        on vibes         (post_id);
 create index vibes_user_id_idx        on vibes         (user_id);
 create index comments_post_id_idx     on comments      (post_id, created_at asc);
@@ -252,6 +260,134 @@ $$;
 create trigger trg_notify_follow
   after insert on follows
   for each row execute procedure notify_on_follow();
+
+-- Repost (incelicar) → increment count on original + notify its owner
+create or replace function handle_repost_insert()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  update posts
+    set repost_count = repost_count + 1
+    where id = new.repost_of;
+
+  perform create_notification(
+    (select user_id from posts where id = new.repost_of),
+    new.user_id,
+    'repost',
+    new.repost_of
+  );
+
+  return new;
+end;
+$$;
+
+create trigger trg_handle_repost_insert
+  after insert on posts
+  for each row
+  when (new.repost_of is not null)
+  execute procedure handle_repost_insert();
+
+-- Undo repost → decrement count on original
+create or replace function handle_repost_delete()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  update posts
+    set repost_count = greatest(0, repost_count - 1)
+    where id = old.repost_of;
+
+  return old;
+end;
+$$;
+
+create trigger trg_handle_repost_delete
+  after delete on posts
+  for each row
+  when (old.repost_of is not null)
+  execute procedure handle_repost_delete();
+
+-- @mention in comments → notify each mentioned user
+create or replace function notify_on_mention()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+declare
+  v_username     text;
+  v_mentioned_id uuid;
+begin
+  for v_username in
+    select distinct lower(m[1])
+    from regexp_matches(new.content, '@([A-Za-z0-9_]+)', 'g') m
+  loop
+    select id into v_mentioned_id
+    from profiles
+    where lower(username) = v_username;
+
+    if v_mentioned_id is not null then
+      perform create_notification(v_mentioned_id, new.user_id, 'mention', new.post_id, new.id);
+    end if;
+  end loop;
+  return new;
+end;
+$$;
+
+create trigger trg_notify_mention
+  after insert on comments
+  for each row execute procedure notify_on_mention();
+
+-- ------------------------------------------------------------
+-- comment_likes  (heart reactions on comments and replies)
+-- ------------------------------------------------------------
+
+create table comment_likes (
+  id         uuid primary key default gen_random_uuid(),
+  comment_id uuid not null references comments (id) on delete cascade,
+  user_id    uuid not null references profiles (id) on delete cascade,
+  created_at timestamptz not null default now(),
+
+  constraint comment_likes_unique unique (comment_id, user_id)
+);
+
+create index comment_likes_comment_idx on comment_likes (comment_id);
+create index comment_likes_user_idx    on comment_likes (user_id);
+
+alter table comment_likes enable row level security;
+
+create policy "comment_likes: public read"
+  on comment_likes for select using (true);
+
+create policy "comment_likes: authenticated insert"
+  on comment_likes for insert with check (auth.uid() = user_id);
+
+create policy "comment_likes: owner delete"
+  on comment_likes for delete using (auth.uid() = user_id);
+
+-- comment_like → notify comment author
+create or replace function notify_on_comment_like()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+declare
+  v_author_id uuid;
+  v_post_id   uuid;
+begin
+  select user_id, post_id into v_author_id, v_post_id
+  from comments where id = new.comment_id;
+
+  perform create_notification(v_author_id, new.user_id, 'comment_like', v_post_id, new.comment_id);
+  return new;
+end;
+$$;
+
+create trigger trg_notify_comment_like
+  after insert on comment_likes
+  for each row execute procedure notify_on_comment_like();
 
 -- ============================================================
 -- Row Level Security
