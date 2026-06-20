@@ -62,6 +62,22 @@ export interface OriginalPost {
   profiles:    Profile
 }
 
+export interface StoryProfile {
+  id:           string
+  username:     string
+  display_name: string | null
+  avatar_url:   string | null
+}
+
+export interface Story {
+  id:         string
+  user_id:    string
+  media_url:  string
+  created_at: string
+  expires_at: string
+  profiles:   StoryProfile
+}
+
 export interface Post {
   id:             string
   user_id:        string

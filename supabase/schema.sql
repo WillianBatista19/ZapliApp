@@ -594,6 +594,58 @@ create policy "notifications: owner delete"
   using (auth.uid() = user_id);
 
 -- ============================================================
+-- Stories  (24-hour ephemeral photo posts)
+-- ============================================================
+
+create table stories (
+  id         uuid        primary key default gen_random_uuid(),
+  user_id    uuid        not null references profiles (id) on delete cascade,
+  media_url  text        not null,
+  created_at timestamptz not null default now(),
+  expires_at timestamptz not null default (now() + interval '24 hours')
+);
+
+create index stories_user_expires_idx on stories (user_id, expires_at);
+create index stories_expires_idx      on stories (expires_at) where expires_at > now();
+
+alter table stories enable row level security;
+
+-- Anyone authenticated can see active stories
+create policy "stories: public read active"
+  on stories for select
+  using (expires_at > now());
+
+create policy "stories: authenticated insert"
+  on stories for insert
+  with check (auth.uid() = user_id);
+
+create policy "stories: owner delete"
+  on stories for delete
+  using (auth.uid() = user_id);
+
+-- ── story_views  (tracks which users have seen each story) ────────────────
+
+create table story_views (
+  story_id   uuid        not null references stories (id) on delete cascade,
+  user_id    uuid        not null references profiles (id) on delete cascade,
+  created_at timestamptz not null default now(),
+
+  primary key (story_id, user_id)
+);
+
+create index story_views_user_idx on story_views (user_id);
+
+alter table story_views enable row level security;
+
+create policy "story_views: owner read"
+  on story_views for select
+  using (auth.uid() = user_id);
+
+create policy "story_views: authenticated insert"
+  on story_views for insert
+  with check (auth.uid() = user_id);
+
+-- ============================================================
 -- Realtime — enable for live feed and notifications
 -- ============================================================
 

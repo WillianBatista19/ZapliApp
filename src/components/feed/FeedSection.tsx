@@ -1,3 +1,4 @@
+import StoriesBar from '@/components/stories/StoriesBar'
 import ComposerForm from '@/components/feed/ComposerForm'
 import HashtagFilter from '@/components/feed/HashtagFilter'
 import FeedClient from '@/components/feed/FeedClient'
@@ -7,10 +8,10 @@ type Props = {
   createPost:    (fd: FormData) => Promise<void>
 }
 
-// Server component — no client state needed now that category filtering is hashtag-page-based
 export default function FeedSection({ currentUserId, createPost }: Props) {
   return (
     <div className="space-y-4">
+      <StoriesBar currentUserId={currentUserId} />
       <ComposerForm action={createPost} />
       <HashtagFilter />
       <FeedClient currentUserId={currentUserId} />
