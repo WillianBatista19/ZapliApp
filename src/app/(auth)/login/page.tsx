@@ -1,13 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import AuthCard from '@/components/AuthCard'
 import { createClient } from '@/lib/supabase/client'
 import { translateAuthError } from '@/lib/auth-errors'
 
-export default function LoginPage() {
+function LoginContent() {
   const [email,    setEmail]    = useState('')
   const [password, setPassword] = useState('')
   const [error,    setError]    = useState<string | null>(null)
@@ -85,7 +85,7 @@ export default function LoginPage() {
         <div className="text-right">
           <Link
             href="/recover"
-            className="text-xs text-zinc-500 hover:text-pink transition-colors"
+            className="text-xs text-zinc-500 transition-colors hover:text-pink"
           >
             Esqueceu a senha?
           </Link>
@@ -98,10 +98,18 @@ export default function LoginPage() {
 
       <p className="mt-6 text-center text-sm text-zinc-500">
         Ainda não tem conta?{' '}
-        <Link href="/signup" className="font-medium text-pink hover:text-pink-hover transition-colors">
+        <Link href="/signup" className="font-medium text-pink transition-colors hover:text-pink-hover">
           Criar conta
         </Link>
       </p>
     </AuthCard>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginContent />
+    </Suspense>
   )
 }

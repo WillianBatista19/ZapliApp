@@ -24,7 +24,7 @@ export default async function PostGrid({ userId, displayName, currentUserId }: P
     .order('created_at', { ascending: false })
     .limit(50)
 
-  const posts = (data as Post[] | null) ?? []
+  const posts = (data as unknown as Post[] | null) ?? []
 
   if (posts.length === 0) {
     return (

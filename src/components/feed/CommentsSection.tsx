@@ -36,7 +36,7 @@ export default function CommentsSection({ postId, currentUserId }: Props) {
       .is('parent_id', null)
       .order('created_at', { ascending: true })
       .then(({ data }) => {
-        setComments((data as CommentRow[]) ?? [])
+        setComments((data as unknown as CommentRow[]) ?? [])
         setLoading(false)
       })
   }, [supabase, postId])
@@ -69,7 +69,7 @@ export default function CommentsSection({ postId, currentUserId }: Props) {
       setText(trimmed)                      // restore text so user can retry
     } else {
       setComments((prev) =>
-        prev.map((c) => (c.id === optimistic.id ? (data as CommentRow) : c)),
+        prev.map((c) => (c.id === optimistic.id ? (data as unknown as CommentRow) : c)),
       )
     }
 

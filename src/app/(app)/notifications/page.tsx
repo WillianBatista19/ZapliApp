@@ -25,7 +25,7 @@ export default async function NotificationsPage() {
     .order('created_at', { ascending: false })
     .limit(100)
 
-  const notifications = (data as NotificationRow[] | null) ?? []
+  const notifications = (data as unknown as NotificationRow[] | null) ?? []
 
   // Mark all unread as read in the background — don't block the render
   if (notifications.some((n) => !n.read)) {

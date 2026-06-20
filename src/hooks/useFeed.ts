@@ -22,7 +22,7 @@ export function useFeed(category: Category | null = null) {
         .select(POST_SELECT)
         .eq('id', postId)
         .single()
-      return data as Post | null
+      return data as unknown as Post | null
     },
     [supabase],
   )
@@ -41,7 +41,7 @@ export function useFeed(category: Category | null = null) {
     if (category) query = query.eq('category', category)
 
     const { data } = await query
-    setPosts((data as Post[]) ?? [])
+    setPosts((data as unknown as Post[]) ?? [])
     setLoading(false)
   }, [supabase, category])
 
