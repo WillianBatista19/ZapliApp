@@ -644,6 +644,9 @@ video {
 .visible {
   visibility: visible;
 }
+.collapse {
+  visibility: collapse;
+}
 .fixed {
   position: fixed;
 }
@@ -980,6 +983,9 @@ video {
 }
 .w-screen {
   width: 100vw;
+}
+.w-1\/2 {
+  width: 50%;
 }
 .min-w-0 {
   min-width: 0px;
@@ -1626,6 +1632,10 @@ video {
 .py-px {
   padding-top: 1px;
   padding-bottom: 1px;
+}
+.py-6 {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
 }
 .pb-1 {
   padding-bottom: 0.25rem;

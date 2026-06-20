@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useMemo, useState, useCallback } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import Avatar from '@/components/Avatar'
@@ -15,7 +16,19 @@ import { relativeTime } from '@/lib/utils'
 import { isVerified } from '@/lib/verified'
 import type { OriginalPost, Post } from '@/types'
 
-// Preview type is only needed in PostCard — no need to export
+// ─── Media type helpers ───────────────────────────────────────────────────────
+
+type MediaKind = 'image' | 'gif' | 'video'
+
+function getMediaKind(url: string): MediaKind {
+  const path = url.toLowerCase().split('?')[0]
+  if (/\.(mp4|mov|webm|qt)$/.test(path)) return 'video'
+  if (/\.gif$/.test(path))                return 'gif'
+  return 'image'
+}
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
 type CommentPreview = {
   id:       string
   content:  string
@@ -29,7 +42,9 @@ type Props = {
   currentUserId: string | null
 }
 
-export default function PostCard({ post, currentUserId }: Props) {
+// ─── PostCard (memoized) ─────────────────────────────────────────────────────
+
+const PostCard = memo(function PostCard({ post, currentUserId }: Props) {
   const [showComments,    setShowComments]    = useState(false)
   const [deleted,         setDeleted]         = useState(false)
   const [deleting,        setDeleting]        = useState(false)
@@ -37,6 +52,12 @@ export default function PostCard({ post, currentUserId }: Props) {
   const [commentCount,    setCommentCount]    = useState(0)
   const [previewComment,  setPreviewComment]  = useState<CommentPreview | null>(null)
   const [fullscreenImg,   setFullscreenImg]   = useState<string | null>(null)
+
+  const supabase = useMemo(() => createClient(), [])
+  const profile  = post.profiles
+  const isOwner  = Boolean(currentUserId && currentUserId === post.user_id)
+
+  console.log('[PostCard]', post.id, '| image_url:', post.image_url)
 
   const closeFullscreen = useCallback(() => setFullscreenImg(null), [])
 
@@ -47,24 +68,16 @@ export default function PostCard({ post, currentUserId }: Props) {
     return () => window.removeEventListener('keydown', onKey)
   }, [fullscreenImg, closeFullscreen])
 
-  const supabase = useMemo(() => createClient(), [])
-  const profile  = post.profiles
-  const isOwner  = Boolean(currentUserId && currentUserId === post.user_id)
-
-  console.log('[PostCard]', post.id, '| image_url:', post.image_url)
-
-  // ── Load comment count + preview; subscribe to realtime count updates ─────────
+  // ── Load comment count + preview; subscribe to realtime ──────────────────
   useEffect(() => {
     let live = true
 
-    // Total count (top-level + replies)
     supabase
       .from('comments')
       .select('id', { count: 'exact', head: true })
       .eq('post_id', post.id)
       .then(({ count }) => { if (live) setCommentCount(count ?? 0) })
 
-    // Preview: most-liked top-level comment, falling back to most recent
     supabase
       .from('comments')
       .select('id, content, created_at, profiles(display_name, username, avatar_url), comment_likes(id)')
@@ -75,14 +88,12 @@ export default function PostCard({ post, currentUserId }: Props) {
       .then(({ data }) => {
         if (!live) return
         if (!data || data.length === 0) { setPreviewComment(null); return }
-        // data[0] is already the most recent; only swap if a later row has more likes
         const best = (data as unknown as PreviewRow[]).reduce((a, b) =>
           (b.comment_likes?.length ?? 0) > (a.comment_likes?.length ?? 0) ? b : a
         )
         if (live) setPreviewComment({ id: best.id, content: best.content, profiles: best.profiles })
       })
 
-    // Realtime: keep count in sync as other users post
     const ch = supabase
       .channel(`cmt-count-${post.id}`)
       .on('postgres_changes',
@@ -102,7 +113,7 @@ export default function PostCard({ post, currentUserId }: Props) {
     setDeleting(true)
     const { error } = await supabase.from('posts').delete().eq('id', post.id)
     if (error) { setDeleting(false); setShowDeleteModal(false) }
-    else       setDeleted(true)
+    else        setDeleted(true)
   }
 
   if (deleted) return null
@@ -111,13 +122,12 @@ export default function PostCard({ post, currentUserId }: Props) {
     ? 'Fechar'
     : `Comentários${commentCount > 0 ? ` · ${commentCount}` : ''}`
 
-  // ── Repost layout ────────────────────────────────────────────────────────────
+  // ── Repost layout ─────────────────────────────────────────────────────────
   if (post.original_post) {
     return (
       <>
         <article className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-4 transition-colors hover:border-zinc-700">
 
-          {/* "X incelicou" banner */}
           <div className="mb-3 flex items-center gap-2 text-xs text-zinc-500">
             <RepeatIcon className="h-3.5 w-3.5 shrink-0 text-zinc-600" />
             <Link href={`/profile/${profile.username}`} className="inline-flex items-center gap-1 font-semibold text-zinc-400 transition-colors hover:text-zinc-200">
@@ -141,14 +151,12 @@ export default function PostCard({ post, currentUserId }: Props) {
             )}
           </div>
 
-          {/* Reposter's comment */}
           {post.repost_comment && (
             <p className="mb-3 text-sm leading-relaxed text-zinc-200">{post.repost_comment}</p>
           )}
 
           <OriginalPostCard original={post.original_post} />
 
-          {/* Action bar */}
           <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-zinc-800 pt-3">
             <VibeCheck postId={post.id} initialVibes={post.vibes} currentUserId={currentUserId} />
             <button
@@ -161,15 +169,9 @@ export default function PostCard({ post, currentUserId }: Props) {
           </div>
 
           {!showComments && previewComment && (
-            <CommentPreviewBanner
-              preview={previewComment}
-              onClick={() => setShowComments(true)}
-            />
+            <CommentPreviewBanner preview={previewComment} onClick={() => setShowComments(true)} />
           )}
-
-          {showComments && (
-            <CommentsSection postId={post.id} currentUserId={currentUserId} />
-          )}
+          {showComments && <CommentsSection postId={post.id} currentUserId={currentUserId} />}
         </article>
 
         {showDeleteModal && (
@@ -182,14 +184,12 @@ export default function PostCard({ post, currentUserId }: Props) {
           />
         )}
 
-        {fullscreenImg && (
-          <FullscreenImage src={fullscreenImg} onClose={closeFullscreen} />
-        )}
+        {fullscreenImg && <FullscreenImage src={fullscreenImg} onClose={closeFullscreen} />}
       </>
     )
   }
 
-  // ── Original post layout ─────────────────────────────────────────────────────
+  // ── Original post layout ──────────────────────────────────────────────────
   return (
     <>
       <article className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-4 transition-colors hover:border-zinc-700">
@@ -242,15 +242,7 @@ export default function PostCard({ post, currentUserId }: Props) {
 
         {post.content && <PostText text={post.content} />}
 
-        {post.image_url && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={post.image_url}
-            alt="Imagem do post"
-            onClick={() => setFullscreenImg(post.image_url!)}
-            className="mt-3 max-h-[400px] w-full cursor-zoom-in rounded-xl object-cover"
-          />
-        )}
+        <PostMedia url={post.image_url} onImageClick={setFullscreenImg} />
 
         <MediaEmbed spotifyUrl={post.spotify_url} youtubeUrl={post.youtube_url} />
 
@@ -278,15 +270,9 @@ export default function PostCard({ post, currentUserId }: Props) {
         </div>
 
         {!showComments && previewComment && (
-          <CommentPreviewBanner
-            preview={previewComment}
-            onClick={() => setShowComments(true)}
-          />
+          <CommentPreviewBanner preview={previewComment} onClick={() => setShowComments(true)} />
         )}
-
-        {showComments && (
-          <CommentsSection postId={post.id} currentUserId={currentUserId} />
-        )}
+        {showComments && <CommentsSection postId={post.id} currentUserId={currentUserId} />}
       </article>
 
       {showDeleteModal && (
@@ -299,10 +285,96 @@ export default function PostCard({ post, currentUserId }: Props) {
         />
       )}
 
-      {fullscreenImg && (
-        <FullscreenImage src={fullscreenImg} onClose={closeFullscreen} />
-      )}
+      {fullscreenImg && <FullscreenImage src={fullscreenImg} onClose={closeFullscreen} />}
     </>
+  )
+})
+
+export default PostCard
+
+// ─── PostMedia — renders image / GIF / video from image_url ──────────────────
+
+function PostMedia({
+  url,
+  onImageClick,
+  maxHeight = 400,
+}: {
+  url:          string | null | undefined
+  onImageClick: (url: string) => void
+  maxHeight?:   number
+}) {
+  if (!url) return null
+  const kind = getMediaKind(url)
+
+  if (kind === 'video') {
+    return <LazyVideo src={url} maxHeight={maxHeight} />
+  }
+
+  if (kind === 'gif') {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={url}
+        alt="GIF do post"
+        loading="lazy"
+        onClick={() => onImageClick(url)}
+        className="mt-3 w-full cursor-zoom-in rounded-xl object-cover"
+        style={{ maxHeight }}
+      />
+    )
+  }
+
+  // Static image — use next/image for automatic optimisation
+  return (
+    <div
+      className="relative mt-3 w-full cursor-zoom-in overflow-hidden rounded-xl"
+      style={{ height: Math.min(maxHeight, 300) }}
+      onClick={() => onImageClick(url)}
+    >
+      <Image
+        src={url}
+        alt="Imagem do post"
+        fill
+        sizes="(max-width: 640px) 100vw, 600px"
+        className="object-cover"
+        loading="lazy"
+      />
+    </div>
+  )
+}
+
+// ─── LazyVideo — defers src until the element enters the viewport ─────────────
+
+function LazyVideo({ src, maxHeight = 400 }: { src: string; maxHeight?: number }) {
+  const ref = useRef<HTMLVideoElement>(null)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.src = src
+          obs.disconnect()
+        }
+      },
+      { rootMargin: '200px' },
+    )
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [src])
+
+  return (
+    <video
+      ref={ref}
+      controls
+      muted
+      loop
+      playsInline
+      className="mt-3 w-full rounded-xl object-cover"
+      style={{ maxHeight }}
+    />
   )
 }
 
@@ -310,9 +382,7 @@ export default function PostCard({ post, currentUserId }: Props) {
 
 function CommentPreviewBanner({ preview, onClick }: { preview: CommentPreview; onClick: () => void }) {
   const name    = preview.profiles.display_name || preview.profiles.username || 'Incelica'
-  const excerpt = preview.content.length > 100
-    ? `${preview.content.slice(0, 100)}…`
-    : preview.content
+  const excerpt = preview.content.length > 100 ? `${preview.content.slice(0, 100)}…` : preview.content
 
   return (
     <button
@@ -322,9 +392,7 @@ function CommentPreviewBanner({ preview, onClick }: { preview: CommentPreview; o
     >
       <Avatar src={preview.profiles.avatar_url} name={name} size="sm" />
       <p className="min-w-0 flex-1 truncate text-xs text-zinc-500">
-        <span className="font-semibold text-zinc-400">{name}</span>
-        {' '}
-        {excerpt}
+        <span className="font-semibold text-zinc-400">{name}</span>{' '}{excerpt}
       </p>
     </button>
   )
@@ -334,7 +402,7 @@ function CommentPreviewBanner({ preview, onClick }: { preview: CommentPreview; o
 
 function OriginalPostCard({ original }: { original: OriginalPost }) {
   const rawProfiles = (original as unknown as Record<string, unknown>).profiles
-  const profiles = Array.isArray(rawProfiles)
+  const profiles    = Array.isArray(rawProfiles)
     ? (rawProfiles[0] as OriginalPost['profiles'] | undefined)
     : (rawProfiles as OriginalPost['profiles'] | undefined)
 
@@ -366,15 +434,11 @@ function OriginalPostCard({ original }: { original: OriginalPost }) {
           </span>
         )}
       </div>
+
       {original.content && <PostText text={original.content} className="text-zinc-300" />}
-      {original.image_url && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={original.image_url}
-          alt="Imagem do post"
-          className="mt-2 max-h-[300px] w-full rounded-lg object-cover"
-        />
-      )}
+
+      <PostMedia url={original.image_url} onImageClick={() => {}} maxHeight={300} />
+
       {(original.spotify_url || original.youtube_url) && (
         <MediaEmbed spotifyUrl={original.spotify_url} youtubeUrl={original.youtube_url} />
       )}
@@ -382,7 +446,7 @@ function OriginalPostCard({ original }: { original: OriginalPost }) {
   )
 }
 
-// ─── Inline text renderer (clickable #hashtags and @handles) ─────────────────
+// ─── Inline text renderer ─────────────────────────────────────────────────────
 
 function PostText({ text, className }: { text: string; className?: string }) {
   const parts = text.split(/([@#][A-Za-z0-9_]+)/g)
@@ -391,24 +455,14 @@ function PostText({ text, className }: { text: string; className?: string }) {
       {parts.map((part, i) => {
         if (/^#[A-Za-z0-9_]+$/.test(part)) {
           return (
-            <Link
-              key={i}
-              href={`/hashtag/${part.slice(1).toLowerCase()}`}
-              className="font-medium text-[#D4537E] hover:underline"
-              onClick={(e) => e.stopPropagation()}
-            >
+            <Link key={i} href={`/hashtag/${part.slice(1).toLowerCase()}`} className="font-medium text-[#D4537E] hover:underline" onClick={e => e.stopPropagation()}>
               {part}
             </Link>
           )
         }
         if (/^@[A-Za-z0-9_]+$/.test(part)) {
           return (
-            <Link
-              key={i}
-              href={`/profile/${part.slice(1)}`}
-              className="font-medium text-[#7F77DD] hover:underline"
-              onClick={(e) => e.stopPropagation()}
-            >
+            <Link key={i} href={`/profile/${part.slice(1)}`} className="font-medium text-[#7F77DD] hover:underline" onClick={e => e.stopPropagation()}>
               {part}
             </Link>
           )
@@ -432,7 +486,7 @@ function FullscreenImage({ src, onClose }: { src: string; onClose: () => void })
         src={src}
         alt="Imagem em tela cheia"
         className="max-h-full max-w-full rounded-xl object-contain shadow-2xl"
-        onClick={(e) => e.stopPropagation()}
+        onClick={e => e.stopPropagation()}
       />
       <button
         type="button"
