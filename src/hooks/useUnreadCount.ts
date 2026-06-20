@@ -1,44 +1,28 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
 export function useUnreadCount(userId: string | null) {
-  const [count,  setCount]  = useState(0)
-  const supabase = useMemo(() => createClient(), [])
+  const [count, setCount] = useState(0)
 
   useEffect(() => {
-    if (!userId) { setCount(0); return }
+    if (!userId) return
+    const supabase = createClient()
 
-    async function fetchCount() {
-      const { count: n } = await supabase
+    const fetchCount = async () => {
+      const { count } = await supabase
         .from('notifications')
-        .select('id', { count: 'exact', head: true })
-        .eq('user_id', userId!)
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId)
         .eq('read', false)
-      setCount(n ?? 0)
+      setCount(count ?? 0)
     }
 
     fetchCount()
-
-    const channel = supabase
-      .channel(`unread-${userId}`)
-      // New notification → bump count immediately
-      .on(
-        'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'notifications', filter: `user_id=eq.${userId}` },
-        () => setCount((c) => c + 1),
-      )
-      // Any update (e.g. mark-as-read batch) → re-count from DB
-      .on(
-        'postgres_changes',
-        { event: 'UPDATE', schema: 'public', table: 'notifications', filter: `user_id=eq.${userId}` },
-        fetchCount,
-      )
-      .subscribe()
-
-    return () => { supabase.removeChannel(channel) }
-  }, [userId, supabase])
+    const interval = setInterval(fetchCount, 15000)
+    return () => clearInterval(interval)
+  }, [userId])
 
   return count
 }

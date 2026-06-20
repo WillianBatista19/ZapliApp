@@ -40,7 +40,7 @@ export default function AppNav() {
   }
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-xl">
+    <header className="fixed inset-x-0 top-0 z-50 hidden border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-xl sm:block">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
 
         <Link href="/feed" className="text-xl font-bold tracking-tight text-pink">
