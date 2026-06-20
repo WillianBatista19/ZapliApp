@@ -28,9 +28,8 @@ export default function PostComposer({ profile }: { profile: Profile }) {
   const [mediaFile,      setMediaFile]      = useState<File | null>(null)
   const [mediaPreview,   setMediaPreview]   = useState<string | null>(null)
   const [mediaType,      setMediaType]      = useState<'image' | 'video' | null>(null)
-  const [mediaError,     setMediaError]     = useState<string | null>(null)
-  const [showCameraMenu, setShowCameraMenu] = useState(false)
-  const [albumArtUrl,    setAlbumArtUrl]    = useState<string | null>(null)
+  const [mediaError,  setMediaError]  = useState<string | null>(null)
+  const [albumArtUrl, setAlbumArtUrl] = useState<string | null>(null)
   const [lastfmLoading,  setLastfmLoading]  = useState(false)
   const [toast,          setToast]          = useState<string | null>(null)
 
@@ -105,11 +104,11 @@ export default function PostComposer({ profile }: { profile: Profile }) {
     if (galleryRef.current) galleryRef.current.value = ''
   }
 
-  function triggerCamera(mode: 'environment' | 'user') {
+  function openCamera() {
     const input    = document.createElement('input')
     input.type     = 'file'
     input.accept   = 'image/*'
-    input.capture  = mode
+    input.capture  = 'environment'
     input.onchange = (e) => handleMedia((e.target as HTMLInputElement).files?.[0] ?? null)
     input.click()
   }
@@ -271,38 +270,14 @@ export default function PostComposer({ profile }: { profile: Profile }) {
             <PhotoIcon className="h-5 w-5" />
           </button>
 
-          <div className="relative">
-            <button
-              type="button"
-              onClick={() => setShowCameraMenu(v => !v)}
-              title="Tirar foto"
-              className="rounded-lg p-1.5 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-[#D4537E] active:scale-95"
-            >
-              <CameraIcon className="h-5 w-5" />
-            </button>
-
-            {showCameraMenu && (
-              <>
-                <div className="fixed inset-0 z-10" onClick={() => setShowCameraMenu(false)} />
-                <div className="absolute left-0 top-full z-20 mt-1.5 w-44 rounded-xl border border-zinc-700 bg-zinc-900 p-1 shadow-xl">
-                  <button
-                    type="button"
-                    onClick={() => { setShowCameraMenu(false); triggerCamera('environment') }}
-                    className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-zinc-100"
-                  >
-                    <span>📷</span> Câmera traseira
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => { setShowCameraMenu(false); triggerCamera('user') }}
-                    className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-zinc-100"
-                  >
-                    <span>🤳</span> Selfie
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
+          <button
+            type="button"
+            onClick={openCamera}
+            title="Tirar foto"
+            className="rounded-lg p-1.5 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-[#D4537E] active:scale-95"
+          >
+            <CameraIcon className="h-5 w-5" />
+          </button>
 
           {/* Last.fm now playing — only visible when the user has lastfm_username */}
           {profile.lastfm_username && (
