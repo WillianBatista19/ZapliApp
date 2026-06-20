@@ -2,6 +2,20 @@ import Link from 'next/link'
 
 const ENTRIES = [
   {
+    version: 'v0.9',
+    date:    'Jun 2026',
+    title:   'Integração com Steam e correções de layout',
+    items: [
+      'Campo Steam ID no perfil para conectar sua conta Steam',
+      'Banner "Jogando agora 🎮" exibido no perfil quando o usuário está em uma partida',
+      'Seção "Jogos recentes" com os últimos 3 jogos e tempo de jogo total',
+      'Status atualizado automaticamente a cada 60 segundos no perfil',
+      'API route server-side para proteger a chave Steam (sem expor no cliente)',
+      'Capas de "Assistindo agora" e "Lendo agora" com fallback quando não há imagem disponível',
+      'Layout do perfil corrigido no mobile: conteúdo ocupa a largura total da tela',
+    ],
+  },
+  {
     version: 'v0.8',
     date:    'Jun 2026',
     title:   'AniList e favoritos no perfil',
@@ -106,7 +120,6 @@ const COMING_SOON = [
   'Notificações push (Web Push API)',
   'Salvar posts para ver depois',
   'PWA — instalar como app no celular',
-  'Integração com Steam (jogos)',
 ]
 
 export default function ChangelogPage() {

@@ -8,7 +8,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <AppNav />
-      <div className="mx-auto max-w-6xl px-4 pt-4 pb-24 sm:pt-20 sm:pb-12">
+      <div className="mx-auto max-w-6xl overflow-x-hidden px-4 pt-4 pb-24 sm:pt-20 sm:pb-12">
         {/* xl+: left sidebar + content side by side; below xl: content only */}
         <div className="xl:flex xl:gap-8">
           <LeftSidebar />

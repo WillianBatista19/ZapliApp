@@ -31,6 +31,7 @@ export default function EditProfileForm({ profile }: { profile: Profile }) {
   const [animeTitle,         setAnimeTitle]         = useState<string | null>(profile.anime_title ?? null)
   const [animeCoverUrl,      setAnimeCoverUrl]      = useState<string | null>(profile.anime_cover_url ?? null)
   const [showAnimeSearch,    setShowAnimeSearch]    = useState(false)
+  const [steamId,            setSteamId]            = useState(profile.steam_id ?? '')
 
   const fileRef  = useRef<HTMLInputElement>(null)
   const supabase = useMemo(() => createClient(), [])
@@ -122,6 +123,7 @@ export default function EditProfileForm({ profile }: { profile: Profile }) {
         reading_now:     readingNow,
         anime_title:     animeTitle     || null,
         anime_cover_url: animeCoverUrl  || null,
+        steam_id:        steamId.trim() || null,
       })
       .eq('id', profile.id)
 
@@ -264,6 +266,27 @@ export default function EditProfileForm({ profile }: { profile: Profile }) {
               >
                 last.fm
               </a>
+            </p>
+          </FormField>
+
+          <FormField label="Steam ID">
+            <div className="relative">
+              <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm text-zinc-500">
+                🎮
+              </span>
+              <input
+                value={steamId}
+                onChange={(e) => setSteamId(e.target.value.replace(/\D/g, ''))}
+                maxLength={17}
+                placeholder="76561198000000000"
+                className="input-base pl-9"
+                inputMode="numeric"
+              />
+            </div>
+            <p className="mt-1 text-xs text-zinc-600">
+              Seu Steam ID numérico de 64 bits. Encontre em:{' '}
+              <span className="text-zinc-500">steamcommunity.com/id/SEU_USUARIO</span>
+              {' '}→ copie o número na URL.
             </p>
           </FormField>
 

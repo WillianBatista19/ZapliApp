@@ -36,6 +36,7 @@ export interface Profile {
   reading_now:     ReadingNow  | null
   anime_title:     string | null
   anime_cover_url: string | null
+  steam_id:        string | null
 }
 
 export interface Vibe {

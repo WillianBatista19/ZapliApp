@@ -1,6 +1,11 @@
 {
+  "/api/steam/route": "app/api/steam/route.js",
+  "/api/lastfm/route": "app/api/lastfm/route.js",
   "/status/page": "app/status/page.js",
   "/changelog/page": "app/changelog/page.js",
   "/(app)/profile/[username]/page": "app/(app)/profile/[username]/page.js",
-  "/(app)/feed/page": "app/(app)/feed/page.js"
+  "/(app)/hashtag/[tag]/page": "app/(app)/hashtag/[tag]/page.js",
+  "/(app)/feed/page": "app/(app)/feed/page.js",
+  "/(app)/profile/edit/page": "app/(app)/profile/edit/page.js",
+  "/(app)/notifications/page": "app/(app)/notifications/page.js"
 }

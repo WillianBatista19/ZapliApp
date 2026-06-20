@@ -118,7 +118,7 @@ export default function LastfmWidget({ username }: { username: string }) {
   if (!track && artists.length === 0 && topTracks.length === 0) return null
 
   return (
-    <div className="mb-6 space-y-3">
+    <div className="space-y-3">
 
       {/* Now playing / recent track */}
       {track && <TrackBanner track={track} isLive={nowPlaying} username={username} />}
@@ -262,7 +262,7 @@ function TrackBanner({
 
 function WidgetSkeleton() {
   return (
-    <div className="mb-6 space-y-3 animate-pulse">
+    <div className="space-y-3 animate-pulse">
       <div className="flex items-center gap-3 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-4">
         <div className="h-14 w-14 shrink-0 rounded-xl bg-zinc-800" />
         <div className="flex-1 space-y-2">

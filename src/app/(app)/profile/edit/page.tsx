@@ -10,7 +10,7 @@ export default async function EditProfilePage() {
 
   const { data: profile, error: profileError } = await supabase
     .from('profiles')
-    .select('id, username, display_name, avatar_url, bio, created_at, lastfm_username, watching_now, reading_now, anime_title, anime_cover_url')
+    .select('id, username, display_name, avatar_url, bio, created_at, lastfm_username, watching_now, reading_now, anime_title, anime_cover_url, steam_id')
     .eq('id', user.id)
     .single()
 
@@ -18,7 +18,7 @@ export default async function EditProfilePage() {
   if (!profile) redirect('/feed')
 
   return (
-    <div className="mx-auto max-w-lg px-4 pb-12">
+    <div className="mx-auto max-w-lg pb-12">
 
       {/* Back header */}
       <div className="mb-6 flex items-center gap-3">

@@ -82,7 +82,7 @@ export default function ProfileInteractive({
   const name = profile.display_name || profile.username
 
   return (
-    <div className="mb-6 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
 
       {/* Avatar row */}
       <div className="flex items-start justify-between gap-4">
@@ -104,10 +104,10 @@ export default function ProfileInteractive({
         )}
 
         {isOwnProfile ? (
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center justify-end gap-2">
             <Link
               href="/profile/edit"
-              className="rounded-xl border border-zinc-600 px-4 py-2 text-sm font-medium text-zinc-300 transition-colors hover:border-zinc-400 hover:text-zinc-100"
+              className="rounded-xl border border-zinc-600 px-3 py-2 text-sm font-medium text-zinc-300 transition-colors hover:border-zinc-400 hover:text-zinc-100"
             >
               Editar perfil
             </Link>
