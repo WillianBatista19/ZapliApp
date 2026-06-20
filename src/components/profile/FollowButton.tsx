@@ -1,6 +1,7 @@
 'use client'
 
-import { useMemo, useState, useTransition } from 'react'
+import { useMemo, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
 type Props = {
@@ -15,30 +16,38 @@ export default function FollowButton({
   currentUserId,
 }: Props) {
   const [isFollowing, setIsFollowing] = useState(initialIsFollowing)
-  const [isPending,   startTransition] = useTransition()
+  const [isPending,   setIsPending]   = useState(false)
   const supabase = useMemo(() => createClient(), [])
+  const router   = useRouter()
 
-  function toggle() {
+  async function toggle() {
     if (isPending) return
     const next = !isFollowing
-    setIsFollowing(next)               // optimistic
+    setIsFollowing(next)   // optimistic
+    setIsPending(true)
 
-    startTransition(async () => {
+    try {
       if (next) {
         const { error } = await supabase
           .from('follows')
-          .insert({ follower_id: currentUserId, following_id: targetUserId })
-        // trg_notify_follow DB trigger fires the notification automatically
-        if (error) setIsFollowing(false)
+          .upsert(
+            { follower_id: currentUserId, following_id: targetUserId },
+            { onConflict: 'follower_id,following_id', ignoreDuplicates: true },
+          )
+        if (error) { setIsFollowing(false); return }
       } else {
         const { error } = await supabase
           .from('follows')
           .delete()
           .eq('follower_id', currentUserId)
           .eq('following_id', targetUserId)
-        if (error) setIsFollowing(true)
+        if (error) { setIsFollowing(true); return }
       }
-    })
+      // Re-fetch server-rendered counts (follower / following stats)
+      router.refresh()
+    } finally {
+      setIsPending(false)
+    }
   }
 
   return (

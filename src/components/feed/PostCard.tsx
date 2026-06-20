@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import Avatar from '@/components/Avatar'
 import CategoryBadge from '@/components/feed/CategoryBadge'
@@ -41,13 +42,18 @@ export default function PostCard({ post, currentUserId }: Props) {
 
       {/* Header */}
       <div className="flex items-start gap-3">
-        <Avatar src={profile.avatar_url} name={profile.display_name} size="md" />
+        <Link href={`/profile/${profile.username}`} className="shrink-0">
+          <Avatar src={profile.avatar_url} name={profile.display_name} size="md" />
+        </Link>
 
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-            <span className="font-semibold leading-tight text-zinc-100 truncate">
+            <Link
+              href={`/profile/${profile.username}`}
+              className="font-semibold leading-tight text-zinc-100 truncate hover:underline"
+            >
               {profile.display_name}
-            </span>
+            </Link>
             <span className="text-xs text-zinc-500 truncate">
               @{profile.username}
             </span>
