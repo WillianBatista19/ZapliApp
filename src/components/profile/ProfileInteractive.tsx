@@ -6,7 +6,9 @@ import Avatar from '@/components/Avatar'
 import FollowButton from '@/components/profile/FollowButton'
 import FollowListModal from '@/components/profile/FollowListModal'
 import StoryViewer from '@/components/stories/StoryViewer'
+import VerifiedBadge from '@/components/VerifiedBadge'
 import { createClient } from '@/lib/supabase/client'
+import { isVerified } from '@/lib/verified'
 import type { Story, StoryGroup } from '@/types'
 
 type Profile = {
@@ -109,7 +111,10 @@ export default function ProfileInteractive({
 
       {/* Name + username */}
       <div className="mt-4">
-        <h1 className="text-xl font-bold text-zinc-100">{name}</h1>
+        <h1 className="flex items-center gap-2 text-xl font-bold text-zinc-100">
+          {name}
+          {isVerified(profile.username) && <VerifiedBadge className="h-5 w-5" />}
+        </h1>
         <p className="text-sm text-zinc-500">@{profile.username}</p>
       </div>
 

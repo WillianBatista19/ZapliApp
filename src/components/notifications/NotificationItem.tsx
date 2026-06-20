@@ -1,7 +1,9 @@
 import Link from 'next/link'
 import Avatar from '@/components/Avatar'
+import VerifiedBadge from '@/components/VerifiedBadge'
 import { relativeTime } from '@/lib/utils'
 import { notificationText, notificationEmoji, notificationHref } from '@/lib/notificationCopy'
+import { isVerified } from '@/lib/verified'
 import type { NotificationRow } from '@/types'
 
 type Props = {
@@ -45,7 +47,9 @@ export default function NotificationItem({ notification }: Props) {
       {/* Content */}
       <div className="min-w-0 flex-1">
         <p className={['text-sm leading-snug', read ? 'text-zinc-400' : 'text-zinc-100'].join(' ')}>
-          {text}
+          <span className="font-semibold">{actorName}</span>
+          {isVerified(from_profile.username) && <VerifiedBadge className="mx-0.5 align-middle" />}
+          {text.slice(actorName.length)}
         </p>
 
         {/* Post excerpt for vibe/repost/mention */}

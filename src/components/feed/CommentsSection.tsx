@@ -6,6 +6,8 @@ import Avatar from '@/components/Avatar'
 import ConfirmModal from '@/components/ui/ConfirmModal'
 import { relativeTime } from '@/lib/utils'
 import MentionInput from '@/components/feed/MentionInput'
+import VerifiedBadge from '@/components/VerifiedBadge'
+import { isVerified } from '@/lib/verified'
 
 type CommentLike = { id: string; user_id: string }
 
@@ -219,8 +221,9 @@ export default function CommentsSection({ postId, currentUserId }: Props) {
                 <div className="flex gap-2">
                   <Avatar src={comment.profiles.avatar_url} name={authorName} size="sm" />
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-baseline gap-x-2">
+                    <div className="flex items-center gap-x-1.5">
                       <span className="text-xs font-semibold text-zinc-300">{authorName}</span>
+                      {isVerified(comment.profiles.username) && <VerifiedBadge />}
                       <span className="text-[10px] text-zinc-600">{relativeTime(comment.created_at)}</span>
                       {currentUserId === comment.user_id && (
                         <button
@@ -279,8 +282,9 @@ export default function CommentsSection({ postId, currentUserId }: Props) {
                         <li key={reply.id} className="flex gap-2">
                           <Avatar src={reply.profiles.avatar_url} name={replyAuthor} size="sm" />
                           <div className="min-w-0 flex-1">
-                            <div className="flex items-baseline gap-x-2">
+                            <div className="flex items-center gap-x-1.5">
                               <span className="text-xs font-semibold text-zinc-300">{replyAuthor}</span>
+                              {isVerified(reply.profiles.username) && <VerifiedBadge />}
                               <span className="text-[10px] text-zinc-600">{relativeTime(reply.created_at)}</span>
                               {currentUserId === reply.user_id && (
                                 <button

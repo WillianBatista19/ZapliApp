@@ -10,7 +10,9 @@ import VibeCheck from '@/components/feed/VibeCheck'
 import CommentsSection from '@/components/feed/CommentsSection'
 import IncelicarButton from '@/components/feed/IncelicarButton'
 import ConfirmModal from '@/components/ui/ConfirmModal'
+import VerifiedBadge from '@/components/VerifiedBadge'
 import { relativeTime } from '@/lib/utils'
+import { isVerified } from '@/lib/verified'
 import type { OriginalPost, Post } from '@/types'
 
 // Preview type is only needed in PostCard — no need to export
@@ -106,8 +108,9 @@ export default function PostCard({ post, currentUserId }: Props) {
           {/* "X incelicou" banner */}
           <div className="mb-3 flex items-center gap-2 text-xs text-zinc-500">
             <RepeatIcon className="h-3.5 w-3.5 shrink-0 text-zinc-600" />
-            <Link href={`/profile/${profile.username}`} className="font-semibold text-zinc-400 transition-colors hover:text-zinc-200">
+            <Link href={`/profile/${profile.username}`} className="inline-flex items-center gap-1 font-semibold text-zinc-400 transition-colors hover:text-zinc-200">
               {profile.display_name}
+              {isVerified(profile.username) && <VerifiedBadge />}
             </Link>
             <span>incelicou</span>
             <span className="text-zinc-700">·</span>
@@ -185,9 +188,10 @@ export default function PostCard({ post, currentUserId }: Props) {
             <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
               <Link
                 href={`/profile/${profile.username}`}
-                className="truncate font-semibold leading-tight text-zinc-100 hover:underline"
+                className="inline-flex items-center gap-1 font-semibold leading-tight text-zinc-100 hover:underline"
               >
-                {profile.display_name}
+                <span className="truncate">{profile.display_name}</span>
+                {isVerified(profile.username) && <VerifiedBadge />}
               </Link>
               <span className="truncate text-xs text-zinc-500">@{profile.username}</span>
               <span className="text-xs text-zinc-700">·</span>
@@ -316,9 +320,10 @@ function OriginalPostCard({ original }: { original: OriginalPost }) {
             </Link>
             <Link
               href={`/profile/${profiles.username}`}
-              className="truncate text-sm font-semibold text-zinc-200 hover:underline"
+              className="inline-flex items-center gap-1 text-sm font-semibold text-zinc-200 hover:underline"
             >
-              {author}
+              <span className="truncate">{author}</span>
+              {isVerified(profiles.username) && <VerifiedBadge />}
             </Link>
             <span className="shrink-0 text-xs text-zinc-600">@{profiles.username}</span>
           </>

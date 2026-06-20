@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <!-- Pink → purple gradient for the "i" -->
+    <linearGradient id="ig" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#D4537E"/>
+      <stop offset="100%" stop-color="#c084fc"/>
+    </linearGradient>
+    <!-- Soft purple glow blob -->
+    <radialGradient id="pg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#7F77DD" stop-opacity="0.38"/>
+      <stop offset="100%" stop-color="#7F77DD" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Soft pink glow blob -->
+    <radialGradient id="rg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#D4537E" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#D4537E" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Clip to keep blobs inside the circle -->
+    <clipPath id="clip">
+      <circle cx="50" cy="50" r="50"/>
+    </clipPath>
+  </defs>
+
+  <!-- Dark background circle -->
+  <circle cx="50" cy="50" r="50" fill="#0c0c0f"/>
+
+  <!-- Background glow blobs -->
+  <g clip-path="url(#clip)">
+    <circle cx="36" cy="34" r="34" fill="url(#pg)"/>
+    <circle cx="67" cy="70" r="30" fill="url(#rg)"/>
+  </g>
+
+  <!-- Stars (4-pointed, various sizes) -->
+  <!-- Top-right, large -->
+  <path d="M72,17 L74,22 L79,24 L74,26 L72,31 L70,26 L65,24 L70,22 Z"
+        fill="#c084fc" opacity="0.88"/>
+  <!-- Top-left, medium -->
+  <path d="M23,27 L24.6,31.4 L29,33 L24.6,34.6 L23,39 L21.4,34.6 L17,33 L21.4,31.4 Z"
+        fill="#D4537E" opacity="0.72"/>
+  <!-- Bottom-left, medium -->
+  <path d="M16,68 L18,73 L23,75 L18,77 L16,82 L14,77 L9,75 L14,73 Z"
+        fill="#c084fc" opacity="0.78"/>
+  <!-- Bottom-right, small -->
+  <path d="M77,70 L78.2,73.2 L81,74.5 L78.2,75.8 L77,79 L75.8,75.8 L73,74.5 L75.8,73.2 Z"
+        fill="#D4537E" opacity="0.62"/>
+  <!-- Top-center, tiny -->
+  <path d="M50,9 L50.9,12 L54,13 L50.9,14 L50,17 L49.1,14 L46,13 L49.1,12 Z"
+        fill="#c084fc" opacity="0.58"/>
+  <!-- Right-middle, tiny -->
+  <path d="M84,44 L84.7,46.3 L87,47 L84.7,47.7 L84,50 L83.3,47.7 L81,47 L83.3,46.3 Z"
+        fill="#D4537E" opacity="0.48"/>
+  <!-- Left-bottom area, tiny -->
+  <path d="M13,52 L13.6,54.1 L15.5,54.8 L13.6,55.5 L13,57.5 L12.4,55.5 L10.5,54.8 L12.4,54.1 Z"
+        fill="#c084fc" opacity="0.4"/>
+
+  <!-- Letter "i" — dot -->
+  <circle cx="50" cy="28" r="5.5" fill="url(#ig)"/>
+  <!-- Letter "i" — stem (rounded rectangle) -->
+  <rect x="45.5" y="39" width="9" height="31" rx="4" fill="url(#ig)"/>
+</svg>
