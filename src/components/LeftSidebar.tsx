@@ -2,14 +2,15 @@
 
 import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useUser } from '@/context/UserContext'
 import { createClient } from '@/lib/supabase/client'
 import { useUnreadCount } from '@/hooks/useUnreadCount'
 
 export default function LeftSidebar() {
-  const { user }  = useUser()
+  const { user, signOut } = useUser()
   const pathname  = usePathname()
+  const router    = useRouter()
   const supabase  = useMemo(() => createClient(), [])
   const unread    = useUnreadCount(user?.id ?? null)
 
@@ -26,6 +27,12 @@ export default function LeftSidebar() {
   }, [user, supabase])
 
   const profileHref = username ? `/profile/${username}` : '#'
+
+  async function handleSignOut() {
+    await signOut()
+    router.push('/login')
+    router.refresh()
+  }
 
   function isActive(href: string) {
     if (href === '#') return false
@@ -69,6 +76,17 @@ export default function LeftSidebar() {
           )
         })}
       </nav>
+
+      <div className="mt-6 border-t border-zinc-800 pt-4">
+        <button
+          type="button"
+          onClick={handleSignOut}
+          className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-zinc-500 transition-colors hover:bg-red-950/40 hover:text-red-400"
+        >
+          <LogOutIcon className="h-5 w-5 shrink-0" />
+          Sair
+        </button>
+      </div>
     </aside>
   )
 }
@@ -106,6 +124,16 @@ function UserIcon({ className }: { className?: string }) {
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
       <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
       <circle cx="12" cy="7" r="4" />
+    </svg>
+  )
+}
+
+function LogOutIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+      <polyline points="16 17 21 12 16 7" />
+      <line x1="21" y1="12" x2="9" y2="12" />
     </svg>
   )
 }

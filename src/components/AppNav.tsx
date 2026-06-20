@@ -2,15 +2,13 @@
 
 import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { useUser } from '@/context/UserContext'
 import { createClient } from '@/lib/supabase/client'
 import Avatar from '@/components/Avatar'
 import NotificationBell from '@/components/notifications/NotificationBell'
 
 export default function AppNav() {
-  const { user, signOut } = useUser()
-  const router = useRouter()
+  const { user } = useUser()
   const supabase = useMemo(() => createClient(), [])
 
   const [username,    setUsername]    = useState<string | null>(null)
@@ -32,12 +30,6 @@ export default function AppNav() {
         setAvatarUrl(data.avatar_url)
       })
   }, [user, supabase])
-
-  async function handleSignOut() {
-    await signOut()
-    router.push('/login')
-    router.refresh()
-  }
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 hidden border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-xl sm:block">
@@ -65,12 +57,6 @@ export default function AppNav() {
             )
           )}
 
-          <button
-            onClick={handleSignOut}
-            className="text-xs text-zinc-500 transition-colors hover:text-zinc-200"
-          >
-            Sair
-          </button>
         </div>
 
       </div>

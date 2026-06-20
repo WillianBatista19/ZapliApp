@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import Avatar from '@/components/Avatar'
 import FollowButton from '@/components/profile/FollowButton'
 import FollowListModal from '@/components/profile/FollowListModal'
 import StoryViewer from '@/components/stories/StoryViewer'
 import VerifiedBadge from '@/components/VerifiedBadge'
 import { createClient } from '@/lib/supabase/client'
+import { useUser } from '@/context/UserContext'
 import { isVerified } from '@/lib/verified'
 import type { Story, StoryGroup } from '@/types'
 
@@ -36,6 +38,8 @@ export default function ProfileInteractive({
   initialFollowerCount,
   followingCount,
 }: Props) {
+  const router = useRouter()
+  const { signOut } = useUser()
   const [followerCount, setFollowerCount] = useState(initialFollowerCount)
   const [activeModal,   setActiveModal]   = useState<'followers' | 'following' | null>(null)
   const [storyGroup,    setStoryGroup]    = useState<StoryGroup | null>(null)
@@ -64,6 +68,12 @@ export default function ProfileInteractive({
         }
       })
   }, [profile.id, profile.username, profile.display_name, profile.avatar_url])
+
+  async function handleSignOut() {
+    await signOut()
+    router.push('/login')
+    router.refresh()
+  }
 
   function handleFollowChange(isNowFollowing: boolean) {
     setFollowerCount(c => (isNowFollowing ? c + 1 : c - 1))
@@ -94,12 +104,22 @@ export default function ProfileInteractive({
         )}
 
         {isOwnProfile ? (
-          <Link
-            href="/profile/edit"
-            className="rounded-xl border border-zinc-600 px-4 py-2 text-sm font-medium text-zinc-300 transition-colors hover:border-zinc-400 hover:text-zinc-100"
-          >
-            Editar perfil
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/profile/edit"
+              className="rounded-xl border border-zinc-600 px-4 py-2 text-sm font-medium text-zinc-300 transition-colors hover:border-zinc-400 hover:text-zinc-100"
+            >
+              Editar perfil
+            </Link>
+            <button
+              type="button"
+              onClick={handleSignOut}
+              aria-label="Sair"
+              className="xl:hidden rounded-xl border border-zinc-700 px-3 py-2 text-sm font-medium text-zinc-500 transition-colors hover:border-red-800 hover:bg-red-950/40 hover:text-red-400"
+            >
+              Sair
+            </button>
+          </div>
         ) : (
           <FollowButton
             targetUserId={profile.id}
