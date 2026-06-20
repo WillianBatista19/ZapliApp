@@ -90,3 +90,5 @@ All notification strings use Incelicas slang:
 
 ## Changelog and Status Pages
 Every time a new feature is implemented or a bug is fixed, update the /changelog page (`src/app/changelog/page.tsx`) by adding or updating the relevant version entry with the date and a description of what changed. Also update the /status page (`src/app/status/page.tsx`) if there are any known bugs to add or remove. This must be done automatically after every feature implementation — do not wait to be asked.
+
+Every time a bug is fixed, it must be added to the /changelog page under the current version entry with a "🐛 Corrigido:" prefix. Also update the /status page to remove it from the known bugs list if it was listed there. This applies to ALL bug fixes, even small ones.

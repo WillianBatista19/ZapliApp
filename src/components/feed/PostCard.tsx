@@ -38,14 +38,16 @@ type CommentPreview = {
 type PreviewRow = CommentPreview & { created_at: string; comment_likes: { id: string }[] }
 
 type Props = {
-  post:          Post
-  currentUserId: string | null
+  post:                 Post
+  currentUserId:        string | null
+  initialShowComments?: boolean
+  highlightCommentId?:  string | null
 }
 
 // ─── PostCard (memoized) ─────────────────────────────────────────────────────
 
-const PostCard = memo(function PostCard({ post, currentUserId }: Props) {
-  const [showComments,    setShowComments]    = useState(false)
+const PostCard = memo(function PostCard({ post, currentUserId, initialShowComments = false, highlightCommentId }: Props) {
+  const [showComments,    setShowComments]    = useState(initialShowComments)
   const [deleted,         setDeleted]         = useState(false)
   const [deleting,        setDeleting]        = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
@@ -171,7 +173,7 @@ const PostCard = memo(function PostCard({ post, currentUserId }: Props) {
           {!showComments && previewComment && (
             <CommentPreviewBanner preview={previewComment} onClick={() => setShowComments(true)} />
           )}
-          {showComments && <CommentsSection postId={post.id} currentUserId={currentUserId} />}
+          {showComments && <CommentsSection postId={post.id} currentUserId={currentUserId} highlightCommentId={highlightCommentId} />}
         </article>
 
         {showDeleteModal && (

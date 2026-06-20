@@ -22,15 +22,16 @@ type CommentRow = {
 }
 
 type Props = {
-  postId:        string
-  currentUserId: string | null
+  postId:              string
+  currentUserId:       string | null
+  highlightCommentId?: string | null
 }
 
 const SELECT = 'id, user_id, parent_id, content, created_at, profiles (display_name, username, avatar_url), comment_likes (id, user_id)'
 
 const BLANK_PROFILE = { display_name: null, username: '', avatar_url: null } as const
 
-export default function CommentsSection({ postId, currentUserId }: Props) {
+export default function CommentsSection({ postId, currentUserId, highlightCommentId }: Props) {
   const supabase = useMemo(() => createClient(), [])
 
   const [all,             setAll]             = useState<CommentRow[]>([])
@@ -43,6 +44,7 @@ export default function CommentsSection({ postId, currentUserId }: Props) {
   const [expandedReplies, setExpandedReplies] = useState<Set<string>>(new Set())
   const [deleteId,        setDeleteId]        = useState<string | null>(null)
   const [deleting,        setDeleting]        = useState(false)
+  const [highlightedId,   setHighlightedId]   = useState<string | null>(highlightCommentId ?? null)
 
   useEffect(() => {
     supabase
@@ -55,6 +57,26 @@ export default function CommentsSection({ postId, currentUserId }: Props) {
         setLoading(false)
       })
   }, [supabase, postId])
+
+  // Scroll to and briefly highlight a specific comment after load
+  useEffect(() => {
+    if (!highlightCommentId || loading) return
+    const target = all.find(c => c.id === highlightCommentId)
+    if (!target) return
+
+    // If it's a reply, auto-expand the parent's reply list so the element is in the DOM
+    if (target.parent_id) {
+      setExpandedReplies(prev => { const n = new Set(prev); n.add(target.parent_id!); return n })
+    }
+
+    const t1 = setTimeout(() => {
+      document.getElementById(`comment-${highlightCommentId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }, 150)
+
+    const t2 = setTimeout(() => setHighlightedId(null), 2500)
+    return () => { clearTimeout(t1); clearTimeout(t2) }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, highlightCommentId])
 
   const topLevel = useMemo(() => all.filter(c => c.parent_id === null), [all])
   const byParent = useMemo(
@@ -216,7 +238,11 @@ export default function CommentsSection({ postId, currentUserId }: Props) {
               : false
 
             return (
-              <li key={comment.id}>
+              <li
+                key={comment.id}
+                id={`comment-${comment.id}`}
+                className={`rounded-xl transition-colors duration-500 ${highlightedId === comment.id ? 'bg-[#D4537E]/5 ring-1 ring-[#D4537E]/30' : ''}`}
+              >
                 {/* Comment */}
                 <div className="flex gap-2">
                   <Avatar src={comment.profiles.avatar_url} name={authorName} size="sm" />
@@ -279,7 +305,11 @@ export default function CommentsSection({ postId, currentUserId }: Props) {
                         ? reply.comment_likes.some(l => l.user_id === currentUserId)
                         : false
                       return (
-                        <li key={reply.id} className="flex gap-2">
+                        <li
+                          key={reply.id}
+                          id={`comment-${reply.id}`}
+                          className={`flex gap-2 rounded-xl transition-colors duration-500 ${highlightedId === reply.id ? 'bg-[#D4537E]/5 ring-1 ring-[#D4537E]/30' : ''}`}
+                        >
                           <Avatar src={reply.profiles.avatar_url} name={replyAuthor} size="sm" />
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-x-1.5">

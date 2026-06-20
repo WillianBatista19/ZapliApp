@@ -2,6 +2,20 @@ import Link from 'next/link'
 
 const ENTRIES = [
   {
+    version: 'v0.11',
+    date:    'Jun 2026',
+    title:   'Navegação de notificações e página de post',
+    items: [
+      '🐛 Corrigido: Clicar em notificações de vibe, comentário, resposta e curtida de comentário redirecionava para o perfil do usuário em vez do post relacionado. Agora navega corretamente para o post.',
+      'Página dedicada /post/[id] para visualizar um post com comentários abertos',
+      'Notificações de vibe, repost e menção agora abrem o post diretamente',
+      'Notificações de comentário e resposta abrem o post e rolam até o comentário específico',
+      'Notificações de follow e follow_back continuam indo para o perfil do usuário',
+      'Botão "Voltar ao feed" na página de post',
+      'Comentário referenciado fica brevemente destacado em rosa ao ser acessado via notificação',
+    ],
+  },
+  {
     version: 'v0.10',
     date:    'Jun 2026',
     title:   'Correção de visualização de stories',

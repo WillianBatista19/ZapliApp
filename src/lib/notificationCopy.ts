@@ -47,17 +47,24 @@ export function notificationEmoji(type: NotificationType): string {
 
 // Returns the href the notification should link to
 export function notificationHref(
-  type:     NotificationType,
-  username: string,
-  postId:   string | null,
+  type:      NotificationType,
+  username:  string,
+  postId:    string | null,
+  commentId: string | null = null,
 ): string {
-  // All post-related notifications link to the actor's profile for now
-  // (no dedicated /post/[id] page yet)
   switch (type) {
     case 'follow':
     case 'follow_back':
       return `/profile/${username}`
-    default:
+    case 'comment':
+    case 'comment_reply':
+    case 'comment_like':
+      if (postId) {
+        return commentId ? `/post/${postId}?comment=${commentId}` : `/post/${postId}`
+      }
       return `/profile/${username}`
+    default:
+      // vibe, repost, mention
+      return postId ? `/post/${postId}` : `/profile/${username}`
   }
 }

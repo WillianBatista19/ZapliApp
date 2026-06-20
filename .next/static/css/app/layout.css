@@ -1606,6 +1606,9 @@ video {
 .bg-zinc-950\/80 {
   background-color: rgb(var(--zinc-950) / 0.8);
 }
+.bg-\[\#D4537E\]\/5 {
+  background-color: rgb(212 83 126 / 0.05);
+}
 .bg-auth-radial {
   background-image: var(--auth-radial);
 }
@@ -2107,6 +2110,9 @@ video {
   --tw-ring-opacity: 1;
   --tw-ring-color: rgb(var(--zinc-800) / var(--tw-ring-opacity, 1));
 }
+.ring-\[\#D4537E\]\/30 {
+  --tw-ring-color: rgb(212 83 126 / 0.3);
+}
 .ring-offset-2 {
   --tw-ring-offset-width: 2px;
 }
@@ -2158,6 +2164,9 @@ video {
 }
 .duration-200 {
   transition-duration: 200ms;
+}
+.duration-500 {
+  transition-duration: 500ms;
 }
 .\[scrollbar-width\:none\] {
   scrollbar-width: none;

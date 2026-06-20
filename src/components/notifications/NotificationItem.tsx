@@ -11,12 +11,12 @@ type Props = {
 }
 
 export default function NotificationItem({ notification }: Props) {
-  const { type, from_profile, post, comment, read, created_at, post_id } = notification
+  const { type, from_profile, post, comment, read, created_at, post_id, comment_id } = notification
 
   const actorName = from_profile.display_name || from_profile.username
   const text      = notificationText(type, actorName, comment?.content ?? null)
   const emoji     = notificationEmoji(type)
-  const href      = notificationHref(type, from_profile.username, post_id)
+  const href      = notificationHref(type, from_profile.username, post_id, comment_id)
 
   return (
     <Link
