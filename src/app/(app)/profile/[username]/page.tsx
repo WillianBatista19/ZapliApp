@@ -31,11 +31,11 @@ export default async function ProfilePage({ params }: Props) {
       .eq('user_id', profile.id),
     supabase
       .from('follows')
-      .select('id', { count: 'exact', head: true })
+      .select('follower_id', { count: 'exact', head: true })
       .eq('following_id', profile.id),
     supabase
       .from('follows')
-      .select('id', { count: 'exact', head: true })
+      .select('follower_id', { count: 'exact', head: true })
       .eq('follower_id', profile.id),
   ])
 

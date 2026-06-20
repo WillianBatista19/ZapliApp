@@ -1,6 +1,6 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/(app)/profile/[username]/page": "app/(app)/profile/[username]/page.js",
   "/(app)/feed/page": "app/(app)/feed/page.js",
-  "/(app)/notifications/page": "app/(app)/notifications/page.js"
+  "/(app)/notifications/page": "app/(app)/notifications/page.js",
+  "/(app)/profile/[username]/page": "app/(app)/profile/[username]/page.js"
 }

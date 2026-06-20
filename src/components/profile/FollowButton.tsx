@@ -11,31 +11,42 @@ type Props = {
 
 export default function FollowButton({ targetUserId, currentUserId, onFollowChange }: Props) {
   const supabase = useMemo(() => createClient(), [])
-  // null = still loading from DB; boolean = settled state
-  const [isFollowing, setIsFollowing] = useState<boolean | null>(null)
-  const [isPending,   setIsPending]   = useState(false)
+  // null = still loading; boolean = settled
+  const [isFollowing,    setIsFollowing]    = useState<boolean | null>(null)
+  const [targetFollowsMe, setTargetFollowsMe] = useState(false)
+  const [isPending,      setIsPending]      = useState(false)
 
-  // Fetch the real follow state from Supabase on mount
   useEffect(() => {
-    supabase
-      .from('follows')
-      .select('follower_id')
-      .eq('follower_id', currentUserId)
-      .eq('following_id', targetUserId)
-      .maybeSingle()
-      .then(({ data }) => setIsFollowing(!!data))
+    Promise.all([
+      // Does the current user follow the target?
+      supabase
+        .from('follows')
+        .select('follower_id')
+        .eq('follower_id', currentUserId)
+        .eq('following_id', targetUserId)
+        .maybeSingle(),
+      // Does the target follow the current user back?
+      supabase
+        .from('follows')
+        .select('follower_id')
+        .eq('follower_id', targetUserId)
+        .eq('following_id', currentUserId)
+        .maybeSingle(),
+    ]).then(([{ data: iFollow }, { data: theyFollow }]) => {
+      setIsFollowing(!!iFollow)
+      setTargetFollowsMe(!!theyFollow)
+    })
   }, [currentUserId, targetUserId])
 
   async function toggle() {
     if (isPending || isFollowing === null) return
 
-    const currentlyFollowing = isFollowing   // snapshot – no closure ambiguity
-
+    const currentlyFollowing = isFollowing   // snapshot at click time
     setIsFollowing(!currentlyFollowing)      // optimistic flip
     setIsPending(true)
 
     if (!currentlyFollowing) {
-      // User is NOT following → upsert so a stale duplicate row never causes a 409
+      // Not following → INSERT to follow
       await supabase
         .from('follows')
         .upsert(
@@ -43,7 +54,7 @@ export default function FollowButton({ targetUserId, currentUserId, onFollowChan
           { onConflict: 'follower_id,following_id' },
         )
     } else {
-      // User IS following → DELETE the follow row
+      // Already following → DELETE to unfollow
       await supabase
         .from('follows')
         .delete()
@@ -51,7 +62,7 @@ export default function FollowButton({ targetUserId, currentUserId, onFollowChan
         .eq('following_id', targetUserId)
     }
 
-    // Confirm actual DB state so the button always reflects reality
+    // Confirm actual DB state
     const { data } = await supabase
       .from('follows')
       .select('follower_id')
@@ -65,7 +76,6 @@ export default function FollowButton({ targetUserId, currentUserId, onFollowChan
     setIsPending(false)
   }
 
-  // While loading, render a visually consistent disabled placeholder
   if (isFollowing === null) {
     return (
       <button disabled className="rounded-xl px-5 py-2 text-sm font-semibold bg-pink text-white opacity-40">
@@ -73,6 +83,12 @@ export default function FollowButton({ targetUserId, currentUserId, onFollowChan
       </button>
     )
   }
+
+  const label = isFollowing
+    ? 'Seguindo'
+    : targetFollowsMe
+      ? 'Seguir de volta'
+      : 'Seguir'
 
   return (
     <button
@@ -86,7 +102,7 @@ export default function FollowButton({ targetUserId, currentUserId, onFollowChan
           : 'bg-pink text-white hover:bg-pink-hover',
       ].join(' ')}
     >
-      {isFollowing ? 'Seguindo' : 'Seguir'}
+      {label}
     </button>
   )
 }

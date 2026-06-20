@@ -238,9 +238,8 @@ begin
   ) into v_mutual;
 
   if v_mutual then
-    -- Both now follow each other → follow_back for the original follower
-    perform create_notification(new.follower_id, new.following_id, 'follow_back');
-    -- Also notify the newly followed person they have a mutual
+    -- B was already following A; A now follows B back.
+    -- Only B (new.following_id) is notified — A is the one who initiated, so A gets nothing.
     perform create_notification(new.following_id, new.follower_id, 'follow_back');
   else
     perform create_notification(new.following_id, new.follower_id, 'follow');
