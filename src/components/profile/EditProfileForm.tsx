@@ -5,21 +5,27 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Avatar from '@/components/Avatar'
 import ConfirmModal from '@/components/ui/ConfirmModal'
-import type { Profile } from '@/types'
+import MediaSearchModal, { BookIcon, MovieIcon } from '@/components/ui/MediaSearchModal'
+import type { MediaResult } from '@/components/ui/MediaSearchModal'
+import type { Profile, WatchingNow, ReadingNow } from '@/types'
 
 export default function EditProfileForm({ profile }: { profile: Profile }) {
-  const [displayName,      setDisplayName]      = useState(profile.display_name ?? '')
-  const [username,         setUsername]         = useState(profile.username ?? '')
-  const [bio,              setBio]              = useState(profile.bio ?? '')
-  const [lastfmUsername,   setLastfmUsername]   = useState(profile.lastfm_username ?? '')
-  const [avatarUrl,        setAvatarUrl]        = useState(profile.avatar_url)
-  const [preview,          setPreview]          = useState<string | null>(null)
-  const [avatarFile,       setAvatarFile]       = useState<File | null>(null)
-  const [saving,           setSaving]           = useState(false)
-  const [error,            setError]            = useState<string | null>(null)
-  const [showDeleteModal,  setShowDeleteModal]  = useState(false)
-  const [deleting,         setDeleting]         = useState(false)
-  const [deleteError,      setDeleteError]      = useState<string | null>(null)
+  const [displayName,        setDisplayName]        = useState(profile.display_name ?? '')
+  const [username,           setUsername]           = useState(profile.username ?? '')
+  const [bio,                setBio]                = useState(profile.bio ?? '')
+  const [lastfmUsername,     setLastfmUsername]     = useState(profile.lastfm_username ?? '')
+  const [avatarUrl,          setAvatarUrl]          = useState(profile.avatar_url)
+  const [preview,            setPreview]            = useState<string | null>(null)
+  const [avatarFile,         setAvatarFile]         = useState<File | null>(null)
+  const [saving,             setSaving]             = useState(false)
+  const [error,              setError]              = useState<string | null>(null)
+  const [showDeleteModal,    setShowDeleteModal]    = useState(false)
+  const [deleting,           setDeleting]           = useState(false)
+  const [deleteError,        setDeleteError]        = useState<string | null>(null)
+  const [watchingNow,        setWatchingNow]        = useState<WatchingNow | null>(profile.watching_now ?? null)
+  const [readingNow,         setReadingNow]         = useState<ReadingNow  | null>(profile.reading_now  ?? null)
+  const [showWatchingSearch, setShowWatchingSearch] = useState(false)
+  const [showReadingSearch,  setShowReadingSearch]  = useState(false)
 
   const fileRef  = useRef<HTMLInputElement>(null)
   const supabase = useMemo(() => createClient(), [])
@@ -35,6 +41,16 @@ export default function EditProfileForm({ profile }: { profile: Profile }) {
     setAvatarFile(file)
     setPreview(URL.createObjectURL(file))
     setError(null)
+  }
+
+  function handleWatchingSelect(r: MediaResult) {
+    setWatchingNow({ id: Number(r.id), title: r.title, year: r.subtitle, poster_url: r.imageUrl })
+    setShowWatchingSearch(false)
+  }
+
+  function handleReadingSelect(r: MediaResult) {
+    setReadingNow({ id: r.id, title: r.title, author: r.subtitle, cover_url: r.imageUrl })
+    setShowReadingSearch(false)
   }
 
   function handleUsernameChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -91,6 +107,8 @@ export default function EditProfileForm({ profile }: { profile: Profile }) {
         bio:             bio.trim() || null,
         avatar_url:      finalAvatarUrl,
         lastfm_username: lastfmUsername.trim() || null,
+        watching_now:    watchingNow,
+        reading_now:     readingNow,
       })
       .eq('id', profile.id)
 
@@ -236,6 +254,94 @@ export default function EditProfileForm({ profile }: { profile: Profile }) {
             </p>
           </FormField>
 
+          <FormField label="Assistindo agora">
+            {watchingNow ? (
+              <div className="flex items-center gap-3 rounded-xl border border-zinc-700 bg-zinc-800/50 p-3">
+                {watchingNow.poster_url && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={watchingNow.poster_url}
+                    alt=""
+                    className="h-14 w-10 flex-shrink-0 rounded-lg object-cover"
+                  />
+                )}
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium text-zinc-100">{watchingNow.title}</p>
+                  {watchingNow.year && <p className="text-xs text-zinc-500">{watchingNow.year}</p>}
+                </div>
+                <div className="flex flex-shrink-0 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowWatchingSearch(true)}
+                    className="rounded-lg border border-zinc-600 px-3 py-1.5 text-xs text-zinc-300 transition-colors hover:border-zinc-400"
+                  >
+                    Trocar
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setWatchingNow(null)}
+                    className="rounded-lg border border-zinc-700 px-3 py-1.5 text-xs text-red-400 transition-colors hover:border-red-800/60"
+                  >
+                    Remover
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setShowWatchingSearch(true)}
+                className="flex w-full items-center gap-2 rounded-xl border border-dashed border-zinc-700 px-4 py-3 text-sm text-zinc-500 transition-colors hover:border-zinc-500 hover:text-zinc-300"
+              >
+                <MovieIcon className="h-4 w-4" />
+                Buscar filme ou série
+              </button>
+            )}
+          </FormField>
+
+          <FormField label="Lendo agora">
+            {readingNow ? (
+              <div className="flex items-center gap-3 rounded-xl border border-zinc-700 bg-zinc-800/50 p-3">
+                {readingNow.cover_url && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={readingNow.cover_url}
+                    alt=""
+                    className="h-14 w-10 flex-shrink-0 rounded-lg object-cover"
+                  />
+                )}
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium text-zinc-100">{readingNow.title}</p>
+                  {readingNow.author && <p className="text-xs text-zinc-500">{readingNow.author}</p>}
+                </div>
+                <div className="flex flex-shrink-0 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowReadingSearch(true)}
+                    className="rounded-lg border border-zinc-600 px-3 py-1.5 text-xs text-zinc-300 transition-colors hover:border-zinc-400"
+                  >
+                    Trocar
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setReadingNow(null)}
+                    className="rounded-lg border border-zinc-700 px-3 py-1.5 text-xs text-red-400 transition-colors hover:border-red-800/60"
+                  >
+                    Remover
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setShowReadingSearch(true)}
+                className="flex w-full items-center gap-2 rounded-xl border border-dashed border-zinc-700 px-4 py-3 text-sm text-zinc-500 transition-colors hover:border-zinc-500 hover:text-zinc-300"
+              >
+                <BookIcon className="h-4 w-4" />
+                Buscar livro
+              </button>
+            )}
+          </FormField>
+
         </div>
 
         {error && (
@@ -281,6 +387,22 @@ export default function EditProfileForm({ profile }: { profile: Profile }) {
           variant="danger"
           onConfirm={handleDeleteAccount}
           onCancel={() => { setShowDeleteModal(false); setDeleteError(null) }}
+        />
+      )}
+
+      {showWatchingSearch && (
+        <MediaSearchModal
+          type="movie"
+          onSelect={handleWatchingSelect}
+          onClose={() => setShowWatchingSearch(false)}
+        />
+      )}
+
+      {showReadingSearch && (
+        <MediaSearchModal
+          type="book"
+          onSelect={handleReadingSelect}
+          onClose={() => setShowReadingSearch(false)}
         />
       )}
     </>

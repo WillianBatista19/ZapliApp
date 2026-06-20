@@ -3,6 +3,8 @@ import { createClient } from '@/lib/supabase/server'
 import ProfileInteractive from '@/components/profile/ProfileInteractive'
 import PostGrid from '@/components/profile/PostGrid'
 import LastfmWidget from '@/components/profile/LastfmWidget'
+import MediaNowWidgets from '@/components/profile/MediaNowWidgets'
+import type { WatchingNow, ReadingNow } from '@/types'
 
 type Props = {
   params: { username: string }
@@ -17,7 +19,7 @@ export default async function ProfilePage({ params }: Props) {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('id, username, display_name, avatar_url, bio, created_at, lastfm_username')
+    .select('id, username, display_name, avatar_url, bio, created_at, lastfm_username, watching_now, reading_now')
     .eq('username', username)
     .single()
 
@@ -53,6 +55,10 @@ export default async function ProfilePage({ params }: Props) {
         postCount={postCount}
         initialFollowerCount={followerCount}
         followingCount={followingCount}
+      />
+      <MediaNowWidgets
+        watching={profile.watching_now as WatchingNow | null}
+        reading={profile.reading_now  as ReadingNow  | null}
       />
       {profile.lastfm_username && (
         <LastfmWidget username={profile.lastfm_username} />

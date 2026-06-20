@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Avatar from '@/components/Avatar'
+import MediaSearchModal, { BookIcon, MovieIcon } from '@/components/ui/MediaSearchModal'
 import type { Category, Profile } from '@/types'
 
 const MAX = 500
@@ -29,9 +30,11 @@ export default function PostComposer({ profile }: { profile: Profile }) {
   const [mediaPreview,   setMediaPreview]   = useState<string | null>(null)
   const [mediaType,      setMediaType]      = useState<'image' | 'video' | null>(null)
   const [mediaError,  setMediaError]  = useState<string | null>(null)
-  const [albumArtUrl, setAlbumArtUrl] = useState<string | null>(null)
+  const [albumArtUrl,    setAlbumArtUrl]    = useState<string | null>(null)
+  const [albumArtSquare, setAlbumArtSquare] = useState(false)
   const [lastfmLoading,  setLastfmLoading]  = useState(false)
   const [toast,          setToast]          = useState<string | null>(null)
+  const [mediaSearch,    setMediaSearch]    = useState<'movie' | 'book' | null>(null)
 
   const textareaRef   = useRef<HTMLTextAreaElement>(null)
   const galleryRef    = useRef<HTMLInputElement>(null)
@@ -101,6 +104,7 @@ export default function PostComposer({ profile }: { profile: Profile }) {
     setMediaType(null)
     setMediaError(null)
     setAlbumArtUrl(null)
+    setAlbumArtSquare(false)
     if (galleryRef.current) galleryRef.current.value = ''
   }
 
@@ -111,6 +115,29 @@ export default function PostComposer({ profile }: { profile: Profile }) {
     input.capture  = 'environment'
     input.onchange = (e) => handleMedia((e.target as HTMLInputElement).files?.[0] ?? null)
     input.click()
+  }
+
+  function handleMediaSelect(result: import('@/components/ui/MediaSearchModal').MediaResult) {
+    const isMovie = mediaSearch === 'movie'
+    const text    = isMovie
+      ? `Assistindo: ${result.title}${result.subtitle ? ` (${result.subtitle})` : ''}`
+      : `Lendo: ${result.title}${result.subtitle ? ` — ${result.subtitle}` : ''}`
+
+    setContent(text)
+    requestAnimationFrame(() => resize())
+    setCategory(isMovie ? 'filme' : 'livro')
+
+    if (result.imageUrl) {
+      if (previewUrlRef.current) { URL.revokeObjectURL(previewUrlRef.current); previewUrlRef.current = null }
+      setMediaFile(null)
+      setMediaError(null)
+      setAlbumArtUrl(result.imageUrl)
+      setAlbumArtSquare(false)
+      setMediaPreview(result.imageUrl)
+      setMediaType('image')
+    }
+
+    setMediaSearch(null)
   }
 
   async function fetchNowPlaying() {
@@ -151,6 +178,7 @@ export default function PostComposer({ profile }: { profile: Profile }) {
         setMediaFile(null)
         setMediaError(null)
         setAlbumArtUrl(artUrl)
+        setAlbumArtSquare(true)
         setMediaPreview(artUrl)
         setMediaType('image')
       }
@@ -226,6 +254,14 @@ export default function PostComposer({ profile }: { profile: Profile }) {
   const filled        = Math.min(circumference, (content.length / MAX) * circumference)
 
   return (
+    <>
+    {mediaSearch && (
+      <MediaSearchModal
+        type={mediaSearch}
+        onSelect={handleMediaSelect}
+        onClose={() => setMediaSearch(null)}
+      />
+    )}
     <div className="rounded-2xl border border-zinc-700 bg-zinc-900 p-4 shadow-lg">
       {/* Hidden file inputs */}
       <input
@@ -294,6 +330,24 @@ export default function PostComposer({ profile }: { profile: Profile }) {
               }
             </button>
           )}
+
+          <button
+            type="button"
+            onClick={() => setMediaSearch('movie')}
+            title="Buscar filme ou série"
+            className="rounded-lg p-1.5 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-[#D4537E] active:scale-95"
+          >
+            <MovieIcon className="h-5 w-5" />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setMediaSearch('book')}
+            title="Buscar livro"
+            className="rounded-lg p-1.5 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-[#D4537E] active:scale-95"
+          >
+            <BookIcon className="h-5 w-5" />
+          </button>
         </div>
 
         {/* ── Toast (now playing feedback) ── */}
@@ -317,8 +371,8 @@ export default function PostComposer({ profile }: { profile: Profile }) {
                 playsInline
                 className="max-h-48 rounded-xl"
               />
-            ) : albumArtUrl ? (
-              /* Album art: fixed square, contain so the full cover is visible */
+            ) : albumArtUrl && albumArtSquare ? (
+              /* Last.fm album art: fixed square, contain so the full cover is visible */
               <div
                 className="flex h-48 w-48 items-center justify-center overflow-hidden rounded-xl"
                 style={{ background: '#0c0c0f' }}
@@ -423,6 +477,7 @@ export default function PostComposer({ profile }: { profile: Profile }) {
 
       </form>
     </div>
+    </>
   )
 }
 

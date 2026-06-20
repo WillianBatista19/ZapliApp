@@ -10,14 +10,30 @@ export type NotificationType =
   | 'repost'
   | 'mention'
 
+export interface WatchingNow {
+  id:         number
+  title:      string
+  year:       string
+  poster_url: string | null
+}
+
+export interface ReadingNow {
+  id:        string
+  title:     string
+  author:    string
+  cover_url: string | null
+}
+
 export interface Profile {
-  id:               string
-  username:         string
-  display_name:     string
-  avatar_url:       string | null
-  bio:              string | null
-  created_at:       string
-  lastfm_username:  string | null
+  id:              string
+  username:        string
+  display_name:    string
+  avatar_url:      string | null
+  bio:             string | null
+  created_at:      string
+  lastfm_username: string | null
+  watching_now:    WatchingNow | null
+  reading_now:     ReadingNow  | null
 }
 
 export interface Vibe {
