@@ -783,6 +783,10 @@ video {
   margin-left: auto;
   margin-right: auto;
 }
+.my-3 {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
 .mb-1 {
   margin-bottom: 0.25rem;
 }
@@ -1400,6 +1404,9 @@ video {
 .border-\[\#1D9E75\]\/30 {
   border-color: rgb(29 158 117 / 0.3);
 }
+.border-\[\#1D9E75\]\/40 {
+  border-color: rgb(29 158 117 / 0.4);
+}
 .border-\[\#D4537E\] {
   --tw-border-opacity: 1;
   border-color: rgb(212 83 126 / var(--tw-border-opacity, 1));
@@ -1511,6 +1518,13 @@ video {
 }
 .bg-\[\#1D9E75\]\/10 {
   background-color: rgb(29 158 117 / 0.1);
+}
+.bg-\[\#1D9E75\]\/5 {
+  background-color: rgb(29 158 117 / 0.05);
+}
+.bg-\[\#1DB954\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(29 185 84 / var(--tw-bg-opacity, 1));
 }
 .bg-\[\#7F77DD\] {
   --tw-bg-opacity: 1;
@@ -1632,6 +1646,9 @@ video {
 .bg-zinc-800 {
   --tw-bg-opacity: 1;
   background-color: rgb(var(--zinc-800) / var(--tw-bg-opacity, 1));
+}
+.bg-zinc-800\/40 {
+  background-color: rgb(var(--zinc-800) / 0.4);
 }
 .bg-zinc-800\/50 {
   background-color: rgb(var(--zinc-800) / 0.5);
@@ -1969,9 +1986,6 @@ video {
 .uppercase {
   text-transform: uppercase;
 }
-.lowercase {
-  text-transform: lowercase;
-}
 .capitalize {
   text-transform: capitalize;
 }
@@ -1996,6 +2010,9 @@ video {
 }
 .tracking-tight {
   letter-spacing: -0.025em;
+}
+.tracking-wide {
+  letter-spacing: 0.025em;
 }
 .tracking-wider {
   letter-spacing: 0.05em;
@@ -2022,6 +2039,10 @@ video {
 .text-amber-500 {
   --tw-text-opacity: 1;
   color: rgb(245 158 11 / var(--tw-text-opacity, 1));
+}
+.text-black {
+  --tw-text-opacity: 1;
+  color: rgb(0 0 0 / var(--tw-text-opacity, 1));
 }
 .text-blue-400 {
   --tw-text-opacity: 1;
@@ -2213,10 +2234,6 @@ video {
 .ring-offset-zinc-950 {
   --tw-ring-offset-color: rgb(var(--zinc-950) / 1);
 }
-.blur {
-  --tw-blur: blur(8px);
-  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
-}
 .filter {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
@@ -2246,6 +2263,9 @@ video {
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
+}
+.transition-none {
+  transition-property: none;
 }
 .transition-opacity {
   transition-property: opacity;

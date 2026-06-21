@@ -1,6 +1,8 @@
 {
-  "/changelog/page": "app/changelog/page.js",
+  "/api/spotify/route": "app/api/spotify/route.js",
   "/icon.svg/route": "app/icon.svg/route.js",
+  "/api/deezer/route": "app/api/deezer/route.js",
   "/(app)/jogar/admin/page": "app/(app)/jogar/admin/page.js",
-  "/(app)/feed/page": "app/(app)/feed/page.js"
+  "/(app)/feed/page": "app/(app)/feed/page.js",
+  "/(app)/jogar/page": "app/(app)/jogar/page.js"
 }
