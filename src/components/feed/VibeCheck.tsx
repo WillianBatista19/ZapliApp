@@ -54,12 +54,13 @@ const VIBES: VibeDef[] = [
 // ─── component ────────────────────────────────────────────────────────────────
 
 type Props = {
-  postId:        string
-  initialVibes:  Vibe[]
-  currentUserId: string | null
+  postId:         string
+  initialVibes:   Vibe[]
+  currentUserId:  string | null
+  onShowVibes?:   () => void
 }
 
-export default function VibeCheck({ postId, initialVibes, currentUserId }: Props) {
+export default function VibeCheck({ postId, initialVibes, currentUserId, onShowVibes }: Props) {
   const { counts, myVibe, pending, react, total } = useVibeCheck(
     postId,
     initialVibes,
@@ -95,9 +96,15 @@ export default function VibeCheck({ postId, initialVibes, currentUserId }: Props
       })}
 
       {total > 0 && (
-        <span className="ml-auto text-xs text-zinc-600 tabular-nums">
+        <button
+          type="button"
+          onClick={onShowVibes}
+          className="ml-auto text-xs tabular-nums text-zinc-600 transition-colors hover:text-zinc-300 disabled:pointer-events-none"
+          disabled={!onShowVibes}
+          title="Ver quem reagiu"
+        >
           {total} {total === 1 ? 'vibe' : 'vibes'}
-        </span>
+        </button>
       )}
     </div>
   )

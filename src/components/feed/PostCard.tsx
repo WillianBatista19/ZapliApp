@@ -8,6 +8,7 @@ import Avatar from '@/components/Avatar'
 import CategoryBadge from '@/components/feed/CategoryBadge'
 import MediaEmbed from '@/components/feed/MediaEmbed'
 import VibeCheck from '@/components/feed/VibeCheck'
+import VibeListModal from '@/components/feed/VibeListModal'
 import CommentsSection from '@/components/feed/CommentsSection'
 import IncelicarButton from '@/components/feed/IncelicarButton'
 import ConfirmModal from '@/components/ui/ConfirmModal'
@@ -59,6 +60,7 @@ const PostCard = memo(function PostCard({ post, currentUserId, initialShowCommen
   const [editContent,     setEditContent]     = useState(post.content)
   const [localContent,    setLocalContent]    = useState(post.content)
   const [editSaving,      setEditSaving]      = useState(false)
+  const [showVibesModal,  setShowVibesModal]  = useState(false)
 
   const supabase = useMemo(() => createClient(), [])
   const profile  = post.profiles
@@ -186,7 +188,7 @@ const PostCard = memo(function PostCard({ post, currentUserId, initialShowCommen
           <OriginalPostCard original={post.original_post} />
 
           <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-zinc-800 pt-3">
-            <VibeCheck postId={post.id} initialVibes={post.vibes} currentUserId={currentUserId} />
+            <VibeCheck postId={post.id} initialVibes={post.vibes} currentUserId={currentUserId} onShowVibes={() => setShowVibesModal(true)} />
             <button
               type="button"
               onClick={() => setShowComments(v => !v)}
@@ -212,6 +214,7 @@ const PostCard = memo(function PostCard({ post, currentUserId, initialShowCommen
           />
         )}
 
+        {showVibesModal && <VibeListModal postId={post.id} onClose={() => setShowVibesModal(false)} />}
         {fullscreenImg && <FullscreenImage src={fullscreenImg} onClose={closeFullscreen} />}
       </>
     )
@@ -325,7 +328,7 @@ const PostCard = memo(function PostCard({ post, currentUserId, initialShowCommen
 
         {/* Action bar */}
         <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-zinc-800 pt-3">
-          <VibeCheck postId={post.id} initialVibes={post.vibes} currentUserId={currentUserId} />
+          <VibeCheck postId={post.id} initialVibes={post.vibes} currentUserId={currentUserId} onShowVibes={() => setShowVibesModal(true)} />
 
           {currentUserId !== post.user_id && (
             <IncelicarButton
@@ -362,6 +365,7 @@ const PostCard = memo(function PostCard({ post, currentUserId, initialShowCommen
         />
       )}
 
+      {showVibesModal && <VibeListModal postId={post.id} onClose={() => setShowVibesModal(false)} />}
       {fullscreenImg && <FullscreenImage src={fullscreenImg} onClose={closeFullscreen} />}
     </>
   )

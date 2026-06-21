@@ -1,7 +1,26 @@
 {
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/internal/post/route": "app/api/internal/post/route.js",
+  "/api/lastfm/route": "app/api/lastfm/route.js",
+  "/api/deezer/route": "app/api/deezer/route.js",
+  "/api/spotify/route": "app/api/spotify/route.js",
+  "/api/steam/route": "app/api/steam/route.js",
+  "/auth/callback/route": "app/auth/callback/route.js",
+  "/page": "app/page.js",
+  "/status/page": "app/status/page.js",
   "/icon.svg/route": "app/icon.svg/route.js",
+  "/changelog/page": "app/changelog/page.js",
+  "/(app)/feed/page": "app/(app)/feed/page.js",
+  "/(app)/explore/page": "app/(app)/explore/page.js",
+  "/(app)/hashtag/[tag]/page": "app/(app)/hashtag/[tag]/page.js",
   "/(app)/profile/[username]/page": "app/(app)/profile/[username]/page.js",
-  "/(app)/jogar/page": "app/(app)/jogar/page.js",
   "/(app)/jogar/admin/page": "app/(app)/jogar/admin/page.js",
-  "/(app)/feed/page": "app/(app)/feed/page.js"
+  "/(app)/jogar/page": "app/(app)/jogar/page.js",
+  "/(auth)/login/page": "app/(auth)/login/page.js",
+  "/(app)/profile/edit/page": "app/(app)/profile/edit/page.js",
+  "/(app)/notifications/page": "app/(app)/notifications/page.js",
+  "/(app)/post/[id]/page": "app/(app)/post/[id]/page.js",
+  "/(auth)/recover/page": "app/(auth)/recover/page.js",
+  "/(auth)/update-password/page": "app/(auth)/update-password/page.js",
+  "/(auth)/signup/page": "app/(auth)/signup/page.js"
 }
