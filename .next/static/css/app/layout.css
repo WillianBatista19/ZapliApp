@@ -1091,6 +1091,9 @@ video {
 .min-w-\[52px\] {
   min-width: 52px;
 }
+.min-w-\[64px\] {
+  min-width: 64px;
+}
 .max-w-2xl {
   max-width: 42rem;
 }
@@ -2432,10 +2435,6 @@ video {
 .hover\:bg-zinc-800\/60:hover {
   background-color: rgb(var(--zinc-800) / 0.6);
 }
-.hover\:text-\[\#7F77DD\]:hover {
-  --tw-text-opacity: 1;
-  color: rgb(127 119 221 / var(--tw-text-opacity, 1));
-}
 .hover\:text-\[\#9f99ee\]:hover {
   --tw-text-opacity: 1;
   color: rgb(159 153 238 / var(--tw-text-opacity, 1));
@@ -2459,6 +2458,10 @@ video {
 .hover\:text-red-400:hover {
   --tw-text-opacity: 1;
   color: rgb(248 113 113 / var(--tw-text-opacity, 1));
+}
+.hover\:text-red-500:hover {
+  --tw-text-opacity: 1;
+  color: rgb(239 68 68 / var(--tw-text-opacity, 1));
 }
 .hover\:text-white:hover {
   --tw-text-opacity: 1;
@@ -2704,6 +2707,23 @@ video {
 
   .xl\:gap-8 {
     gap: 2rem;
+  }
+}
+@media (prefers-color-scheme: dark) {
+
+  .dark\:text-zinc-400 {
+    --tw-text-opacity: 1;
+    color: rgb(var(--zinc-400) / var(--tw-text-opacity, 1));
+  }
+
+  .dark\:hover\:text-red-400:hover {
+    --tw-text-opacity: 1;
+    color: rgb(248 113 113 / var(--tw-text-opacity, 1));
+  }
+
+  .dark\:hover\:text-zinc-100:hover {
+    --tw-text-opacity: 1;
+    color: rgb(var(--zinc-100) / var(--tw-text-opacity, 1));
   }
 }
 .\[\&\:\:-webkit-scrollbar\]\:hidden::-webkit-scrollbar {

@@ -1,8 +1,17 @@
 import Link from 'next/link'
-import { createClient } from '@supabase/supabase-js'
-import { COMING_SOON } from '@/lib/changelog'
+import { createClient } from '@/lib/supabase/server'
+
+export const dynamic = 'force-dynamic'
 
 const MONTHS_PT = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
+
+const COMING_SOON = [
+  'Mensagens diretas entre usuários',
+  'Busca de posts e conteúdo',
+  'Notificações push (Web Push API)',
+  'Salvar posts para ver depois',
+  'PWA — instalar como app no celular',
+]
 
 function formatDate(d: string): string {
   const [year, month] = d.split('-').map(Number)
@@ -17,25 +26,20 @@ type ChangelogEntry = {
   entry_date: string
 }
 
-async function getEntries(): Promise<ChangelogEntry[]> {
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  )
+export default async function ChangelogPage() {
+  const supabase = await createClient()
+
   const { data, error } = await supabase
     .from('changelog_entries')
-    .select('id, version, title, items, entry_date')
+    .select('*')
     .order('entry_date', { ascending: false })
 
   if (error) {
-    console.error('[changelog] fetch error:', error.message)
-    return []
+    console.error('[changelog] fetch error:', error.message, error.code)
   }
-  return (data ?? []) as ChangelogEntry[]
-}
 
-export default async function ChangelogPage() {
-  const entries = await getEntries()
+  const entries = (data ?? []) as ChangelogEntry[]
+  console.log('[changelog] entries fetched from Supabase:', entries.length, entries)
 
   return (
     <div className="min-h-screen bg-zinc-950 px-4 py-10">
@@ -56,7 +60,6 @@ export default async function ChangelogPage() {
 
         {/* Timeline */}
         <div className="relative">
-          {/* Vertical line */}
           <div className="absolute left-3 top-2 bottom-0 w-px bg-zinc-800" aria-hidden />
 
           <div className="space-y-0">

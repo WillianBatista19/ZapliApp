@@ -1,9 +1,6 @@
 {
-  "/icon.svg/route": "app/icon.svg/route.js",
   "/changelog/page": "app/changelog/page.js",
-  "/status/page": "app/status/page.js",
-  "/(app)/feed/page": "app/(app)/feed/page.js",
-  "/(auth)/login/page": "app/(auth)/login/page.js",
-  "/(app)/profile/[username]/page": "app/(app)/profile/[username]/page.js",
-  "/(app)/jogar/admin/page": "app/(app)/jogar/admin/page.js"
+  "/icon.svg/route": "app/icon.svg/route.js",
+  "/(app)/jogar/admin/page": "app/(app)/jogar/admin/page.js",
+  "/(app)/feed/page": "app/(app)/feed/page.js"
 }
