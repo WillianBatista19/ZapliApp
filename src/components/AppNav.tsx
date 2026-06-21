@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
 import { useUser } from '@/context/UserContext'
 import { createClient } from '@/lib/supabase/client'
@@ -10,7 +11,16 @@ import ThemeToggle from '@/components/ThemeToggle'
 
 export default function AppNav() {
   const { user } = useUser()
-  const supabase = useMemo(() => createClient(), [])
+  const supabase  = useMemo(() => createClient(), [])
+  const pathname  = usePathname()
+  const router    = useRouter()
+
+  function handleLogoClick(e: React.MouseEvent) {
+    if (pathname === '/feed') {
+      e.preventDefault()
+      router.refresh()
+    }
+  }
 
   const [username,    setUsername]    = useState<string | null>(null)
   const [displayName, setDisplayName] = useState<string | null>(null)
@@ -37,7 +47,7 @@ export default function AppNav() {
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
 
         {/* Logo: "incel" flips to dark text in light mode, "icas" stays pink */}
-        <Link href="/feed" className="text-xl font-bold tracking-tight">
+        <Link href="/feed" onClick={handleLogoClick} className="text-xl font-bold tracking-tight">
           <span className="logo-prefix">incel</span><span className="text-pink">icas</span>
           {' '}<span className="text-zinc-400">✦</span>
         </Link>

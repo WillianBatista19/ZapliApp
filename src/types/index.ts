@@ -41,6 +41,8 @@ export interface Profile {
   goodreads_book_author: string | null
   goodreads_cover_url:   string | null
   goodreads_rating:      number | null
+  favorite_film:         WatchingNow | null
+  favorite_book:         ReadingNow  | null
 }
 
 export interface Vibe {

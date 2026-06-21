@@ -75,6 +75,10 @@ export default function EditProfileForm({ profile }: { profile: Profile }) {
   const [goodreadsAuthor, setGoodreadsAuthor] = useState<string | null>(profile.goodreads_book_author ?? null)
   const [goodreadsCover,  setGoodreadsCover]  = useState<string | null>(profile.goodreads_cover_url   ?? null)
   const [goodreadsRating, setGoodreadsRating] = useState<number | null>(profile.goodreads_rating      ?? null)
+  const [favoriteFilm,    setFavoriteFilm]    = useState<WatchingNow | null>(parseJsonField<WatchingNow>(profile.favorite_film))
+  const [favoriteBook,    setFavoriteBook]    = useState<ReadingNow  | null>(parseJsonField<ReadingNow>(profile.favorite_book))
+  const [showFavoriteFilmSearch, setShowFavoriteFilmSearch] = useState(false)
+  const [showFavoriteBookSearch, setShowFavoriteBookSearch] = useState(false)
 
   const fileRef  = useRef<HTMLInputElement>(null)
   const supabase = useMemo(() => createClient(), [])
@@ -106,6 +110,16 @@ export default function EditProfileForm({ profile }: { profile: Profile }) {
     setAnimeTitle(r.title)
     setAnimeCoverUrl(r.coverUrl)
     setShowAnimeSearch(false)
+  }
+
+  function handleFavoriteFilmSelect(r: MediaResult) {
+    setFavoriteFilm({ id: Number(r.id), title: r.title, year: r.subtitle, poster_url: r.imageUrl })
+    setShowFavoriteFilmSearch(false)
+  }
+
+  function handleFavoriteBookSelect(r: MediaResult) {
+    setFavoriteBook({ id: r.id, title: r.title, author: r.subtitle, cover_url: r.imageUrl })
+    setShowFavoriteBookSearch(false)
   }
 
   function handleGoodreadsHtmlChange(html: string) {
@@ -183,6 +197,8 @@ export default function EditProfileForm({ profile }: { profile: Profile }) {
         goodreads_book_author: goodreadsAuthor || null,
         goodreads_cover_url:   goodreadsCover  || null,
         goodreads_rating:      goodreadsRating ?? null,
+        favorite_film:         favoriteFilm,
+        favorite_book:         favoriteBook,
       })
       .eq('id', profile.id)
 
@@ -393,6 +409,50 @@ export default function EditProfileForm({ profile }: { profile: Profile }) {
             )}
           </FormField>
 
+          <FormField label="Filme favorito ⭐">
+            {favoriteFilm ? (
+              <div className="flex items-center gap-3 rounded-xl border border-zinc-700 bg-zinc-800/50 p-3">
+                {favoriteFilm.poster_url && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={favoriteFilm.poster_url}
+                    alt=""
+                    className="h-14 w-10 flex-shrink-0 rounded-lg object-cover"
+                  />
+                )}
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium text-zinc-100">{favoriteFilm.title}</p>
+                  {favoriteFilm.year && <p className="text-xs text-zinc-500">{favoriteFilm.year}</p>}
+                </div>
+                <div className="flex flex-shrink-0 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowFavoriteFilmSearch(true)}
+                    className="rounded-lg border border-zinc-600 px-3 py-1.5 text-xs text-zinc-300 transition-colors hover:border-zinc-400"
+                  >
+                    Trocar
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFavoriteFilm(null)}
+                    className="rounded-lg border border-zinc-700 px-3 py-1.5 text-xs text-red-400 transition-colors hover:border-red-800/60"
+                  >
+                    Remover
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setShowFavoriteFilmSearch(true)}
+                className="flex w-full items-center gap-2 rounded-xl border border-dashed border-zinc-700 px-4 py-3 text-sm text-zinc-500 transition-colors hover:border-zinc-500 hover:text-zinc-300"
+              >
+                <MovieIcon className="h-4 w-4" />
+                Buscar filme favorito
+              </button>
+            )}
+          </FormField>
+
           <FormField label="Lendo agora">
             {readingNow ? (
               <div className="flex items-center gap-3 rounded-xl border border-zinc-700 bg-zinc-800/50 p-3">
@@ -433,6 +493,50 @@ export default function EditProfileForm({ profile }: { profile: Profile }) {
               >
                 <BookIcon className="h-4 w-4" />
                 Buscar livro
+              </button>
+            )}
+          </FormField>
+
+          <FormField label="Livro favorito ⭐">
+            {favoriteBook ? (
+              <div className="flex items-center gap-3 rounded-xl border border-zinc-700 bg-zinc-800/50 p-3">
+                {favoriteBook.cover_url && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={favoriteBook.cover_url}
+                    alt=""
+                    className="h-14 w-10 flex-shrink-0 rounded-lg object-cover"
+                  />
+                )}
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium text-zinc-100">{favoriteBook.title}</p>
+                  {favoriteBook.author && <p className="text-xs text-zinc-500">{favoriteBook.author}</p>}
+                </div>
+                <div className="flex flex-shrink-0 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowFavoriteBookSearch(true)}
+                    className="rounded-lg border border-zinc-600 px-3 py-1.5 text-xs text-zinc-300 transition-colors hover:border-zinc-400"
+                  >
+                    Trocar
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFavoriteBook(null)}
+                    className="rounded-lg border border-zinc-700 px-3 py-1.5 text-xs text-red-400 transition-colors hover:border-red-800/60"
+                  >
+                    Remover
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setShowFavoriteBookSearch(true)}
+                className="flex w-full items-center gap-2 rounded-xl border border-dashed border-zinc-700 px-4 py-3 text-sm text-zinc-500 transition-colors hover:border-zinc-500 hover:text-zinc-300"
+              >
+                <BookIcon className="h-4 w-4" />
+                Buscar livro favorito
               </button>
             )}
           </FormField>
@@ -598,6 +702,22 @@ export default function EditProfileForm({ profile }: { profile: Profile }) {
         <AniListSearchModal
           onSelect={handleAnimeSelect}
           onClose={() => setShowAnimeSearch(false)}
+        />
+      )}
+
+      {showFavoriteFilmSearch && (
+        <MediaSearchModal
+          type="movie"
+          onSelect={handleFavoriteFilmSelect}
+          onClose={() => setShowFavoriteFilmSearch(false)}
+        />
+      )}
+
+      {showFavoriteBookSearch && (
+        <MediaSearchModal
+          type="book"
+          onSelect={handleFavoriteBookSelect}
+          onClose={() => setShowFavoriteBookSearch(false)}
         />
       )}
     </>

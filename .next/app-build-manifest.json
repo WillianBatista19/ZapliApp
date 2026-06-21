@@ -1,9 +1,9 @@
 {
   "pages": {
-    "/(app)/jogar/admin/page": [
+    "/(app)/profile/[username]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(app)/jogar/admin/page.js"
+      "static/chunks/app/(app)/profile/[username]/page.js"
     ],
     "/(app)/layout": [
       "static/chunks/webpack.js",
@@ -16,15 +16,10 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/(app)/feed/page": [
+    "/(app)/jogar/admin/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(app)/feed/page.js"
-    ],
-    "/(app)/jogar/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(app)/jogar/page.js"
+      "static/chunks/app/(app)/jogar/admin/page.js"
     ]
   }
 }

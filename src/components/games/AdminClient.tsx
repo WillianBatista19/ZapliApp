@@ -246,14 +246,14 @@ export default function AdminClient() {
 
         <textarea
           value={officialContent}
-          onChange={e => setOfficialContent(e.target.value.slice(0, 500))}
+          onChange={e => setOfficialContent(e.target.value.slice(0, 2000))}
           rows={5}
           placeholder={'🆕 Nova atualização!\n\n• Feature A\n• Feature B\n\n#incelicas #update'}
           className="w-full resize-none rounded-xl border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-600 outline-none focus:border-[#D4537E]"
         />
 
         <div className="mt-2 flex items-center justify-between">
-          <span className="text-xs text-zinc-600">{officialContent.length}/500</span>
+          <span className="text-xs text-zinc-600">{officialContent.length}/2000</span>
           <button
             onClick={() => void handleOfficialPost()}
             disabled={officialPosting || !officialContent.trim()}
