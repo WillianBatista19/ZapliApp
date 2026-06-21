@@ -1,12 +1,15 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import Avatar from '@/components/Avatar'
-import { markConversationRead, createMessageNotification } from '@/app/(app)/messages/actions'
+import { markConversationRead, createMessageNotification, getOrCreateConversation } from '@/app/(app)/messages/actions'
+import NewConversationModal from '@/components/messages/NewConversationModal'
 import type { ConversationMessage, ConversationSummary } from '@/types'
+
+const OFFICIAL_USERNAME = 'incelicasappoficial'
 
 type Props = {
   currentUserId:        string
@@ -33,20 +36,102 @@ export default function MessagesClient({
   activeConversationId,
   initialMessages,
 }: Props) {
-  const router   = useRouter()
+  const router = useRouter()
+  const params = useParams<{ conversationId?: string }>()
+  const urlConvId = params?.conversationId ?? null
+
   const supabase = useMemo(() => createClient(), [])
 
-  const [conversations,  setConversations]  = useState<ConversationSummary[]>(initialConversations)
-  const [selectedConvId, setSelectedConvId] = useState<string | null>(activeConversationId)
-  const [messages,       setMessages]       = useState<ConversationMessage[]>(initialMessages)
-  const [input,          setInput]          = useState('')
-  const [sending,        setSending]        = useState(false)
-  const [showThread,     setShowThread]     = useState(!!activeConversationId)
+  const initId   = urlConvId ?? activeConversationId
+  const initConv = initId ? (initialConversations.find(c => c.id === initId) ?? null) : null
 
-  const bottomRef  = useRef<HTMLDivElement>(null)
-  const inputRef   = useRef<HTMLTextAreaElement>(null)
+  const [conversations,   setConversations]   = useState<ConversationSummary[]>(initialConversations)
+  const [selectedConvId,  setSelectedConvId]  = useState<string | null>(initId)
+  // selectedConv is stored as explicit state (not derived via find()) to avoid the
+  // brief window where selectedConvId is set but conversations.find() still returns
+  // undefined (e.g. during partial re-renders or async list population).
+  const [selectedConv,    setSelectedConv]    = useState<ConversationSummary | null>(initConv)
+  const [messages,        setMessages]        = useState<ConversationMessage[]>(initialMessages)
+  const [input,           setInput]           = useState('')
+  const [sending,         setSending]         = useState(false)
+  const [showThread,      setShowThread]      = useState(!!initId)
+  const [showNewModal,    setShowNewModal]    = useState(false)
+  const [officialLoading, setOfficialLoading] = useState(false)
 
-  const selectedConv = conversations.find(c => c.id === selectedConvId) ?? null
+  const bottomRef   = useRef<HTMLDivElement>(null)
+  const inputRef    = useRef<HTMLTextAreaElement>(null)
+  const didAutoOpen = useRef(false)
+
+  // Debug log — remove after confirming the thread renders correctly
+  console.log(
+    '[MessagesClient] selectedConvId:', selectedConvId,
+    '| selectedConv:', selectedConv?.id ?? null,
+    '| conversations.length:', conversations.length,
+    '| ids:', conversations.map(c => c.id),
+    '| showThread:', showThread,
+  )
+
+  // Keep selectedConv in sync whenever the conversations list updates.
+  useEffect(() => {
+    if (!selectedConvId) return
+    const conv = conversations.find(c => c.id === selectedConvId)
+    if (conv) setSelectedConv(conv)
+  }, [conversations, selectedConvId])
+
+  // Sync URL → state for partial re-renders where the component stays mounted
+  // but the URL changes (Next.js App Router shared-layout navigation).
+  useEffect(() => {
+    if (!urlConvId || urlConvId === selectedConvId) return
+    const conv = conversations.find(c => c.id === urlConvId) ?? null
+    setSelectedConvId(urlConvId)
+    setSelectedConv(conv)
+    setShowThread(true)
+    setMessages([])
+  }, [urlConvId]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // If the active conversation isn't in the list yet (freshly created or first ever),
+  // fetch it directly and prepend so the thread header can render right away.
+  useEffect(() => {
+    if (!selectedConvId) return
+    if (conversations.some(c => c.id === selectedConvId)) return
+
+    type RawPart = {
+      user_id:      string
+      last_read_at: string | null
+      profiles: {
+        id: string; username: string; display_name: string | null; avatar_url: string | null
+      } | { id: string; username: string; display_name: string | null; avatar_url: string | null }[] | null
+    }
+
+    supabase
+      .from('conversations')
+      .select(`id, conversation_participants ( user_id, last_read_at, profiles ( id, username, display_name, avatar_url ) )`)
+      .eq('id', selectedConvId)
+      .single()
+      .then(({ data, error }) => {
+        console.log('[MessagesClient] missing-conv fetch — data:', !!data, '| error:', error?.message)
+        if (!data) return
+        const parts     = (data.conversation_participants ?? []) as unknown as RawPart[]
+        const myPart    = parts.find(p => p.user_id === currentUserId)
+        const otherPart = parts.find(p => p.user_id !== currentUserId)
+        const rawProf   = otherPart?.profiles
+        const prof      = Array.isArray(rawProf) ? rawProf[0] : rawProf
+        if (!prof) return
+        const conv: ConversationSummary = {
+          id:         data.id,
+          lastReadAt: myPart?.last_read_at ?? null,
+          otherUser: {
+            id:           prof.id,
+            username:     prof.username,
+            display_name: prof.display_name,
+            avatar_url:   prof.avatar_url,
+          },
+          lastMessage: null,
+        }
+        setConversations(prev => prev.some(c => c.id === conv.id) ? prev : [conv, ...prev])
+        setSelectedConv(conv)
+      })
+  }, [selectedConvId, conversations, supabase, currentUserId])
 
   // Scroll to bottom whenever messages change
   useEffect(() => {
@@ -113,6 +198,9 @@ export default function MessagesClient({
                 return bt.localeCompare(at)
               }),
           )
+          setSelectedConv(prev =>
+            prev && prev.id === newMsg.conversation_id ? { ...prev, lastMessage: newMsg } : prev,
+          )
         },
       )
       .subscribe()
@@ -121,11 +209,49 @@ export default function MessagesClient({
   }, [supabase])
 
   function selectConversation(convId: string) {
+    const conv = conversations.find(c => c.id === convId) ?? null
     setSelectedConvId(convId)
+    setSelectedConv(conv)
     setShowThread(true)
     setMessages([])
     router.push(`/messages/${convId}`)
   }
+
+  async function openOfficialChat() {
+    setOfficialLoading(true)
+    try {
+      const { data } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('username', OFFICIAL_USERNAME)
+        .single()
+      if (data?.id) {
+        const result = await getOrCreateConversation(data.id)
+        if ('conversationId' in result) {
+          router.push(`/messages/${result.conversationId}`)
+        }
+      }
+    } finally {
+      setOfficialLoading(false)
+    }
+  }
+
+  // Auto-open incelicasappoficial when landing on /messages with no selection.
+  // Runs once per mount. If the conv already exists in the list, select it;
+  // otherwise create it via openOfficialChat (which navigates to /messages/<id>).
+  useEffect(() => {
+    if (didAutoOpen.current) return
+    if (urlConvId) return       // already on /messages/<id>, no auto-open needed
+    if (selectedConvId) return  // already has a selection
+    didAutoOpen.current = true
+
+    const officialConv = conversations.find(c => c.otherUser.username === OFFICIAL_USERNAME)
+    if (officialConv) {
+      selectConversation(officialConv.id)
+    } else {
+      void openOfficialChat()
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const sendMessage = useCallback(async () => {
     if (!selectedConvId || !input.trim() || sending) return
@@ -159,7 +285,7 @@ export default function MessagesClient({
 
     setSending(false)
     inputRef.current?.focus()
-  }, [selectedConvId, input, sending, supabase, currentUserId])
+  }, [selectedConvId, input, sending, supabase, currentUserId, selectedConv])
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -176,17 +302,52 @@ export default function MessagesClient({
   }
 
   return (
+    <>
     <div
       className="-mx-4 sm:mx-0 flex overflow-hidden sm:rounded-2xl border-y sm:border border-zinc-800 bg-zinc-950"
       style={{ height: 'calc(100dvh - 5rem)', minHeight: '480px' }}
     >
       {/* Left panel — conversation list */}
       <div className={`flex w-full flex-col border-r border-zinc-800 sm:w-72 sm:shrink-0 ${showThread ? 'hidden sm:flex' : 'flex'}`}>
-        <div className="shrink-0 border-b border-zinc-800 px-4 py-3.5">
+        {/* Header */}
+        <div className="shrink-0 flex items-center justify-between border-b border-zinc-800 px-4 py-3">
           <h1 className="text-base font-bold text-zinc-100">Mensagens</h1>
+          <button
+            type="button"
+            onClick={() => setShowNewModal(true)}
+            title="Nova mensagem"
+            className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-zinc-100"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 shrink-0" aria-hidden>
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+            </svg>
+            Nova
+          </button>
         </div>
 
         <div className="flex-1 overflow-y-auto">
+          {/* Pinned official chat shortcut */}
+          <button
+            type="button"
+            disabled={officialLoading}
+            onClick={() => void openOfficialChat()}
+            className="flex w-full items-center gap-3 border-b border-zinc-800/60 px-4 py-2.5 text-left transition-colors hover:bg-zinc-900 disabled:opacity-60"
+          >
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#D4537E]/20 text-base">
+              💬
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-medium text-[#D4537E]">@{OFFICIAL_USERNAME}</p>
+              <p className="truncate text-xs text-zinc-500">Falar com a equipe</p>
+            </div>
+            {officialLoading && (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="h-4 w-4 shrink-0 animate-spin text-zinc-500" aria-hidden>
+                <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+              </svg>
+            )}
+          </button>
+
           {conversations.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-2 py-16 text-center">
               <span className="text-3xl">💬</span>
@@ -204,9 +365,7 @@ export default function MessagesClient({
                   type="button"
                   onClick={() => selectConversation(conv.id)}
                   className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors ${
-                    active
-                      ? 'bg-[#D4537E]/10'
-                      : 'hover:bg-zinc-900'
+                    active ? 'bg-[#D4537E]/10' : 'hover:bg-zinc-900'
                   }`}
                 >
                   <div className="relative shrink-0">
@@ -286,12 +445,12 @@ export default function MessagesClient({
                 </p>
               )}
               {messages.map((msg, i) => {
-                const mine  = msg.sender_id === currentUserId
-                const prev  = messages[i - 1]
+                const mine      = msg.sender_id === currentUserId
+                const prev      = messages[i - 1]
                 const sameGroup = prev && prev.sender_id === msg.sender_id
                 return (
                   <div key={msg.id} className={`flex ${mine ? 'justify-end' : 'justify-start'} ${sameGroup ? 'mt-0.5' : 'mt-3'}`}>
-                    <div className={`group relative max-w-[75%]`}>
+                    <div className="group relative max-w-[75%]">
                       <div className={`rounded-2xl px-3.5 py-2 text-sm leading-relaxed ${
                         mine
                           ? 'rounded-br-sm bg-[#D4537E] text-white'
@@ -353,5 +512,7 @@ export default function MessagesClient({
         )}
       </div>
     </div>
+    {showNewModal && <NewConversationModal onClose={() => setShowNewModal(false)} />}
+    </>
   )
 }

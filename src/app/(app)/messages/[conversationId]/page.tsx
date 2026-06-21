@@ -1,8 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { createAdminClient } from '@/lib/supabase/admin'
 import MessagesClient from '@/components/messages/MessagesClient'
-import { fetchConversationList } from '../page'
+import { fetchConversationList } from '@/lib/messages'
 import type { ConversationMessage } from '@/types'
 
 export const dynamic = 'force-dynamic'
@@ -28,11 +27,9 @@ export default async function ConversationPage({
 
   if (!myPart) redirect('/messages')
 
-  const admin = createAdminClient()
-
   const [conversations, messagesResult] = await Promise.all([
     fetchConversationList(user.id),
-    admin
+    supabase
       .from('messages')
       .select('id, conversation_id, sender_id, content, created_at')
       .eq('conversation_id', conversationId)

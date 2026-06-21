@@ -1,6 +1,8 @@
 {
-  "/page": "app/page.js",
-  "/api/lastfm/route": "app/api/lastfm/route.js",
+  "/icon.svg/route": "app/icon.svg/route.js",
   "/(app)/profile/[username]/page": "app/(app)/profile/[username]/page.js",
+  "/(app)/messages/page": "app/(app)/messages/page.js",
+  "/(app)/messages/[conversationId]/page": "app/(app)/messages/[conversationId]/page.js",
+  "/(app)/notifications/page": "app/(app)/notifications/page.js",
   "/(app)/feed/page": "app/(app)/feed/page.js"
 }
