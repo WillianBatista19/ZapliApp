@@ -19,7 +19,7 @@ export async function fetchConversationList(userId: string): Promise<Conversatio
   const { data: convRows, error: convErr } = await supabase
     .from('conversations')
     .select(`
-      id, is_group, group_name, group_avatar_url, created_by,
+      id, is_group, group_name, group_avatar_url, group_description, created_by,
       conversation_participants (
         user_id,
         last_read_at,
@@ -56,11 +56,12 @@ export async function fetchConversationList(userId: string): Promise<Conversatio
   }
 
   type RawConv = {
-    id:             string
-    is_group:       boolean | null
-    group_name:     string | null
+    id:               string
+    is_group:         boolean | null
+    group_name:       string | null
     group_avatar_url: string | null
-    created_by:     string | null
+    group_description: string | null
+    created_by:       string | null
     conversation_participants: unknown
   }
 
@@ -88,15 +89,16 @@ export async function fetchConversationList(userId: string): Promise<Conversatio
     }
 
     return [{
-      id:             conv.id,
-      lastReadAt:     myPart.last_read_at ?? null,
+      id:               conv.id,
+      lastReadAt:       myPart.last_read_at ?? null,
       isGroup,
-      groupName:      conv.group_name,
-      groupAvatarUrl: conv.group_avatar_url,
-      createdBy:      conv.created_by,
+      groupName:        conv.group_name,
+      groupAvatarUrl:   conv.group_avatar_url,
+      groupDescription: conv.group_description,
+      createdBy:        conv.created_by,
       participants,
       otherUser,
-      lastMessage:    lastMsgByConv[conv.id] ?? null,
+      lastMessage:      lastMsgByConv[conv.id] ?? null,
     } satisfies ConversationSummary]
   }).sort((a, b) => {
     const at = a.lastMessage?.created_at ?? ''

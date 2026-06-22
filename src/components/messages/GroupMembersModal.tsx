@@ -3,7 +3,13 @@
 import { useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Avatar from '@/components/Avatar'
-import { addGroupMember, removeGroupMember, updateGroupName } from '@/app/(app)/messages/actions'
+import {
+  addGroupMember,
+  removeGroupMember,
+  updateGroupName,
+  updateGroupAvatar,
+  updateGroupDescription,
+} from '@/app/(app)/messages/actions'
 import type { ConversationParticipant } from '@/types'
 
 type Profile = {
@@ -14,40 +20,97 @@ type Profile = {
 }
 
 type Props = {
-  conversationId: string
-  groupName:      string
-  participants:   ConversationParticipant[]
-  createdBy:      string | null
-  currentUserId:  string
-  onGroupNameChanged:  (name: string) => void
-  onParticipantsChanged: (participants: ConversationParticipant[]) => void
+  conversationId:             string
+  groupName:                  string
+  groupAvatarUrl:             string | null
+  groupDescription:           string | null
+  participants:               ConversationParticipant[]
+  createdBy:                  string | null
+  currentUserId:              string
+  onGroupNameChanged:         (name: string) => void
+  onGroupAvatarChanged:       (url: string) => void
+  onGroupDescriptionChanged:  (desc: string) => void
+  onParticipantsChanged:      (participants: ConversationParticipant[]) => void
   onClose: () => void
 }
 
 export default function GroupMembersModal({
   conversationId,
   groupName,
+  groupAvatarUrl,
+  groupDescription,
   participants,
   createdBy,
   currentUserId,
   onGroupNameChanged,
+  onGroupAvatarChanged,
+  onGroupDescriptionChanged,
   onParticipantsChanged,
   onClose,
 }: Props) {
-  const supabase = createClient()
+  const supabase  = createClient()
   const isCreator = createdBy === currentUserId
 
-  const [editingName,  setEditingName]  = useState(false)
-  const [nameInput,    setNameInput]    = useState(groupName)
-  const [savingName,   setSavingName]   = useState(false)
-  const [query,        setQuery]        = useState('')
-  const [results,      setResults]      = useState<Profile[]>([])
+  // avatar
+  const fileRef        = useRef<HTMLInputElement>(null)
+  const [localAvatarUrl, setLocalAvatarUrl] = useState<string | null>(groupAvatarUrl)
+  const [uploading,      setUploading]      = useState(false)
+
+  // group name
+  const [editingName, setEditingName] = useState(false)
+  const [nameInput,   setNameInput]   = useState(groupName)
+  const [savingName,  setSavingName]  = useState(false)
+
+  // description
+  const [descInput,   setDescInput]   = useState(groupDescription ?? '')
+  const [savingDesc,  setSavingDesc]  = useState(false)
+
+  // members / search
+  const [query,         setQuery]         = useState('')
+  const [results,       setResults]       = useState<Profile[]>([])
   const [loadingSearch, setLoadingSearch] = useState(false)
-  const [removingId,   setRemovingId]   = useState<string | null>(null)
-  const [addingId,     setAddingId]     = useState<string | null>(null)
-  const [errorMsg,     setErrorMsg]     = useState<string | null>(null)
+  const [removingId,    setRemovingId]    = useState<string | null>(null)
+  const [addingId,      setAddingId]      = useState<string | null>(null)
+  const [errorMsg,      setErrorMsg]      = useState<string | null>(null)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+  // ── Avatar upload ───────────────────────────────────────────────────────────
+  async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploading(true)
+    setErrorMsg(null)
+
+    const ext  = file.name.split('.').pop() ?? 'jpg'
+    const path = `${conversationId}/avatar.${ext}`
+
+    const { error: uploadErr } = await supabase.storage
+      .from('group-avatars')
+      .upload(path, file, { contentType: file.type, upsert: true })
+
+    if (uploadErr) {
+      setErrorMsg('Erro ao enviar a imagem')
+      setUploading(false)
+      return
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('group-avatars')
+      .getPublicUrl(path)
+
+    const { error: saveErr } = await updateGroupAvatar(conversationId, publicUrl)
+    if (saveErr) {
+      setErrorMsg(saveErr)
+    } else {
+      setLocalAvatarUrl(publicUrl)
+      onGroupAvatarChanged(publicUrl)
+    }
+    setUploading(false)
+    // reset so the same file can be re-selected
+    e.target.value = ''
+  }
+
+  // ── Group name ──────────────────────────────────────────────────────────────
   async function saveName() {
     if (!nameInput.trim() || nameInput.trim() === groupName) { setEditingName(false); return }
     setSavingName(true)
@@ -58,6 +121,16 @@ export default function GroupMembersModal({
     setEditingName(false)
   }
 
+  // ── Description ─────────────────────────────────────────────────────────────
+  async function saveDescription() {
+    setSavingDesc(true)
+    const { error } = await updateGroupDescription(conversationId, descInput)
+    setSavingDesc(false)
+    if (error) { setErrorMsg(error); return }
+    onGroupDescriptionChanged(descInput.trim())
+  }
+
+  // ── Search ──────────────────────────────────────────────────────────────────
   async function search(q: string) {
     if (!q.trim()) { setResults([]); return }
     setLoadingSearch(true)
@@ -103,6 +176,8 @@ export default function GroupMembersModal({
     setQuery('')
   }
 
+  const letters = groupName.trim().split(/\s+/).map(w => w[0]).join('').toUpperCase().slice(0, 2) || '?'
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-end justify-center sm:items-center p-4"
@@ -116,7 +191,7 @@ export default function GroupMembersModal({
       >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-zinc-800 px-4 py-3.5">
-          <h2 className="text-sm font-bold text-zinc-100">Membros do grupo</h2>
+          <h2 className="text-sm font-bold text-zinc-100">Configurações do grupo</h2>
           <button
             type="button"
             onClick={onClose}
@@ -129,7 +204,53 @@ export default function GroupMembersModal({
           </button>
         </div>
 
-        <div className="max-h-[70vh] overflow-y-auto p-4 space-y-4">
+        <div className="max-h-[75vh] overflow-y-auto p-4 space-y-4">
+
+          {/* Group avatar */}
+          <div className="flex justify-center">
+            <div className="relative">
+              {localAvatarUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={localAvatarUrl}
+                  alt="Foto do grupo"
+                  className="h-20 w-20 rounded-full object-cover"
+                />
+              ) : (
+                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#7F77DD] text-2xl font-bold text-white">
+                  {letters}
+                </div>
+              )}
+              {isCreator && (
+                <button
+                  type="button"
+                  onClick={() => fileRef.current?.click()}
+                  disabled={uploading}
+                  aria-label="Trocar foto do grupo"
+                  className="absolute inset-0 flex items-center justify-center rounded-full bg-black/50 opacity-0 transition-opacity hover:opacity-100 focus:opacity-100 disabled:opacity-50"
+                >
+                  {uploading ? (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="h-6 w-6 animate-spin text-white" aria-hidden>
+                      <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                    </svg>
+                  ) : (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-white" aria-hidden>
+                      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                      <circle cx="12" cy="13" r="4" />
+                    </svg>
+                  )}
+                </button>
+              )}
+            </div>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              className="hidden"
+              onChange={e => void handleAvatarChange(e)}
+            />
+          </div>
+
           {/* Group name */}
           <div>
             <p className="mb-1.5 text-xs font-medium text-zinc-400">Nome do grupo</p>
@@ -141,7 +262,10 @@ export default function GroupMembersModal({
                   type="text"
                   value={nameInput}
                   onChange={e => setNameInput(e.target.value)}
-                  onKeyDown={e => { if (e.key === 'Enter') void saveName(); if (e.key === 'Escape') { setEditingName(false); setNameInput(groupName) } }}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter') void saveName()
+                    if (e.key === 'Escape') { setEditingName(false); setNameInput(groupName) }
+                  }}
                   maxLength={60}
                   className="flex-1 rounded-xl border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-[#D4537E]"
                 />
@@ -177,21 +301,55 @@ export default function GroupMembersModal({
             )}
           </div>
 
+          {/* Group description */}
+          <div>
+            <p className="mb-1.5 text-xs font-medium text-zinc-400">Descrição</p>
+            {isCreator ? (
+              <>
+                <textarea
+                  value={descInput}
+                  onChange={e => setDescInput(e.target.value.slice(0, 500))}
+                  maxLength={500}
+                  rows={3}
+                  placeholder="Sobre esse grupo…"
+                  className="w-full resize-none rounded-xl border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-600 outline-none focus:border-[#D4537E]"
+                />
+                <div className="mt-1 flex items-center justify-between">
+                  <span className="text-[10px] text-zinc-600">{descInput.length}/500</span>
+                  {descInput.trim() !== (groupDescription ?? '').trim() && (
+                    <button
+                      type="button"
+                      onClick={() => void saveDescription()}
+                      disabled={savingDesc}
+                      className="rounded-lg px-2.5 py-1 text-xs font-semibold text-[#D4537E] transition-colors hover:bg-zinc-800 disabled:opacity-50"
+                    >
+                      {savingDesc ? '…' : 'Salvar'}
+                    </button>
+                  )}
+                </div>
+              </>
+            ) : (
+              groupDescription
+                ? <p className="text-sm leading-relaxed text-zinc-400">{groupDescription}</p>
+                : <p className="text-sm text-zinc-600 italic">Sem descrição</p>
+            )}
+          </div>
+
           {/* Members list */}
           <div>
             <p className="mb-2 text-xs font-medium text-zinc-400">{participants.length} membro{participants.length !== 1 ? 's' : ''}</p>
             <div className="space-y-1">
               {participants.map(p => {
-                const isMe      = p.id === currentUserId
-                const isOwner   = p.id === createdBy
-                const removing  = removingId === p.id
+                const isMe     = p.id === currentUserId
+                const isOwner  = p.id === createdBy
+                const removing = removingId === p.id
                 return (
                   <div key={p.id} className="flex items-center gap-3 rounded-xl px-3 py-2">
                     <Avatar src={p.avatar_url} name={p.display_name || p.username} size="sm" />
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-medium text-zinc-200">
                         {p.display_name || p.username}
-                        {isMe && <span className="ml-1.5 text-xs text-zinc-500">(você)</span>}
+                        {isMe    && <span className="ml-1.5 text-xs text-zinc-500">(você)</span>}
                         {isOwner && <span className="ml-1.5 text-[10px] font-semibold text-[#7F77DD]">criador</span>}
                       </p>
                       <p className="truncate text-xs text-zinc-500">@{p.username}</p>

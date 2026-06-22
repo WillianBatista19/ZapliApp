@@ -93,6 +93,56 @@ export async function updateGroupName(
   return { error: error?.message }
 }
 
+export async function updateGroupAvatar(
+  conversationId: string,
+  avatarUrl: string,
+): Promise<{ error?: string }> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Não autenticado' }
+
+  const { data: conv } = await supabase
+    .from('conversations')
+    .select('created_by')
+    .eq('id', conversationId)
+    .single()
+
+  if ((conv as { created_by: string } | null)?.created_by !== user.id)
+    return { error: 'Apenas o criador pode alterar a foto do grupo' }
+
+  const { error } = await supabase
+    .from('conversations')
+    .update({ group_avatar_url: avatarUrl })
+    .eq('id', conversationId)
+
+  return { error: error?.message }
+}
+
+export async function updateGroupDescription(
+  conversationId: string,
+  description: string,
+): Promise<{ error?: string }> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Não autenticado' }
+
+  const { data: conv } = await supabase
+    .from('conversations')
+    .select('created_by')
+    .eq('id', conversationId)
+    .single()
+
+  if ((conv as { created_by: string } | null)?.created_by !== user.id)
+    return { error: 'Apenas o criador pode alterar a descrição' }
+
+  const { error } = await supabase
+    .from('conversations')
+    .update({ group_description: description.trim() })
+    .eq('id', conversationId)
+
+  return { error: error?.message }
+}
+
 export async function addGroupMember(
   conversationId: string,
   memberId: string,

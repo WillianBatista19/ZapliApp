@@ -128,15 +128,16 @@ export interface ConversationParticipant {
 }
 
 export interface ConversationSummary {
-  id:             string
-  lastReadAt:     string | null
-  isGroup:        boolean
-  groupName:      string | null
-  groupAvatarUrl: string | null
-  createdBy:      string | null
-  participants:   ConversationParticipant[]
-  otherUser:      ConversationParticipant | null
-  lastMessage:    ConversationMessage | null
+  id:               string
+  lastReadAt:       string | null
+  isGroup:          boolean
+  groupName:        string | null
+  groupAvatarUrl:   string | null
+  groupDescription: string | null
+  createdBy:        string | null
+  participants:     ConversationParticipant[]
+  otherUser:        ConversationParticipant | null
+  lastMessage:      ConversationMessage | null
 }
 
 export interface Post {

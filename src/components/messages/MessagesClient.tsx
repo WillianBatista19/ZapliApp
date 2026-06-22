@@ -34,7 +34,13 @@ function relativeTime(iso: string): string {
   return new Date(iso).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })
 }
 
-function GroupAvatar({ name }: { name: string }) {
+function GroupAvatar({ name, src }: { name: string; src?: string | null }) {
+  if (src) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img src={src} alt={name} className="h-8 w-8 shrink-0 rounded-full object-cover" />
+    )
+  }
   const letters = name.trim().split(/\s+/).map(w => w[0]).join('').toUpperCase().slice(0, 2) || '?'
   return (
     <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#7F77DD] text-[11px] font-bold text-white">
@@ -105,13 +111,13 @@ export default function MessagesClient({
     }
     type RawConv = {
       id: string; is_group: boolean | null; group_name: string | null
-      group_avatar_url: string | null; created_by: string | null
+      group_avatar_url: string | null; group_description: string | null; created_by: string | null
       conversation_participants: unknown
     }
 
     supabase
       .from('conversations')
-      .select(`id, is_group, group_name, group_avatar_url, created_by, conversation_participants ( user_id, last_read_at, profiles ( id, username, display_name, avatar_url ) )`)
+      .select(`id, is_group, group_name, group_avatar_url, group_description, created_by, conversation_participants ( user_id, last_read_at, profiles ( id, username, display_name, avatar_url ) )`)
       .eq('id', selectedConvId)
       .single()
       .then(({ data }) => {
@@ -138,6 +144,7 @@ export default function MessagesClient({
         const conv: ConversationSummary = {
           id: raw.id, lastReadAt: myPart.last_read_at ?? null,
           isGroup, groupName: raw.group_name, groupAvatarUrl: raw.group_avatar_url,
+          groupDescription: raw.group_description,
           createdBy: raw.created_by, participants: allParticipants, otherUser,
           lastMessage: null,
         }
@@ -353,7 +360,7 @@ export default function MessagesClient({
                 >
                   <div className="relative shrink-0">
                     {conv.isGroup
-                      ? <GroupAvatar name={convName} />
+                      ? <GroupAvatar name={convName} src={conv.groupAvatarUrl} />
                       : <Avatar src={conv.otherUser?.avatar_url} name={convName} size="sm" />}
                     {unread && (
                       <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full border-2 border-zinc-950 bg-[#D4537E]" />
@@ -403,10 +410,16 @@ export default function MessagesClient({
 
               {selectedConv.isGroup ? (
                 <>
-                  <GroupAvatar name={selectedConv.groupName || 'Grupo'} />
+                  <GroupAvatar name={selectedConv.groupName || 'Grupo'} src={selectedConv.groupAvatarUrl} />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-bold text-zinc-100 leading-none">{selectedConv.groupName || 'Grupo'}</p>
-                    <p className="text-xs text-zinc-500">{selectedConv.participants.length} membros</p>
+                    {selectedConv.groupDescription ? (
+                      <p className="truncate text-xs text-zinc-500" title={selectedConv.groupDescription}>
+                        {selectedConv.groupDescription}
+                      </p>
+                    ) : (
+                      <p className="text-xs text-zinc-500">{selectedConv.participants.length} membros</p>
+                    )}
                   </div>
                   <button
                     type="button"
@@ -529,12 +542,22 @@ export default function MessagesClient({
       <GroupMembersModal
         conversationId={selectedConv.id}
         groupName={selectedConv.groupName || 'Grupo'}
+        groupAvatarUrl={selectedConv.groupAvatarUrl}
+        groupDescription={selectedConv.groupDescription}
         participants={selectedConv.participants}
         createdBy={selectedConv.createdBy}
         currentUserId={currentUserId}
         onGroupNameChanged={name => {
           setConversations(prev => prev.map(c => c.id === selectedConv.id ? { ...c, groupName: name } : c))
           setSelectedConv(prev => prev ? { ...prev, groupName: name } : prev)
+        }}
+        onGroupAvatarChanged={url => {
+          setConversations(prev => prev.map(c => c.id === selectedConv.id ? { ...c, groupAvatarUrl: url } : c))
+          setSelectedConv(prev => prev ? { ...prev, groupAvatarUrl: url } : prev)
+        }}
+        onGroupDescriptionChanged={desc => {
+          setConversations(prev => prev.map(c => c.id === selectedConv.id ? { ...c, groupDescription: desc } : c))
+          setSelectedConv(prev => prev ? { ...prev, groupDescription: desc } : prev)
         }}
         onParticipantsChanged={parts => {
           setConversations(prev => prev.map(c => c.id === selectedConv.id ? { ...c, participants: parts } : c))
