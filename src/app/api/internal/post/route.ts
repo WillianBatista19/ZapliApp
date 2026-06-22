@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createOfficialPost } from '@/lib/officialPost'
+import { createClient } from '@supabase/supabase-js'
 
 // Internal-only endpoint for programmatic official post creation.
 // Protected by INTERNAL_API_SECRET env var.
@@ -29,6 +29,31 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
   }
 
-  await createOfficialPost(content)
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!url || !key) {
+    return NextResponse.json({ error: 'SUPABASE_SERVICE_ROLE_KEY not configured' }, { status: 500 })
+  }
+
+  const supabase = createClient(url, key, { auth: { persistSession: false } })
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('id')
+    .eq('username', 'incelicasappoficial')
+    .single()
+
+  if (!profile) {
+    return NextResponse.json({ error: 'Profile @incelicasappoficial not found' }, { status: 500 })
+  }
+
+  const { error } = await supabase
+    .from('posts')
+    .insert({ user_id: profile.id, content })
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+
   return NextResponse.json({ ok: true })
 }
