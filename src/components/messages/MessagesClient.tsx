@@ -9,10 +9,12 @@ import {
   markConversationRead,
   createMessageNotification,
   createGroupMessageNotifications,
+  updateGroupName,
 } from '@/app/(app)/messages/actions'
 import NewConversationModal from '@/components/messages/NewConversationModal'
 import NewGroupModal from '@/components/messages/NewGroupModal'
 import GroupMembersModal from '@/components/messages/GroupMembersModal'
+import GroupAvatarViewerModal from '@/components/messages/GroupAvatarViewerModal'
 import type { ConversationMessage, ConversationParticipant, ConversationSummary } from '@/types'
 
 type Props = {
@@ -71,9 +73,12 @@ export default function MessagesClient({
   const [input,            setInput]            = useState('')
   const [sending,          setSending]          = useState(false)
   const [showThread,       setShowThread]       = useState(!!initId)
-  const [showNewModal,     setShowNewModal]     = useState(false)
-  const [showGroupModal,   setShowGroupModal]   = useState(false)
-  const [showGroupMembers, setShowGroupMembers] = useState(false)
+  const [showNewModal,      setShowNewModal]      = useState(false)
+  const [showGroupModal,    setShowGroupModal]    = useState(false)
+  const [showGroupMembers,  setShowGroupMembers]  = useState(false)
+  const [showAvatarViewer,  setShowAvatarViewer]  = useState(false)
+  const [editingHeaderName, setEditingHeaderName] = useState(false)
+  const [headerNameInput,   setHeaderNameInput]   = useState('')
 
   const bottomRef      = useRef<HTMLDivElement>(null)
   const inputRef       = useRef<HTMLTextAreaElement>(null)
@@ -299,6 +304,24 @@ export default function MessagesClient({
     return selectedConvRef.current?.participants.find(p => p.id === senderId) ?? null
   }
 
+  // Reset inline name edit when switching conversations
+  useEffect(() => {
+    setEditingHeaderName(false)
+  }, [selectedConvId])
+
+  const isCreator = selectedConv?.createdBy === currentUserId
+
+  async function saveHeaderName() {
+    const trimmed = headerNameInput.trim()
+    setEditingHeaderName(false)
+    if (!trimmed || !selectedConv || trimmed === (selectedConv.groupName ?? '')) return
+    const { error } = await updateGroupName(selectedConv.id, trimmed)
+    if (!error) {
+      setConversations(prev => prev.map(c => c.id === selectedConv.id ? { ...c, groupName: trimmed } : c))
+      setSelectedConv(prev => prev ? { ...prev, groupName: trimmed } : prev)
+    }
+  }
+
   return (
     <>
     <div className="-mx-4 sm:mx-0 -mt-4 sm:mt-0 -mb-24 sm:mb-0 flex overflow-hidden sm:rounded-2xl border-y sm:border border-zinc-800 bg-zinc-950 h-[calc(100dvh-4rem)] sm:h-[calc(100dvh-8rem)] min-h-[480px]">
@@ -410,17 +433,62 @@ export default function MessagesClient({
 
               {selectedConv.isGroup ? (
                 <>
-                  <GroupAvatar name={selectedConv.groupName || 'Grupo'} src={selectedConv.groupAvatarUrl} />
+                  {/* Avatar — clickable for all members → fullscreen viewer */}
+                  <button
+                    type="button"
+                    onClick={() => setShowAvatarViewer(true)}
+                    className="shrink-0 rounded-full transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4537E]"
+                    aria-label="Ver foto do grupo"
+                  >
+                    <GroupAvatar name={selectedConv.groupName || 'Grupo'} src={selectedConv.groupAvatarUrl} />
+                  </button>
+
+                  {/* Name + info */}
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-bold text-zinc-100 leading-none">{selectedConv.groupName || 'Grupo'}</p>
-                    {selectedConv.groupDescription ? (
-                      <p className="truncate text-xs text-zinc-500" title={selectedConv.groupDescription}>
-                        {selectedConv.groupDescription}
-                      </p>
+                    {isCreator && editingHeaderName ? (
+                      <form onSubmit={e => { e.preventDefault(); void saveHeaderName() }} className="flex items-center">
+                        <input
+                          // eslint-disable-next-line jsx-a11y/no-autofocus
+                          autoFocus
+                          value={headerNameInput}
+                          onChange={e => setHeaderNameInput(e.target.value)}
+                          onKeyDown={e => {
+                            if (e.key === 'Escape') {
+                              setEditingHeaderName(false)
+                              setHeaderNameInput(selectedConv.groupName || '')
+                            }
+                          }}
+                          onBlur={() => void saveHeaderName()}
+                          maxLength={60}
+                          className="min-w-0 w-full rounded-lg border border-zinc-600 bg-zinc-800 px-2 py-0.5 text-sm font-bold text-zinc-100 outline-none focus:border-[#D4537E]"
+                        />
+                      </form>
                     ) : (
-                      <p className="text-xs text-zinc-500">{selectedConv.participants.length} membros</p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (isCreator) {
+                            setHeaderNameInput(selectedConv.groupName || '')
+                            setEditingHeaderName(true)
+                          } else {
+                            setShowGroupMembers(true)
+                          }
+                        }}
+                        className="block w-full truncate text-left text-sm font-bold text-zinc-100 leading-none transition-colors hover:text-zinc-300"
+                      >
+                        {selectedConv.groupName || 'Grupo'}
+                      </button>
                     )}
+                    <button
+                      type="button"
+                      onClick={() => setShowGroupMembers(true)}
+                      className="block max-w-full truncate text-left text-xs text-zinc-500 transition-colors hover:text-zinc-400"
+                      title={selectedConv.groupDescription || undefined}
+                    >
+                      {selectedConv.groupDescription || `${selectedConv.participants.length} membros`}
+                    </button>
                   </div>
+
                   <button
                     type="button"
                     onClick={() => setShowGroupMembers(true)}
@@ -564,6 +632,19 @@ export default function MessagesClient({
           setSelectedConv(prev => prev ? { ...prev, participants: parts } : prev)
         }}
         onClose={() => setShowGroupMembers(false)}
+      />
+    )}
+    {showAvatarViewer && selectedConv?.isGroup && (
+      <GroupAvatarViewerModal
+        src={selectedConv.groupAvatarUrl}
+        groupName={selectedConv.groupName || 'Grupo'}
+        conversationId={selectedConv.id}
+        isCreator={isCreator}
+        onAvatarChanged={url => {
+          setConversations(prev => prev.map(c => c.id === selectedConv.id ? { ...c, groupAvatarUrl: url } : c))
+          setSelectedConv(prev => prev ? { ...prev, groupAvatarUrl: url } : prev)
+        }}
+        onClose={() => setShowAvatarViewer(false)}
       />
     )}
     </>

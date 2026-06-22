@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Avatar from '@/components/Avatar'
 import {
@@ -50,6 +50,12 @@ export default function GroupMembersModal({
 }: Props) {
   const supabase  = createClient()
   const isCreator = createdBy === currentUserId
+
+  // Lock body scroll while open
+  useEffect(() => {
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = '' }
+  }, [])
 
   // avatar
   const fileRef        = useRef<HTMLInputElement>(null)
