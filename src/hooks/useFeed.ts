@@ -17,16 +17,20 @@ const POST_SELECT = `
   )
 ` as const
 
-export function useFeed() {
-  const [posts,       setPosts]       = useState<Post[]>([])
-  const [loading,     setLoading]     = useState(true)
-  const [loadingMore, setLoadingMore] = useState(false)
-  const [hasMore,     setHasMore]     = useState(true)
+export function useFeed(currentUserId: string) {
+  const [posts,        setPosts]        = useState<Post[]>([])
+  const [loading,      setLoading]      = useState(true)
+  const [loadingMore,  setLoadingMore]  = useState(false)
+  const [hasMore,      setHasMore]      = useState(true)
+  const [followsAnyone, setFollowsAnyone] = useState(false)
 
-  const supabase       = useMemo(() => createClient(), [])
-  const cursorRef      = useRef<string | null>(null)  // created_at of the oldest loaded post
+  const supabase = useMemo(() => createClient(), [])
+
+  const cursorRef      = useRef<string | null>(null)
   const hasMoreRef     = useRef(true)
   const loadingMoreRef = useRef(false)
+  // Stable ref so realtime callbacks always see the latest allowed user list
+  const allowedIdsRef  = useRef<string[]>([currentUserId])
 
   const fetchFull = useCallback(
     async (postId: string): Promise<Post | null> => {
@@ -42,9 +46,29 @@ export function useFeed() {
 
   const loadFeed = useCallback(async () => {
     setLoading(true)
+
+    // Resolve who this user follows + the official account, in parallel
+    const [followsRes, officialRes] = await Promise.all([
+      supabase.from('follows').select('following_id').eq('follower_id', currentUserId),
+      supabase.from('profiles').select('id').eq('username', 'incelicasappoficial').maybeSingle(),
+    ])
+
+    const followedIds = (followsRes.data ?? []).map(f => (f as { following_id: string }).following_id)
+    const officialId  = (officialRes.data as { id: string } | null)?.id
+
+    const allowedIds = Array.from(new Set([
+      currentUserId,
+      ...followedIds,
+      ...(officialId ? [officialId] : []),
+    ]))
+
+    allowedIdsRef.current = allowedIds
+    setFollowsAnyone(followedIds.length > 0)
+
     const { data } = await supabase
       .from('posts')
       .select(POST_SELECT)
+      .in('user_id', allowedIds)
       .order('created_at', { ascending: false })
       .limit(PAGE_SIZE)
 
@@ -55,9 +79,8 @@ export function useFeed() {
     hasMoreRef.current = more
     setHasMore(more)
     setLoading(false)
-  }, [supabase])
+  }, [supabase, currentUserId])
 
-  // Stable loadMore — checks refs internally so no stale closure issues
   const loadMore = useCallback(async () => {
     if (loadingMoreRef.current || !hasMoreRef.current || !cursorRef.current) return
     loadingMoreRef.current = true
@@ -66,6 +89,7 @@ export function useFeed() {
     const { data } = await supabase
       .from('posts')
       .select(POST_SELECT)
+      .in('user_id', allowedIdsRef.current)
       .order('created_at', { ascending: false })
       .lt('created_at', cursorRef.current)
       .limit(PAGE_SIZE)
@@ -87,8 +111,8 @@ export function useFeed() {
     loadFeed()
 
     // Batch rapid realtime inserts into a single state update
-    const batch:   Post[]                            = []
-    let   timer:   ReturnType<typeof setTimeout> | null = null
+    const batch: Post[]                              = []
+    let   timer: ReturnType<typeof setTimeout> | null = null
 
     function flush() {
       const toAdd = batch.splice(0)
@@ -108,7 +132,10 @@ export function useFeed() {
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'posts' },
         async (payload) => {
-          const post = await fetchFull(payload.new.id as string)
+          const newPost = payload.new as { user_id: string; id: string }
+          // Only surface realtime posts from users this feed actually shows
+          if (!allowedIdsRef.current.includes(newPost.user_id)) return
+          const post = await fetchFull(newPost.id)
           if (post) queuePost(post)
         },
       )
@@ -169,5 +196,5 @@ export function useFeed() {
     }
   }, [supabase, loadFeed, fetchFull])
 
-  return { posts, loading, loadMore, hasMore, loadingMore }
+  return { posts, loading, loadMore, hasMore, loadingMore, followsAnyone }
 }

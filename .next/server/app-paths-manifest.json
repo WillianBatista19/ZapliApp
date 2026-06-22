@@ -1,8 +1,10 @@
 {
-  "/(app)/notifications/page": "app/(app)/notifications/page.js",
-  "/(app)/feed/page": "app/(app)/feed/page.js",
+  "/icon.svg/route": "app/icon.svg/route.js",
+  "/api/lastfm/route": "app/api/lastfm/route.js",
   "/(app)/post/[id]/page": "app/(app)/post/[id]/page.js",
+  "/(app)/feed/page": "app/(app)/feed/page.js",
+  "/(app)/jogar/page": "app/(app)/jogar/page.js",
   "/(app)/messages/page": "app/(app)/messages/page.js",
-  "/(app)/messages/[conversationId]/page": "app/(app)/messages/[conversationId]/page.js",
-  "/(app)/jogar/page": "app/(app)/jogar/page.js"
+  "/(app)/profile/[username]/page": "app/(app)/profile/[username]/page.js",
+  "/(app)/messages/[conversationId]/page": "app/(app)/messages/[conversationId]/page.js"
 }

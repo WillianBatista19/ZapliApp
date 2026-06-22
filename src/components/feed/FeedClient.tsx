@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import Link from 'next/link'
 import { useFeed } from '@/hooks/useFeed'
 import PostCard from '@/components/feed/PostCard'
 
@@ -66,7 +67,7 @@ function SkeletonCard() {
 // ─── FeedClient ───────────────────────────────────────────────────────────────
 
 export default function FeedClient({ currentUserId, currentUserUsername }: Props) {
-  const { posts, loading, loadMore, hasMore, loadingMore } = useFeed()
+  const { posts, loading, loadMore, hasMore, loadingMore, followsAnyone } = useFeed(currentUserId)
   const sentinelRef = useRef<HTMLDivElement>(null)
 
   // Trigger loadMore when the sentinel div enters the viewport
@@ -93,6 +94,24 @@ export default function FeedClient({ currentUserId, currentUserUsername }: Props
   }
 
   if (posts.length === 0) {
+    if (!followsAnyone) {
+      return (
+        <div className="rounded-2xl border border-zinc-800 bg-zinc-900/40 px-6 py-12 text-center">
+          <p className="mb-3 text-3xl">🔍</p>
+          <p className="mb-1 text-sm font-semibold text-zinc-300">Seu feed tá vazio, incelica!</p>
+          <p className="mb-5 text-xs text-zinc-500">
+            Siga alguém para ver os posts delas aqui. Que tal explorar?
+          </p>
+          <Link
+            href="/explore"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-[#D4537E] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#c0476f]"
+          >
+            Ver tudo no Explorar
+          </Link>
+        </div>
+      )
+    }
+
     return (
       <div className="rounded-2xl border border-zinc-800 bg-zinc-900/40 px-6 py-12 text-center">
         <p className="mb-2 text-2xl">✨</p>

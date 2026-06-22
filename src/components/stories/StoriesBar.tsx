@@ -23,7 +23,7 @@ export default function StoriesBar({ currentUserId, currentUserUsername }: Props
   const loadStories = useCallback(async () => {
     const now = new Date().toISOString()
 
-    const [storiesRes, viewsRes, profileRes] = await Promise.all([
+    const [storiesRes, viewsRes, profileRes, followsRes, officialRes] = await Promise.all([
       supabase
         .from('stories')
         .select('id, user_id, media_url, created_at, expires_at, profiles!stories_user_id_fkey(id, username, display_name, avatar_url)')
@@ -38,20 +38,29 @@ export default function StoriesBar({ currentUserId, currentUserUsername }: Props
         .select('id, username, display_name, avatar_url')
         .eq('id', currentUserId)
         .single(),
+      supabase
+        .from('follows')
+        .select('following_id')
+        .eq('follower_id', currentUserId),
+      supabase
+        .from('profiles')
+        .select('id')
+        .eq('username', 'incelicasappoficial')
+        .maybeSingle(),
     ])
-
-    console.log('[StoriesBar] loadStories results', {
-      storiesError: storiesRes.error,
-      storiesCount: storiesRes.data?.length ?? 0,
-      stories: storiesRes.data,
-      viewsError: viewsRes.error,
-      profileError: profileRes.error,
-      profile: profileRes.data,
-    })
 
     const allStories = (storiesRes.data as unknown as Story[] | null) ?? []
     const viewed     = new Set((viewsRes.data ?? []).map(v => (v as { story_id: string }).story_id))
     const profile    = profileRes.data as StoryProfile | null
+
+    const followedIds = (followsRes.data ?? []).map(f => (f as { following_id: string }).following_id)
+    const officialId  = (officialRes.data as { id: string } | null)?.id
+
+    // Others shown only if followed or the official account
+    const allowedOtherIds = new Set([
+      ...followedIds,
+      ...(officialId ? [officialId] : []),
+    ])
 
     setMyProfile(profile)
     setViewedIds(viewed)
@@ -62,7 +71,7 @@ export default function StoriesBar({ currentUserId, currentUserUsername }: Props
     for (const s of allStories) {
       if (s.user_id === currentUserId) {
         mine.push(s)
-      } else {
+      } else if (allowedOtherIds.has(s.user_id)) {
         // profiles from PostgREST may come back as an array for some FK directions
         const rawProfiles = s.profiles as unknown as StoryProfile | StoryProfile[]
         const user = Array.isArray(rawProfiles) ? rawProfiles[0] : rawProfiles
