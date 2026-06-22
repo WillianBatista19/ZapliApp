@@ -448,7 +448,7 @@ export default function CommentsSection({ postId, currentUserId, highlightCommen
 
                 {/* Inline reply input */}
                 {isReplying && (
-                  <div className="ml-8 mt-2 flex gap-2">
+                  <div className="ml-8 mt-2 flex items-end gap-2">
                     <MentionInput
                       value={replyText}
                       onChange={setReplyText}
@@ -462,7 +462,7 @@ export default function CommentsSection({ postId, currentUserId, highlightCommen
                       type="button"
                       onClick={() => submitReply(comment.id)}
                       disabled={!replyText.trim() || replySubmitting}
-                      className="shrink-0 self-end rounded-xl bg-[#D4537E] px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#c0446e] disabled:cursor-not-allowed disabled:opacity-40"
+                      className="shrink-0 h-10 flex items-center justify-center rounded-xl bg-[#D4537E] px-3 text-xs font-semibold text-white transition-colors hover:bg-[#c0446e] disabled:cursor-not-allowed disabled:opacity-40"
                     >
                       {replySubmitting ? '…' : 'Enviar'}
                     </button>
@@ -476,7 +476,7 @@ export default function CommentsSection({ postId, currentUserId, highlightCommen
 
       {/* Top-level input */}
       {currentUserId && (
-        <form onSubmit={(e) => { e.preventDefault(); submitComment() }} className="flex gap-2">
+        <form onSubmit={(e) => { e.preventDefault(); submitComment() }} className="flex items-end gap-2">
           <MentionInput
             value={text}
             onChange={setText}
@@ -488,7 +488,7 @@ export default function CommentsSection({ postId, currentUserId, highlightCommen
           <button
             type="submit"
             disabled={!text.trim() || submitting}
-            className="shrink-0 self-end rounded-xl bg-[#D4537E] px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#c0446e] disabled:cursor-not-allowed disabled:opacity-40"
+            className="shrink-0 h-10 flex items-center justify-center rounded-xl bg-[#D4537E] px-3 text-xs font-semibold text-white transition-colors hover:bg-[#c0446e] disabled:cursor-not-allowed disabled:opacity-40"
           >
             {submitting ? '…' : 'Enviar'}
           </button>

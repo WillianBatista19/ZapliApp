@@ -322,7 +322,7 @@ export default function StoryViewer({
         </div>
 
         {/* ── Tap zones ─────────────────────────────────────────────── */}
-        <div className="absolute inset-0 z-20 flex" aria-hidden>
+        <div className="absolute inset-x-0 top-0 bottom-14 z-20 flex" aria-hidden>
           <div className="flex-1 cursor-pointer" onClick={goPrev} />
           <div className="flex-1 cursor-pointer" onClick={goNext} />
         </div>
@@ -357,8 +357,8 @@ export default function StoryViewer({
           </div>
         )}
 
-        {/* ── Engagement stats (z-30) ──────────────────────────────── */}
-        <div className="absolute inset-x-0 bottom-0 z-30 flex items-center px-4 py-4">
+        {/* ── Engagement stats (z-40) ──────────────────────────────── */}
+        <div className="absolute inset-x-0 bottom-0 z-40 flex items-center px-4 py-4 pointer-events-auto">
           {isOwnStory ? (
             <>
               {/* Views — clickable, opens viewers list */}

@@ -29,7 +29,7 @@ export default function MentionInput({
   rows = 1,
 }: Props) {
   const supabase     = useMemo(() => createClient(), [])
-  const textareaRef  = useRef<HTMLTextAreaElement>(null)
+  const textareaRef  = useRef<HTMLInputElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const debounceRef  = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -88,7 +88,7 @@ export default function MentionInput({
     scheduleSearch(mention)
   }
 
-  function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     onChange(e.target.value)
     detect(e.target.value, e.target.selectionStart ?? e.target.value.length)
   }
@@ -99,7 +99,7 @@ export default function MentionInput({
     if (el) detect(el.value, el.selectionStart ?? 0)
   }
 
-  function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Escape') {
       setSuggestions([])
       setActiveMention(null)
@@ -138,16 +138,16 @@ export default function MentionInput({
 
   return (
     <div ref={containerRef} className="relative min-w-0 flex-1">
-      <textarea
+      <input
         ref={textareaRef}
+        type="text"
         value={value}
         onChange={handleChange}
         onSelect={handleSelect}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         disabled={disabled}
-        rows={rows}
-        className="w-full resize-none rounded-xl border border-zinc-700 bg-zinc-800 px-3 py-2 text-xs text-zinc-100 placeholder-zinc-600 outline-none focus:border-[#D4537E]/50 focus:ring-1 focus:ring-[#D4537E] disabled:opacity-50"
+        className="w-full h-10 rounded-xl border border-zinc-700 bg-zinc-800 px-3 text-xs text-zinc-100 placeholder-zinc-600 outline-none focus:border-[#D4537E]/50 focus:ring-1 focus:ring-[#D4537E] disabled:opacity-50"
       />
 
       {suggestions.length > 0 && (

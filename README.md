@@ -290,7 +290,7 @@ Adicione as variáveis de ambiente no painel do Vercel em **Settings → Environ
 ## Funcionalidades planejadas
 
 - [✅] Mensagens diretas entre usuários
-- [ ] Grupos de mensagem
+- [✅] Grupos de mensagem
 - [ ] Comunidades temáticas por interesse
 - [ ] Notificações push no celular (Web Push API)
 - [ ] Busca de posts por palavra-chave
