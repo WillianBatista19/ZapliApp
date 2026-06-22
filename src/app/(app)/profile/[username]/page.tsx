@@ -114,6 +114,11 @@ export default async function ProfilePage({ params, searchParams }: Props) {
 
   const isOwnProfile = user.id === profile.id
 
+  const currentUserUsername = isOwnProfile
+    ? profile.username
+    : await supabase.from('profiles').select('username').eq('id', user.id).single()
+        .then(({ data }) => (data as { username: string } | null)?.username ?? null)
+
   const [postsRes, followersRes, followingRes] = await Promise.all([
     supabase
       .from('posts')
@@ -146,6 +151,7 @@ export default async function ProfilePage({ params, searchParams }: Props) {
       <ProfileInteractive
         profile={profile}
         currentUserId={user.id}
+        currentUserUsername={currentUserUsername}
         isOwnProfile={isOwnProfile}
         postCount={postCount}
         initialFollowerCount={followerCount}

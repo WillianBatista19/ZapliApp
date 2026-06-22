@@ -6,9 +6,9 @@ import Avatar from '@/components/Avatar'
 import StoryViewer from '@/components/stories/StoryViewer'
 import type { Story, StoryGroup, StoryProfile } from '@/types'
 
-type Props = { currentUserId: string }
+type Props = { currentUserId: string; currentUserUsername?: string | null }
 
-export default function StoriesBar({ currentUserId }: Props) {
+export default function StoriesBar({ currentUserId, currentUserUsername }: Props) {
   const supabase = useMemo(() => createClient(), [])
   const fileRef  = useRef<HTMLInputElement>(null)
 
@@ -267,6 +267,7 @@ export default function StoriesBar({ currentUserId }: Props) {
           groups={viewerGroups}
           initialGroupIndex={activeGroupIndex}
           currentUserId={currentUserId}
+          currentUserUsername={currentUserUsername}
           viewedIds={viewedIds}
           onMarkViewed={handleMarkViewed}
           onStoryDeleted={handleStoryDeleted}

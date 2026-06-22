@@ -23,18 +23,20 @@ type Profile = {
 }
 
 type Props = {
-  profile:              Profile
-  currentUserId:        string
-  isOwnProfile:         boolean
-  postCount:            number
-  initialFollowerCount: number
-  followingCount:       number
-  openStory?:           boolean
+  profile:               Profile
+  currentUserId:         string
+  currentUserUsername?:  string | null
+  isOwnProfile:          boolean
+  postCount:             number
+  initialFollowerCount:  number
+  followingCount:        number
+  openStory?:            boolean
 }
 
 export default function ProfileInteractive({
   profile,
   currentUserId,
+  currentUserUsername,
   isOwnProfile,
   postCount,
   initialFollowerCount,
@@ -207,6 +209,7 @@ export default function ProfileInteractive({
           groups={[storyGroup]}
           initialGroupIndex={0}
           currentUserId={currentUserId}
+          currentUserUsername={currentUserUsername}
           viewedIds={viewedIds}
           onMarkViewed={(storyId) => {
             setViewedIds(prev => { const n = new Set(prev); n.add(storyId); return n })

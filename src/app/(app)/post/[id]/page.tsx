@@ -25,6 +25,12 @@ export default async function PostPage({ params, searchParams }: Props) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
+  const { data: currentProfile } = await supabase
+    .from('profiles')
+    .select('username')
+    .eq('id', user.id)
+    .single()
+
   const { data: post } = await supabase
     .from('posts')
     .select(POST_SELECT)
@@ -48,6 +54,7 @@ export default async function PostPage({ params, searchParams }: Props) {
       <PostCard
         post={post as unknown as Post}
         currentUserId={user.id}
+        currentUserUsername={currentProfile?.username ?? null}
         initialShowComments
         highlightCommentId={highlightCommentId}
       />

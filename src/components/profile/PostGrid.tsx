@@ -22,14 +22,22 @@ type Props = {
 export default async function PostGrid({ userId, displayName, currentUserId }: Props) {
   const supabase = await createClient()
 
-  const { data } = await supabase
-    .from('posts')
-    .select(POST_SELECT)
-    .eq('user_id', userId)
-    .order('created_at', { ascending: false })
-    .limit(50)
+  const [{ data }, { data: currentProfile }] = await Promise.all([
+    supabase
+      .from('posts')
+      .select(POST_SELECT)
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+      .limit(50),
+    supabase
+      .from('profiles')
+      .select('username')
+      .eq('id', currentUserId)
+      .single(),
+  ])
 
   const posts = (data as unknown as Post[] | null) ?? []
+  const currentUserUsername = (currentProfile as { username: string } | null)?.username ?? null
 
   if (posts.length === 0) {
     return (
@@ -45,7 +53,7 @@ export default async function PostGrid({ userId, displayName, currentUserId }: P
   return (
     <div className="space-y-4">
       {posts.map((post) => (
-        <PostCard key={post.id} post={post} currentUserId={currentUserId} />
+        <PostCard key={post.id} post={post} currentUserId={currentUserId} currentUserUsername={currentUserUsername} />
       ))}
     </div>
   )

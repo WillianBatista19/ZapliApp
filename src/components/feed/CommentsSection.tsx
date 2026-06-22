@@ -22,16 +22,18 @@ type CommentRow = {
 }
 
 type Props = {
-  postId:              string
-  currentUserId:       string | null
-  highlightCommentId?: string | null
+  postId:               string
+  currentUserId:        string | null
+  currentUserUsername?: string | null
+  highlightCommentId?:  string | null
 }
 
 const SELECT = 'id, user_id, parent_id, content, created_at, profiles (display_name, username, avatar_url), comment_likes (id, user_id)'
 
 const BLANK_PROFILE = { display_name: null, username: '', avatar_url: null } as const
 
-export default function CommentsSection({ postId, currentUserId, highlightCommentId }: Props) {
+export default function CommentsSection({ postId, currentUserId, currentUserUsername, highlightCommentId }: Props) {
+  const isModerator = currentUserUsername === 'incelicasappoficial'
   const supabase = useMemo(() => createClient(), [])
 
   const [all,             setAll]             = useState<CommentRow[]>([])
@@ -274,17 +276,19 @@ export default function CommentsSection({ postId, currentUserId, highlightCommen
                       <span className="text-xs font-semibold text-zinc-300">{authorName}</span>
                       {isVerified(comment.profiles.username) && <VerifiedBadge />}
                       <span className="text-[10px] text-zinc-600">{relativeTime(comment.created_at)}</span>
-                      {currentUserId === comment.user_id && (
+                      {(currentUserId === comment.user_id || isModerator) && (
                         <div className="ml-auto flex items-center gap-1">
-                          <button
-                            type="button"
-                            onClick={() => startEdit(comment)}
-                            aria-label="Editar comentário"
-                            title="Editar"
-                            className="rounded p-1.5 text-zinc-500 transition-colors hover:text-zinc-100 dark:text-zinc-400 dark:hover:text-zinc-100"
-                          >
-                            <MiniPencilIcon />
-                          </button>
+                          {currentUserId === comment.user_id && (
+                            <button
+                              type="button"
+                              onClick={() => startEdit(comment)}
+                              aria-label="Editar comentário"
+                              title="Editar"
+                              className="rounded p-1.5 text-zinc-500 transition-colors hover:text-zinc-100 dark:text-zinc-400 dark:hover:text-zinc-100"
+                            >
+                              <MiniPencilIcon />
+                            </button>
+                          )}
                           <button
                             type="button"
                             onClick={() => setDeleteId(comment.id)}
@@ -379,17 +383,19 @@ export default function CommentsSection({ postId, currentUserId, highlightCommen
                               <span className="text-xs font-semibold text-zinc-300">{replyAuthor}</span>
                               {isVerified(reply.profiles.username) && <VerifiedBadge />}
                               <span className="text-[10px] text-zinc-600">{relativeTime(reply.created_at)}</span>
-                              {currentUserId === reply.user_id && (
+                              {(currentUserId === reply.user_id || isModerator) && (
                                 <div className="ml-auto flex items-center gap-1">
-                                  <button
-                                    type="button"
-                                    onClick={() => startEdit(reply)}
-                                    aria-label="Editar resposta"
-                                    title="Editar"
-                                    className="rounded p-1.5 text-zinc-500 transition-colors hover:text-zinc-100 dark:text-zinc-400 dark:hover:text-zinc-100"
-                                  >
-                                    <MiniPencilIcon />
-                                  </button>
+                                  {currentUserId === reply.user_id && (
+                                    <button
+                                      type="button"
+                                      onClick={() => startEdit(reply)}
+                                      aria-label="Editar resposta"
+                                      title="Editar"
+                                      className="rounded p-1.5 text-zinc-500 transition-colors hover:text-zinc-100 dark:text-zinc-400 dark:hover:text-zinc-100"
+                                    >
+                                      <MiniPencilIcon />
+                                    </button>
+                                  )}
                                   <button
                                     type="button"
                                     onClick={() => setDeleteId(reply.id)}

@@ -13,19 +13,21 @@ import { createStoryLikeNotification } from '@/app/(app)/stories/actions'
 const DURATION_MS = 5000
 
 type Props = {
-  groups:            StoryGroup[]
-  initialGroupIndex: number
-  currentUserId:     string
-  viewedIds:         Set<string>
-  onMarkViewed:      (storyId: string) => void
-  onStoryDeleted:    (storyId: string) => void
-  onClose:           () => void
+  groups:               StoryGroup[]
+  initialGroupIndex:    number
+  currentUserId:        string
+  currentUserUsername?: string | null
+  viewedIds:            Set<string>
+  onMarkViewed:         (storyId: string) => void
+  onStoryDeleted:       (storyId: string) => void
+  onClose:              () => void
 }
 
 export default function StoryViewer({
   groups: initialGroups,
   initialGroupIndex,
   currentUserId,
+  currentUserUsername,
   viewedIds,
   onMarkViewed,
   onStoryDeleted,
@@ -252,6 +254,7 @@ export default function StoryViewer({
   const profile        = story.profiles
   const name           = profile.display_name || profile.username
   const isOwnStory     = story.user_id === currentUserId
+  const isModerator    = currentUserUsername === 'incelicasappoficial'
   const groupStories   = group.stories
 
   return createPortal(
@@ -300,7 +303,7 @@ export default function StoryViewer({
             <p className="text-[10px] text-white/60">{relativeTime(story.created_at)}</p>
           </div>
 
-          {isOwnStory && (
+          {(isOwnStory || isModerator) && (
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); setConfirmingDelete(true) }}

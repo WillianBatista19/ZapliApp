@@ -1,7 +1,9 @@
 {
-  "/(app)/jogar/admin/page": "app/(app)/jogar/admin/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/icon.svg/route": "app/icon.svg/route.js",
   "/(app)/feed/page": "app/(app)/feed/page.js",
+  "/(app)/jogar/admin/page": "app/(app)/jogar/admin/page.js",
   "/(app)/post/[id]/page": "app/(app)/post/[id]/page.js",
-  "/(app)/notifications/page": "app/(app)/notifications/page.js",
-  "/(app)/profile/[username]/page": "app/(app)/profile/[username]/page.js"
+  "/(app)/profile/[username]/page": "app/(app)/profile/[username]/page.js",
+  "/(app)/notifications/page": "app/(app)/notifications/page.js"
 }

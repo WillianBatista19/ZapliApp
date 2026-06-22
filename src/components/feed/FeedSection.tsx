@@ -12,10 +12,10 @@ type Props = {
 export default function FeedSection({ currentUserId, profile }: Props) {
   return (
     <div className="space-y-4">
-      <StoriesBar currentUserId={currentUserId} />
+      <StoriesBar currentUserId={currentUserId} currentUserUsername={profile.username} />
       <PostComposer profile={profile} />
       <DailyGameCard />
-      <FeedClient currentUserId={currentUserId} />
+      <FeedClient currentUserId={currentUserId} currentUserUsername={profile.username} />
     </div>
   )
 }

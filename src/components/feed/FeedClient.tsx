@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useFeed } from '@/hooks/useFeed'
 import PostCard from '@/components/feed/PostCard'
 
-type Props = { currentUserId: string }
+type Props = { currentUserId: string; currentUserUsername?: string | null }
 
 // ─── VirtualPost — collapses posts far outside the viewport ──────────────────
 // Keeps the same ref div always in DOM (always observed) so scroll position
@@ -65,7 +65,7 @@ function SkeletonCard() {
 
 // ─── FeedClient ───────────────────────────────────────────────────────────────
 
-export default function FeedClient({ currentUserId }: Props) {
+export default function FeedClient({ currentUserId, currentUserUsername }: Props) {
   const { posts, loading, loadMore, hasMore, loadingMore } = useFeed()
   const sentinelRef = useRef<HTMLDivElement>(null)
 
@@ -107,7 +107,7 @@ export default function FeedClient({ currentUserId }: Props) {
     <div className="space-y-4">
       {posts.map(post => (
         <VirtualPost key={post.id}>
-          <PostCard post={post} currentUserId={currentUserId} />
+          <PostCard post={post} currentUserId={currentUserId} currentUserUsername={currentUserUsername} />
         </VirtualPost>
       ))}
 

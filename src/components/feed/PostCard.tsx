@@ -39,15 +39,16 @@ type CommentPreview = {
 type PreviewRow = CommentPreview & { created_at: string; comment_likes: { id: string }[] }
 
 type Props = {
-  post:                 Post
-  currentUserId:        string | null
-  initialShowComments?: boolean
-  highlightCommentId?:  string | null
+  post:                  Post
+  currentUserId:         string | null
+  currentUserUsername?:  string | null
+  initialShowComments?:  boolean
+  highlightCommentId?:   string | null
 }
 
 // ─── PostCard (memoized) ─────────────────────────────────────────────────────
 
-const PostCard = memo(function PostCard({ post, currentUserId, initialShowComments = false, highlightCommentId }: Props) {
+const PostCard = memo(function PostCard({ post, currentUserId, currentUserUsername, initialShowComments = false, highlightCommentId }: Props) {
   const [showComments,    setShowComments]    = useState(initialShowComments)
   const [deleted,         setDeleted]         = useState(false)
   const [deleting,        setDeleting]        = useState(false)
@@ -62,9 +63,10 @@ const PostCard = memo(function PostCard({ post, currentUserId, initialShowCommen
   const [editSaving,      setEditSaving]      = useState(false)
   const [showVibesModal,  setShowVibesModal]  = useState(false)
 
-  const supabase = useMemo(() => createClient(), [])
-  const profile  = post.profiles
-  const isOwner  = Boolean(currentUserId && currentUserId === post.user_id)
+  const supabase    = useMemo(() => createClient(), [])
+  const profile     = post.profiles
+  const isOwner     = Boolean(currentUserId && currentUserId === post.user_id)
+  const isModerator = currentUserUsername === 'incelicasappoficial'
 
   console.log('[PostCard]', post.id, '| image_url:', post.image_url)
 
@@ -168,7 +170,7 @@ const PostCard = memo(function PostCard({ post, currentUserId, initialShowCommen
             <span className="text-zinc-700">·</span>
             <time dateTime={post.created_at}>{relativeTime(post.created_at)}</time>
 
-            {isOwner && (
+            {(isOwner || isModerator) && (
               <button
                 type="button"
                 onClick={() => setShowDeleteModal(true)}
@@ -201,7 +203,7 @@ const PostCard = memo(function PostCard({ post, currentUserId, initialShowCommen
           {!showComments && previewComment && (
             <CommentPreviewBanner preview={previewComment} onClick={() => setShowComments(true)} />
           )}
-          {showComments && <CommentsSection postId={post.id} currentUserId={currentUserId} highlightCommentId={highlightCommentId} />}
+          {showComments && <CommentsSection postId={post.id} currentUserId={currentUserId} currentUserUsername={currentUserUsername} highlightCommentId={highlightCommentId} />}
         </article>
 
         {showDeleteModal && (
@@ -254,7 +256,7 @@ const PostCard = memo(function PostCard({ post, currentUserId, initialShowCommen
             )}
           </div>
 
-          {isOwner && (
+          {(isOwner || isModerator) && (
             <div className="relative ml-1 shrink-0">
               <button
                 type="button"
@@ -268,14 +270,16 @@ const PostCard = memo(function PostCard({ post, currentUserId, initialShowCommen
                 <>
                   <div className="fixed inset-0 z-10" onClick={() => setShowMenu(false)} />
                   <div className="absolute right-0 top-full z-20 mt-1 w-36 overflow-hidden rounded-xl border border-zinc-700 bg-zinc-900 shadow-xl">
-                    <button
-                      type="button"
-                      onClick={startPostEdit}
-                      className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-zinc-300 transition-colors hover:bg-zinc-800"
-                    >
-                      <PencilIcon className="h-3.5 w-3.5 shrink-0" />
-                      Editar
-                    </button>
+                    {isOwner && (
+                      <button
+                        type="button"
+                        onClick={startPostEdit}
+                        className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-zinc-300 transition-colors hover:bg-zinc-800"
+                      >
+                        <PencilIcon className="h-3.5 w-3.5 shrink-0" />
+                        Editar
+                      </button>
+                    )}
                     <button
                       type="button"
                       onClick={() => { setShowMenu(false); setShowDeleteModal(true) }}
@@ -352,7 +356,7 @@ const PostCard = memo(function PostCard({ post, currentUserId, initialShowCommen
         {!showComments && previewComment && (
           <CommentPreviewBanner preview={previewComment} onClick={() => setShowComments(true)} />
         )}
-        {showComments && <CommentsSection postId={post.id} currentUserId={currentUserId} />}
+        {showComments && <CommentsSection postId={post.id} currentUserId={currentUserId} currentUserUsername={currentUserUsername} />}
       </article>
 
       {showDeleteModal && (

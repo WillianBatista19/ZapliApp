@@ -31,6 +31,12 @@ export default async function HashtagPage({
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
+  const { data: currentProfile } = await supabase
+    .from('profiles')
+    .select('username')
+    .eq('id', user.id)
+    .single()
+
   // Get post IDs that carry this hashtag, newest first
   const { data: hashRows } = await supabase
     .from('hashtags')
@@ -91,7 +97,7 @@ export default async function HashtagPage({
         ) : (
           <div className="space-y-4">
             {posts.map(post => (
-              <PostCard key={post.id} post={post} currentUserId={user.id} />
+              <PostCard key={post.id} post={post} currentUserId={user.id} currentUserUsername={currentProfile?.username ?? null} />
             ))}
           </div>
         )}
