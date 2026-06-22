@@ -294,14 +294,11 @@ export default function MessagesClient({
 
   return (
     <>
-    <div
-      className="-mx-4 sm:mx-0 flex overflow-hidden sm:rounded-2xl border-y sm:border border-zinc-800 bg-zinc-950"
-      style={{ height: 'calc(100dvh - 5rem)', minHeight: '480px' }}
-    >
+    <div className="-mx-4 sm:mx-0 -mt-4 sm:mt-0 -mb-24 sm:mb-0 flex overflow-hidden sm:rounded-2xl border-y sm:border border-zinc-800 bg-zinc-950 h-[calc(100dvh-4rem)] sm:h-[calc(100dvh-8rem)] min-h-[480px]">
       {/* Left panel — conversation list */}
       <div className={`flex w-full flex-col border-r border-zinc-800 sm:w-72 sm:shrink-0 ${showThread ? 'hidden sm:flex' : 'flex'}`}>
-        <div className="shrink-0 border-b border-zinc-800 px-3 py-2.5">
-          <div className="flex items-center justify-between gap-1">
+        <div className="flex shrink-0 h-14 items-center border-b border-zinc-800 px-4">
+          <div className="flex flex-1 items-center justify-between gap-1">
             <h1 className="text-base font-bold text-zinc-100">Mensagens</h1>
             <div className="flex items-center gap-1">
               <button
@@ -392,7 +389,7 @@ export default function MessagesClient({
         {selectedConv ? (
           <>
             {/* Thread header */}
-            <div className="flex shrink-0 items-center gap-3 border-b border-zinc-800 px-4 py-3">
+            <div className="flex shrink-0 h-14 items-center gap-3 border-b border-zinc-800 px-4">
               <button
                 type="button"
                 onClick={() => setShowThread(false)}
@@ -489,7 +486,7 @@ export default function MessagesClient({
                   onKeyDown={handleKeyDown}
                   placeholder="Escreva uma mensagem…"
                   rows={1}
-                  className="flex-1 resize-none rounded-xl border border-zinc-700 bg-zinc-900 px-3.5 py-2.5 text-sm text-zinc-100 placeholder-zinc-600 outline-none transition-colors focus:border-[#D4537E]/60 focus:ring-1 focus:ring-[#D4537E]/30"
+                  className="no-scrollbar flex-1 resize-none rounded-xl border border-zinc-700 bg-zinc-900 px-3.5 py-2.5 text-sm text-zinc-100 placeholder-zinc-600 outline-none transition-colors focus:border-[#D4537E]/60 focus:ring-1 focus:ring-[#D4537E]/30"
                   style={{ maxHeight: '120px' }}
                   onInput={e => {
                     const el = e.currentTarget

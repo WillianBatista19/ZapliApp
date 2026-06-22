@@ -1,7 +1,6 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import { createOfficialPost } from '@/lib/officialPost'
 
 export async function submitChangelogEntry(
   version: string,

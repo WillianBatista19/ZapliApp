@@ -99,6 +99,11 @@
 
 /* ─── Component utilities ───────────────────────────────────────────────────── */
 @layer components {
+  .no-scrollbar {
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+  }
+
   .input-base {
     @apply w-full rounded-xl bg-zinc-800/60 border border-zinc-800
            px-4 py-3 text-sm text-zinc-100 placeholder-zinc-600

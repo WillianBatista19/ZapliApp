@@ -1,14 +1,9 @@
 {
   "pages": {
-    "/(app)/post/[id]/page": [
+    "/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(app)/post/[id]/page.js"
-    ],
-    "/(app)/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(app)/layout.js"
+      "static/chunks/app/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
@@ -16,35 +11,30 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/(app)/notifications/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(app)/notifications/page.js"
-    ],
     "/(app)/feed/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/(app)/feed/page.js"
     ],
-    "/(app)/profile/[username]/page": [
+    "/(app)/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(app)/profile/[username]/page.js"
+      "static/chunks/app/(app)/layout.js"
     ],
-    "/(app)/explore/page": [
+    "/(app)/jogar/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(app)/explore/page.js"
+      "static/chunks/app/(app)/jogar/page.js"
     ],
-    "/(auth)/login/page": [
+    "/(app)/jogar/admin/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(auth)/login/page.js"
+      "static/chunks/app/(app)/jogar/admin/page.js"
     ],
-    "/(auth)/layout": [
+    "/changelog/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(auth)/layout.js"
+      "static/chunks/app/changelog/page.js"
     ],
     "/(app)/messages/page": [
       "static/chunks/webpack.js",
@@ -56,10 +46,10 @@
       "static/chunks/main-app.js",
       "static/chunks/app/(app)/messages/[conversationId]/page.js"
     ],
-    "/_not-found/page": [
+    "/(app)/profile/[username]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/_not-found/page.js"
+      "static/chunks/app/(app)/profile/[username]/page.js"
     ]
   }
 }
