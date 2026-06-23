@@ -1,9 +1,9 @@
 {
   "pages": {
-    "/(app)/communities/[slug]/page": [
+    "/(app)/jogar/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(app)/communities/[slug]/page.js"
+      "static/chunks/app/(app)/jogar/page.js"
     ],
     "/(app)/layout": [
       "static/chunks/webpack.js",
@@ -21,25 +21,25 @@
       "static/chunks/main-app.js",
       "static/chunks/app/(app)/feed/page.js"
     ],
-    "/(app)/jogar/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(app)/jogar/page.js"
-    ],
     "/(app)/communities/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/(app)/communities/page.js"
     ],
-    "/(app)/communities/[slug]/settings/page": [
+    "/(app)/communities/[slug]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(app)/communities/[slug]/settings/page.js"
+      "static/chunks/app/(app)/communities/[slug]/page.js"
     ],
-    "/(app)/notifications/page": [
+    "/(app)/communities/musica/avaliar/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(app)/notifications/page.js"
+      "static/chunks/app/(app)/communities/musica/avaliar/page.js"
+    ],
+    "/(app)/communities/musica/avaliar/[albumId]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(app)/communities/musica/avaliar/[albumId]/page.js"
     ],
     "/(app)/jogar/admin/page": [
       "static/chunks/webpack.js",
@@ -50,16 +50,6 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/changelog/page.js"
-    ],
-    "/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
-    ],
-    "/(app)/profile/[username]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(app)/profile/[username]/page.js"
     ]
   }
 }

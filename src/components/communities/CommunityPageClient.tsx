@@ -11,7 +11,7 @@ import JoinButton from './JoinButton'
 import CommunityAvatarModal from './CommunityAvatarModal'
 import { toggleNotificationsMuted } from '@/app/(app)/communities/actions'
 
-type Tab = 'posts' | 'members'
+type Tab = 'posts' | 'members' | 'jogos'
 
 interface Props {
   community:          Community
@@ -143,14 +143,14 @@ export default function CommunityPageClient({
 
       {/* Tabs */}
       <div className="flex gap-1 border-b border-white/10">
-        {(['posts', 'members'] as Tab[]).map(t => (
+        {(['posts', 'members', ...(community.slug === 'musica' ? ['jogos' as Tab] : [])] as Tab[]).map(t => (
           <button
             key={t}
             onClick={() => setTab(t)}
             className={`px-4 py-2 text-sm font-medium transition
               ${tab === t ? 'text-[#D4537E] border-b-2 border-[#D4537E]' : 'text-zinc-400 hover:text-white'}`}
           >
-            {t === 'posts' ? 'Posts' : `Membros (${members.length})`}
+            {t === 'posts' ? 'Posts' : t === 'members' ? `Membros (${members.length})` : '🎮 Jogos'}
           </button>
         ))}
       </div>
@@ -174,6 +174,26 @@ export default function CommunityPageClient({
               />
             ))
           )}
+        </div>
+      )}
+
+      {tab === 'jogos' && (
+        <div className="space-y-4">
+          <Link
+            href="/communities/musica/avaliar"
+            className="flex items-center gap-4 rounded-xl bg-white/5 p-4 hover:bg-white/10 transition-colors"
+          >
+            <div className="w-14 h-14 rounded-xl bg-[#D4537E]/20 flex items-center justify-center text-3xl shrink-0">
+              🎵
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-white">Avaliar Álbum</p>
+              <p className="text-sm text-zinc-400 mt-0.5">
+                Dê nota para cada faixa, escolha seus favoritos e veja o ranking da comunidade
+              </p>
+            </div>
+            <span className="text-zinc-600 shrink-0">→</span>
+          </Link>
         </div>
       )}
 

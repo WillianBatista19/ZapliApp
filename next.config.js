@@ -13,6 +13,8 @@ const nextConfig = {
       { protocol: 'https', hostname: 'i.gr-assets.com' },
       { protocol: 'https', hostname: 'images.gr-assets.com' },
       { protocol: 'https', hostname: 's.gr-assets.com' },
+      { protocol: 'https', hostname: 'i.scdn.co' },
+      { protocol: 'https', hostname: 'mosaic.scdn.co' },
     ],
   },
 }

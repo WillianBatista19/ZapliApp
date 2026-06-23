@@ -134,6 +134,14 @@ export default async function ProfilePage({ params, searchParams }: Props) {
     : await supabase.from('profiles').select('username').eq('id', user.id).single()
         .then(({ data }) => (data as { username: string } | null)?.username ?? null)
 
+  const { data: albumRatings } = await supabase
+    .from('album_ratings')
+    .select('album_id, album_name, artist_name, cover_url, overall_score')
+    .eq('user_id', profile.id)
+    .not('overall_score', 'is', null)
+    .order('overall_score', { ascending: false })
+    .limit(5)
+
   const [postsRes, followersRes, followingRes] = await Promise.all([
     supabase
       .from('posts')
@@ -153,13 +161,14 @@ export default async function ProfilePage({ params, searchParams }: Props) {
   const followerCount  = followersRes.count  ?? 0
   const followingCount = followingRes.count  ?? 0
 
-  const hasMusic     = !!profile.lastfm_username
-  const hasMedia     = !!(watching || favoriteFilm)
-  const hasReading   = !!(reading || favoriteBook)
-  const hasGaming    = !!profile.steam_id
-  const hasAnime     = !!profile.anime_title
-  const hasGoodreads = !!profile.goodreads_book_title
-  const hasAny       = hasMusic || hasMedia || hasReading || hasGaming || hasAnime || hasGoodreads
+  const hasMusic        = !!profile.lastfm_username
+  const hasMedia        = !!(watching || favoriteFilm)
+  const hasReading      = !!(reading || favoriteBook)
+  const hasGaming       = !!profile.steam_id
+  const hasAnime        = !!profile.anime_title
+  const hasGoodreads    = !!profile.goodreads_book_title
+  const hasAlbumRatings = !!(albumRatings?.length)
+  const hasAny          = hasMusic || hasMedia || hasReading || hasGaming || hasAnime || hasGoodreads || hasAlbumRatings
 
   return (
     <div className="space-y-4 pb-12">
@@ -240,6 +249,43 @@ export default async function ProfilePage({ params, searchParams }: Props) {
                 coverUrl={profile.goodreads_cover_url  as string | null}
                 rating={profile.goodreads_rating       as number | null}
               />
+            </AccordionSection>
+          )}
+
+          {hasAlbumRatings && (
+            <AccordionSection id="albums" label="🎵 Avaliações de Álbuns">
+              <div className="space-y-2">
+                {(albumRatings ?? []).map((r, i) => (
+                  <a
+                    key={r.album_id}
+                    href={`/communities/musica/avaliar/${r.album_id}`}
+                    className="flex items-center gap-3 rounded-xl border border-zinc-800 bg-zinc-900/40 p-3 hover:bg-zinc-800/60 transition-colors"
+                  >
+                    <span className="text-xs text-zinc-600 w-4 shrink-0 text-right">{i + 1}</span>
+                    {r.cover_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={r.cover_url} alt={r.album_name} className="h-10 w-10 shrink-0 rounded-lg object-cover" />
+                    ) : (
+                      <div className="h-10 w-10 shrink-0 rounded-lg bg-zinc-800 flex items-center justify-center text-lg">🎵</div>
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-zinc-100 truncate">{r.album_name}</p>
+                      <p className="text-xs text-zinc-500 truncate">{r.artist_name}</p>
+                    </div>
+                    {r.overall_score != null && (
+                      <span className="shrink-0 text-sm font-bold text-[#D4537E]">
+                        {(r.overall_score as number).toFixed(1)}
+                      </span>
+                    )}
+                  </a>
+                ))}
+                <a
+                  href="/communities/musica/avaliar"
+                  className="block text-center text-xs text-zinc-600 hover:text-zinc-400 pt-1 transition-colors"
+                >
+                  Ver todas as avaliações →
+                </a>
+              </div>
             </AccordionSection>
           )}
         </AccordionRoot>
