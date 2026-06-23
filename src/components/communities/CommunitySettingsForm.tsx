@@ -1,7 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
 import type { Community } from '@/types'
 import { updateCommunitySettings, deleteCommunity } from '@/app/(app)/communities/actions'
 
@@ -10,26 +12,66 @@ interface Props {
 }
 
 export default function CommunitySettingsForm({ community }: Props) {
-  const router = useRouter()
+  const router   = useRouter()
+  const supabase = useMemo(() => createClient(), [])
+  const fileRef  = useRef<HTMLInputElement>(null)
+
   const [name, setName]               = useState(community.name)
   const [description, setDescription] = useState(community.description ?? '')
   const [permission, setPermission]   = useState(community.post_permission)
+  const [avatarUrl, setAvatarUrl]     = useState<string | null>(community.avatar_url)
+  const [avatarFile, setAvatarFile]   = useState<File | null>(null)
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(community.avatar_url)
   const [saving, setSaving]           = useState(false)
   const [deleting, setDeleting]       = useState(false)
   const [error, setError]             = useState<string | null>(null)
   const [success, setSuccess]         = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
 
+  function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setAvatarFile(file)
+    setAvatarPreview(URL.createObjectURL(file))
+  }
+
   async function handleSave(e: React.FormEvent) {
     e.preventDefault()
     setSaving(true)
     setError(null)
     setSuccess(false)
+
+    let finalAvatarUrl = avatarUrl
+
+    if (avatarFile) {
+      const ext  = avatarFile.name.split('.').pop() ?? 'jpg'
+      const path = `${community.id}/avatar.${ext}`
+
+      const { error: uploadErr } = await supabase.storage
+        .from('community-avatars')
+        .upload(path, avatarFile, { contentType: avatarFile.type, upsert: true })
+
+      if (uploadErr) {
+        setError('Não foi possível fazer upload da foto. Verifique o bucket "community-avatars" no Supabase Storage.')
+        setSaving(false)
+        return
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('community-avatars')
+        .getPublicUrl(path)
+
+      finalAvatarUrl = publicUrl
+      setAvatarUrl(publicUrl)
+      setAvatarFile(null)
+    }
+
     try {
       await updateCommunitySettings(community.id, {
         name:            name.trim(),
         description:     description.trim() || null,
         post_permission: permission,
+        avatar_url:      finalAvatarUrl,
       })
       setSuccess(true)
     } catch (err: unknown) {
@@ -54,6 +96,47 @@ export default function CommunitySettingsForm({ community }: Props) {
     <div className="space-y-8">
       <form onSubmit={handleSave} className="space-y-4">
         <h2 className="text-base font-semibold text-white">Configurações</h2>
+
+        {/* Avatar upload */}
+        <div>
+          <label className="block text-sm text-zinc-400 mb-2">Foto da comunidade</label>
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={() => fileRef.current?.click()}
+              className="relative group shrink-0 focus:outline-none"
+              aria-label="Alterar foto da comunidade"
+            >
+              {avatarPreview ? (
+                <Image
+                  src={avatarPreview}
+                  alt={community.name}
+                  width={64} height={64}
+                  className="w-16 h-16 rounded-xl object-cover"
+                  unoptimized={avatarPreview.startsWith('blob:')}
+                />
+              ) : (
+                <div className="w-16 h-16 rounded-xl bg-[#7F77DD]/30 flex items-center justify-center text-2xl">
+                  🏘️
+                </div>
+              )}
+              <div className="absolute inset-0 rounded-xl bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <span className="text-white text-xs font-medium">Alterar</span>
+              </div>
+            </button>
+            <div className="text-xs text-zinc-500 space-y-0.5">
+              <p>Clique para alterar a foto</p>
+              <p>JPG, PNG ou WebP · Recomendado 256×256px</p>
+            </div>
+          </div>
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            className="hidden"
+            onChange={handleAvatarChange}
+          />
+        </div>
 
         <div>
           <label className="block text-sm text-zinc-400 mb-1">Nome</label>
@@ -110,7 +193,7 @@ export default function CommunitySettingsForm({ community }: Props) {
             Excluir comunidade
           </button>
         ) : (
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
             <p className="text-sm text-red-400">Tem certeza? Isso não pode ser desfeito.</p>
             <button
               onClick={handleDelete}

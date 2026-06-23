@@ -98,10 +98,16 @@ export async function createCommunityPost(
 
   if (error) throw new Error(error.message)
 
-  // Notify other members (capped at 50 to avoid mass notifications)
+  // Notify non-muted members (excluding the poster), capped at 50
   const [{ data: community }, { data: members }] = await Promise.all([
     supabase.from('communities').select('name').eq('id', communityId).single(),
-    supabase.from('community_members').select('user_id').eq('community_id', communityId).neq('user_id', user.id).limit(50),
+    supabase
+      .from('community_members')
+      .select('user_id')
+      .eq('community_id', communityId)
+      .eq('notifications_muted', false)
+      .neq('user_id', user.id)
+      .limit(50),
   ])
 
   if (community && members && members.length > 0) {
@@ -146,7 +152,7 @@ export async function createCommunityComment(
 
   if (error) throw new Error(error.message)
 
-  // Notify post author (if not self)
+  // Notify post author only if they're a non-muted member and not the commenter
   const { data: post } = await supabase
     .from('community_posts')
     .select('user_id, community_id')
@@ -154,9 +160,17 @@ export async function createCommunityComment(
     .single()
 
   if (post && post.user_id !== user.id) {
-    const { data: community } = await supabase
-      .from('communities').select('name').eq('id', post.community_id).single()
-    if (community) {
+    const [{ data: community }, { data: authorMember }] = await Promise.all([
+      supabase.from('communities').select('name').eq('id', post.community_id).single(),
+      supabase
+        .from('community_members')
+        .select('notifications_muted')
+        .eq('community_id', post.community_id)
+        .eq('user_id', post.user_id)
+        .maybeSingle(),
+    ])
+
+    if (community && authorMember && !authorMember.notifications_muted) {
       await supabase.from('notifications').insert({
         user_id:        post.user_id,
         from_user_id:   user.id,
@@ -243,4 +257,18 @@ export async function removeMember(communityId: string, userId: string) {
     .delete()
     .eq('community_id', communityId)
     .eq('user_id', userId)
+}
+
+export async function toggleNotificationsMuted(communityId: string, muted: boolean) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Unauthenticated')
+
+  const { error } = await supabase
+    .from('community_members')
+    .update({ notifications_muted: muted })
+    .eq('community_id', communityId)
+    .eq('user_id', user.id)
+
+  if (error) throw new Error(error.message)
 }

@@ -1,9 +1,8 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
   "/icon.svg/route": "app/icon.svg/route.js",
+  "/(app)/communities/page": "app/(app)/communities/page.js",
   "/(app)/communities/[slug]/page": "app/(app)/communities/[slug]/page.js",
   "/(app)/feed/page": "app/(app)/feed/page.js",
-  "/(app)/communities/page": "app/(app)/communities/page.js",
-  "/(app)/notifications/page": "app/(app)/notifications/page.js",
-  "/(app)/communities/[slug]/settings/page": "app/(app)/communities/[slug]/settings/page.js"
+  "/(app)/communities/[slug]/settings/page": "app/(app)/communities/[slug]/settings/page.js",
+  "/(app)/profile/[username]/page": "app/(app)/profile/[username]/page.js"
 }

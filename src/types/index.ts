@@ -170,11 +170,12 @@ export interface Community {
 }
 
 export interface CommunityMemberRow {
-  community_id: string
-  user_id:      string
-  role:         CommunityRole
-  can_post:     boolean
-  joined_at:    string
+  community_id:         string
+  user_id:              string
+  role:                 CommunityRole
+  can_post:             boolean
+  notifications_muted:  boolean
+  joined_at:            string
   profiles?: {
     id:           string
     username:     string

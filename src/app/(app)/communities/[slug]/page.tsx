@@ -38,13 +38,13 @@ export default async function CommunityPage({ params }: Props) {
       .limit(50),
     supabase
       .from('community_members')
-      .select('community_id, user_id, role, can_post, joined_at, profiles!community_members_user_id_fkey (id, username, display_name, avatar_url)')
+      .select('community_id, user_id, role, can_post, notifications_muted, joined_at, profiles!community_members_user_id_fkey (id, username, display_name, avatar_url)')
       .eq('community_id', c.id)
       .order('joined_at'),
     user
       ? supabase
           .from('community_members')
-          .select('role, can_post')
+          .select('role, can_post, notifications_muted')
           .eq('community_id', c.id)
           .eq('user_id', user.id)
           .maybeSingle()
@@ -60,9 +60,12 @@ export default async function CommunityPage({ params }: Props) {
   const posts   = (postsData   ?? []) as unknown as CommunityPost[]
   const members = (membersData ?? []) as unknown as CommunityMemberRow[]
 
-  const viewerMemberData = (viewerMemberRes as { data: { role: CommunityRole; can_post: boolean } | null }).data
-  const viewerRole       = viewerMemberData?.role ?? null
-  const canPost          = viewerMemberData?.can_post ?? false
+  const viewerMemberData = (viewerMemberRes as {
+    data: { role: CommunityRole; can_post: boolean; notifications_muted: boolean } | null
+  }).data
+  const viewerRole            = viewerMemberData?.role ?? null
+  const canPost               = viewerMemberData?.can_post ?? false
+  const notificationsMuted    = viewerMemberData?.notifications_muted ?? false
 
   return (
     <main className="max-w-2xl mx-auto px-4 py-6">
@@ -73,6 +76,7 @@ export default async function CommunityPage({ params }: Props) {
         currentUserId={user?.id ?? null}
         viewerRole={viewerRole}
         canPost={canPost}
+        notificationsMuted={notificationsMuted}
       />
     </main>
   )
