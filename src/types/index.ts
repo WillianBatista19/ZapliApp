@@ -202,6 +202,31 @@ export interface CommunityPost {
   community_comments:   { id: string }[]
 }
 
+export interface SurvivorEvent {
+  id:            string
+  community_id:  string
+  created_by:    string
+  album_id:      string
+  album_name:    string
+  artist_name:   string
+  cover_url:     string | null
+  status:        'active' | 'finished'
+  current_round: number
+  created_at:    string
+}
+
+export interface SurvivorTrack {
+  id:                  string
+  event_id:            string
+  track_id:            string
+  track_name:          string
+  track_number:        number
+  preview_url:         string | null
+  eliminated_at_round: number | null
+  final_position:      number | null
+  created_at:          string
+}
+
 export interface Post {
   id:             string
   user_id:        string

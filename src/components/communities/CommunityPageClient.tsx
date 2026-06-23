@@ -21,10 +21,12 @@ interface Props {
   viewerRole:         CommunityRole | null
   canPost:            boolean
   notificationsMuted: boolean
+  activeSurvivorEvent?: { album_name: string; artist_name: string; current_round: number } | null
 }
 
 export default function CommunityPageClient({
   community, posts, members, currentUserId, viewerRole, canPost, notificationsMuted,
+  activeSurvivorEvent,
 }: Props) {
   const router = useRouter()
   const [tab, setTab]                 = useState<Tab>('posts')
@@ -190,6 +192,31 @@ export default function CommunityPageClient({
               <p className="font-semibold text-white">Avaliar Álbum</p>
               <p className="text-sm text-zinc-400 mt-0.5">
                 Dê nota para cada faixa, escolha seus favoritos e veja o ranking da comunidade
+              </p>
+            </div>
+            <span className="text-zinc-600 shrink-0">→</span>
+          </Link>
+
+          <Link
+            href="/communities/musica/survivor"
+            className="flex items-center gap-4 rounded-xl bg-white/5 p-4 hover:bg-white/10 transition-colors"
+          >
+            <div className="w-14 h-14 rounded-xl bg-[#7F77DD]/20 flex items-center justify-center text-3xl shrink-0">
+              🏆
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-white">Survivor Musical</p>
+              {activeSurvivorEvent ? (
+                <p className="text-sm text-[#7F77DD] mt-0.5 truncate">
+                  {activeSurvivorEvent.album_name} · Rodada {activeSurvivorEvent.current_round}
+                </p>
+              ) : (
+                <p className="text-sm text-zinc-400 mt-0.5">
+                  Nenhum evento ativo
+                </p>
+              )}
+              <p className="text-xs text-zinc-500 mt-0.5">
+                Vote para eliminar a pior faixa de cada rodada
               </p>
             </div>
             <span className="text-zinc-600 shrink-0">→</span>
