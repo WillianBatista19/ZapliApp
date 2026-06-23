@@ -19,10 +19,14 @@ interface CreateEventInput {
   tracks:      TrackInput[]
 }
 
-export async function castVote(eventId: string, trackId: string, round: number) {
+export async function castVote(
+  eventId: string,
+  trackId: string,
+  round: number,
+): Promise<{ error?: string }> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) throw new Error('Login necessário')
+  if (!user) return { error: 'Login necessário' }
 
   const { error } = await supabase
     .from('survivor_votes')
@@ -30,8 +34,16 @@ export async function castVote(eventId: string, trackId: string, round: number) 
       { event_id: eventId, track_id: trackId, user_id: user.id, round },
       { onConflict: 'event_id,user_id,round' },
     )
-  if (error) throw new Error(error.message)
+
+  if (error) {
+    if (error.code === '42501' || error.code === '23505') {
+      return { error: 'Você já votou nessa rodada. Aguarde a próxima!' }
+    }
+    return { error: error.message }
+  }
+
   revalidatePath('/communities/musica/survivor')
+  return {}
 }
 
 export async function advanceRound(eventId: string) {

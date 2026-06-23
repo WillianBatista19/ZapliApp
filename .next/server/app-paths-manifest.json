@@ -1,7 +1,9 @@
 {
-  "/api/spotify/albums/route": "app/api/spotify/albums/route.js",
-  "/api/deezer/route": "app/api/deezer/route.js",
+  "/changelog/page": "app/changelog/page.js",
   "/icon.svg/route": "app/icon.svg/route.js",
   "/(app)/communities/musica/survivor/page": "app/(app)/communities/musica/survivor/page.js",
-  "/(app)/communities/[slug]/page": "app/(app)/communities/[slug]/page.js"
+  "/(app)/jogar/admin/page": "app/(app)/jogar/admin/page.js",
+  "/(app)/communities/[slug]/page": "app/(app)/communities/[slug]/page.js",
+  "/(app)/jogar/page": "app/(app)/jogar/page.js",
+  "/(app)/feed/page": "app/(app)/feed/page.js"
 }

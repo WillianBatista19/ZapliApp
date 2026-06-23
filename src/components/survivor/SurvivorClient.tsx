@@ -575,15 +575,22 @@ export default function SurvivorClient({
 
   async function handleVote(trackId: string) {
     if (!activeEvent) return
-    setVotingId(trackId)
-    try {
-      await castVote(activeEvent.id, trackId, activeEvent.current_round)
-      startTransition(() => router.refresh())
-    } catch (err) {
-      showToast(err instanceof Error ? err.message : 'Erro ao votar')
-    } finally {
-      setVotingId(null)
+
+    if (userVoteId) {
+      showToast('Você já votou nessa rodada. Aguarde a próxima!')
+      return
     }
+
+    setVotingId(trackId)
+    const result = await castVote(activeEvent.id, trackId, activeEvent.current_round)
+    setVotingId(null)
+
+    if (result.error) {
+      showToast(result.error)
+      return
+    }
+
+    startTransition(() => router.refresh())
   }
 
   async function handleAdvance() {
