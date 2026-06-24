@@ -48,6 +48,8 @@ export async function POST(req: NextRequest) {
     }
 
     const supabase = await createClient()
+
+    // Fetch today's secret word
     const { data: wordData, error: dbErr } = await supabase
       .from('contexto_words')
       .select('word')
@@ -58,7 +60,6 @@ export async function POST(req: NextRequest) {
       console.error('[similarity] db error:', dbErr.message)
       return NextResponse.json({ error: dbErr.message }, { status: 500 })
     }
-
     if (!wordData) {
       return NextResponse.json(
         { error: 'Nenhuma palavra cadastrada para hoje. O admin precisa adicionar uma palavra em /jogar/admin' },
@@ -68,20 +69,39 @@ export async function POST(req: NextRequest) {
 
     const secretWord = wordData.word.toLowerCase().trim()
 
+    // Exact match is always rank 1 regardless of whether rankings are generated
     if (guess === secretWord) {
-      return NextResponse.json({ similarity: 100, isCorrect: true })
+      return NextResponse.json({ rank: 1, isCorrect: true })
     }
 
+    // Check pre-computed rankings table first (fast path — no Gemini call needed)
+    const { data: ranked } = await supabase
+      .from('contexto_word_rankings')
+      .select('rank')
+      .eq('play_date', playDate)
+      .eq('word', guess)
+      .maybeSingle()
+
+    if (ranked) {
+      console.log(`[similarity] "${guess}" found in rankings: rank ${ranked.rank}`)
+      // isCorrect is determined solely by exact string match (handled above); never by rank
+      return NextResponse.json({ rank: ranked.rank, isCorrect: false })
+    }
+
+    // Word not pre-ranked — compute similarity with Gemini and map to approximate rank
     const [secretEmbed, guessEmbed] = await Promise.all([
       getEmbedding(secretWord),
       getEmbedding(guess),
     ])
+    const rawSimilarity = cosineSimilarity(secretEmbed, guessEmbed)
 
-    const raw        = cosineSimilarity(secretEmbed, guessEmbed)
-    const similarity = Math.min(99, Math.max(0, Math.round(raw * 100)))
+    // Exponential curve: spreads ranks naturally across the similarity range.
+    // similarity >0.90 → ~1-50 | 0.80-0.90 → ~51-200 | 0.70-0.80 → ~201-500
+    // 0.60-0.70 → ~501-1000 | 0.50-0.60 → ~1001-2000 | <0.40 → ~4000-10000
+    const approxRank = Math.round(Math.pow(1 - rawSimilarity, 1.5) * 10000) + 1
 
-    console.log(`[similarity] "${guess}" vs "${secretWord}" → cosine: ${raw.toFixed(4)}, score: ${similarity}`)
-    return NextResponse.json({ similarity, isCorrect: false })
+    console.log(`[similarity] "${guess}" not in rankings → cosine: ${rawSimilarity.toFixed(4)}, approx rank: ${approxRank}`)
+    return NextResponse.json({ rank: approxRank, isCorrect: false })
 
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)

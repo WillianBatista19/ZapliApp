@@ -3,22 +3,38 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
-type Guess = { word: string; similarity: number }
+type Guess = { word: string; rank: number }
 
-function getBarColor(sim: number): string {
-  if (sim === 100) return 'bg-[#7F77DD]'
-  if (sim >= 71)   return 'bg-[#1D9E75]'
-  if (sim >= 51)   return 'bg-yellow-500'
-  if (sim >= 31)   return 'bg-orange-500'
-  return 'bg-red-500'
+function getRankColor(rank: number): string {
+  if (rank === 1)    return 'text-[#7F77DD]'
+  if (rank <= 200)   return 'text-[#1D9E75]'
+  if (rank <= 1000)  return 'text-yellow-500'
+  if (rank <= 3000)  return 'text-orange-500'
+  return 'text-red-400'
 }
 
-function getEmoji(sim: number): string {
-  if (sim === 100) return '✅'
-  if (sim >= 71)   return '🟢'
-  if (sim >= 51)   return '🟡'
-  if (sim >= 31)   return '🟠'
+function getRankBg(rank: number): string {
+  if (rank === 1)    return 'bg-[#7F77DD]/10 ring-1 ring-[#7F77DD]/30'
+  if (rank <= 200)   return 'bg-[#1D9E75]/10'
+  if (rank <= 1000)  return 'bg-yellow-500/10'
+  if (rank <= 3000)  return 'bg-orange-500/10'
+  return 'bg-zinc-800/60'
+}
+
+function getEmoji(rank: number): string {
+  if (rank === 1)    return '✅'
+  if (rank <= 200)   return '🟢'
+  if (rank <= 1000)  return '🟡'
+  if (rank <= 3000)  return '🟠'
   return '🔴'
+}
+
+function getHint(rank: number): string {
+  if (rank === 1)    return '✅ Você acertou!'
+  if (rank <= 50)    return '🔥 Quente!'
+  if (rank <= 200)   return '♨️ Morno'
+  if (rank <= 1000)  return '🌤️ Frio'
+  return '🧊 Gelado'
 }
 
 function computeScore(attemptsCount: number): number {
@@ -39,7 +55,7 @@ export default function ContextoGame({ currentUserId }: { currentUserId: string 
   const [warming,     setWarming]     = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  // Load saved state
+  // Load saved state — filter out old-format entries that lack rank
   useEffect(() => {
     if (!currentUserId) { setInitLoading(false); return }
     async function load() {
@@ -50,7 +66,8 @@ export default function ContextoGame({ currentUserId }: { currentUserId: string 
         .eq('play_date', today)
         .maybeSingle()
       if (data) {
-        setGuesses((data.guesses as Guess[]) ?? [])
+        const saved = ((data.guesses as Guess[]) ?? []).filter(g => typeof g.rank === 'number')
+        setGuesses(saved)
         setSolved(data.solved as boolean)
       }
       setInitLoading(false)
@@ -73,7 +90,6 @@ export default function ContextoGame({ currentUserId }: { currentUserId: string 
     const word = input.trim().toLowerCase()
     if (!word) return
 
-    // Already guessed?
     if (guesses.some(g => g.word === word)) {
       setMessage('Você já tentou essa palavra.')
       setTimeout(() => setMessage(''), 2000)
@@ -90,9 +106,8 @@ export default function ContextoGame({ currentUserId }: { currentUserId: string 
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({ guess: word, playDate: today }),
       })
-      const json = await res.json() as { similarity?: number; isCorrect?: boolean; error?: string; retryAfter?: number }
+      const json = await res.json() as { rank?: number; isCorrect?: boolean; error?: string; retryAfter?: number }
 
-      // Model warming up — don't count as an attempt, let user retry
       if (res.status === 503) {
         setWarming(true)
         setInput(word)
@@ -100,14 +115,14 @@ export default function ContextoGame({ currentUserId }: { currentUserId: string 
         return
       }
 
-      if (!res.ok || typeof json.similarity !== 'number') {
-        setMessage(json.error ?? 'Erro ao calcular similaridade.')
+      if (!res.ok || typeof json.rank !== 'number') {
+        setMessage(json.error ?? 'Erro ao calcular rank.')
         return
       }
 
       setWarming(false)
 
-      const newGuess: Guess = { word, similarity: json.similarity }
+      const newGuess: Guess = { word, rank: json.rank }
       const newGuesses      = [...guesses, newGuess]
       const isSolved        = json.isCorrect === true
 
@@ -132,7 +147,6 @@ export default function ContextoGame({ currentUserId }: { currentUserId: string 
       }
     } finally {
       setLoading(false)
-      // Re-focus after loading clears so the input is enabled again when focus fires
       if (!didSolve) setTimeout(() => document.getElementById('contexto-input')?.focus(), 100)
     }
   }
@@ -145,8 +159,8 @@ export default function ContextoGame({ currentUserId }: { currentUserId: string 
     })
   }
 
-  // Sorted: highest similarity first
-  const sorted = [...guesses].sort((a, b) => b.similarity - a.similarity)
+  // Sorted: lowest rank first (rank 1 = the answer, best guess at top)
+  const sorted = [...guesses].sort((a, b) => a.rank - b.rank)
 
   if (initLoading) {
     return <div className="flex h-40 items-center justify-center text-sm text-zinc-500">Carregando...</div>
@@ -220,7 +234,7 @@ export default function ContextoGame({ currentUserId }: { currentUserId: string 
         </div>
       )}
 
-      {/* Guess list */}
+      {/* Guess list — sorted by rank ascending */}
       {sorted.length > 0 && (
         <div className="space-y-1.5">
           <p className="text-xs text-zinc-600">
@@ -229,29 +243,15 @@ export default function ContextoGame({ currentUserId }: { currentUserId: string 
           {sorted.map((g, i) => (
             <div
               key={g.word}
-              className={`flex items-center gap-3 rounded-xl px-3 py-2 ${
-                g.similarity === 100 ? 'bg-[#7F77DD]/10 ring-1 ring-[#7F77DD]/30' : 'bg-zinc-800/60'
-              }`}
+              className={`flex items-center gap-3 rounded-xl px-3 py-2 ${getRankBg(g.rank)}`}
             >
               <span className="w-5 shrink-0 text-center text-xs text-zinc-600">{i + 1}.</span>
               <span className="w-24 shrink-0 truncate font-mono text-sm text-zinc-200">{g.word}</span>
-              <div className="flex flex-1 items-center gap-2">
-                <div className="relative h-2 flex-1 overflow-hidden rounded-full bg-zinc-700">
-                  <div
-                    className={`absolute inset-y-0 left-0 rounded-full transition-all duration-500 ${getBarColor(g.similarity)}`}
-                    style={{ width: `${g.similarity}%` }}
-                  />
-                </div>
-                <span className={`w-7 shrink-0 text-right text-xs font-bold ${
-                  g.similarity === 100 ? 'text-[#7F77DD]' :
-                  g.similarity >= 71   ? 'text-[#1D9E75]' :
-                  g.similarity >= 51   ? 'text-yellow-500' :
-                  g.similarity >= 31   ? 'text-orange-500' :
-                  'text-red-400'
-                }`}>
-                  {g.similarity}
+              <div className="flex flex-1 items-center justify-end gap-3">
+                <span className="text-xs text-zinc-500">{getHint(g.rank)}</span>
+                <span className={`font-mono text-sm font-bold tabular-nums ${getRankColor(g.rank)}`}>
+                  #{g.rank}
                 </span>
-                <span className="text-sm">{getEmoji(g.similarity)}</span>
               </div>
             </div>
           ))}
@@ -260,7 +260,7 @@ export default function ContextoGame({ currentUserId }: { currentUserId: string 
 
       {guesses.length === 0 && !solved && (
         <p className="py-4 text-center text-xs text-zinc-600">
-          Tente qualquer palavra — quanto mais alta a pontuação, mais perto você está!
+          Tente qualquer palavra — quanto menor o rank, mais perto você está!
         </p>
       )}
 

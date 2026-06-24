@@ -39,6 +39,106 @@
       "layer": {
         "app/(app)/feed/page": "action-browser"
       }
+    },
+    "52ac1761e0fef6a31995a3325cf085e44b59f500": {
+      "workers": {
+        "app/(app)/messages/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%5D&__client_imported__=true!",
+        "app/(app)/messages/[conversationId]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/(app)/messages/page": "action-browser",
+        "app/(app)/messages/[conversationId]/page": "action-browser"
+      }
+    },
+    "5822ffe260675c2e5bdcafc23013cc6ac2e7ace9": {
+      "workers": {
+        "app/(app)/messages/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%5D&__client_imported__=true!",
+        "app/(app)/messages/[conversationId]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/(app)/messages/page": "action-browser",
+        "app/(app)/messages/[conversationId]/page": "action-browser"
+      }
+    },
+    "5b4c73ea4a1bb7dc473f1e5cdc54c5630f038351": {
+      "workers": {
+        "app/(app)/messages/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%5D&__client_imported__=true!",
+        "app/(app)/messages/[conversationId]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/(app)/messages/page": "action-browser",
+        "app/(app)/messages/[conversationId]/page": "action-browser"
+      }
+    },
+    "61364cbf61fb1fde8ce5d234e093f6c2755d40de": {
+      "workers": {
+        "app/(app)/messages/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%5D&__client_imported__=true!",
+        "app/(app)/messages/[conversationId]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/(app)/messages/page": "action-browser",
+        "app/(app)/messages/[conversationId]/page": "action-browser"
+      }
+    },
+    "7693d04cb8ec15247a7896563b8013fb16104318": {
+      "workers": {
+        "app/(app)/messages/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%5D&__client_imported__=true!",
+        "app/(app)/messages/[conversationId]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/(app)/messages/page": "action-browser",
+        "app/(app)/messages/[conversationId]/page": "action-browser"
+      }
+    },
+    "7747a5814540daada69c6999d976d1ce10137199": {
+      "workers": {
+        "app/(app)/messages/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%5D&__client_imported__=true!",
+        "app/(app)/messages/[conversationId]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/(app)/messages/page": "action-browser",
+        "app/(app)/messages/[conversationId]/page": "action-browser"
+      }
+    },
+    "b769bcbad97cd6ddb83eceb53a1aea5a707e6fbc": {
+      "workers": {
+        "app/(app)/messages/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%5D&__client_imported__=true!",
+        "app/(app)/messages/[conversationId]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/(app)/messages/page": "action-browser",
+        "app/(app)/messages/[conversationId]/page": "action-browser"
+      }
+    },
+    "ccf4166e77c6e2aaa23fb2aa6f82752a11cb3d81": {
+      "workers": {
+        "app/(app)/messages/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%5D&__client_imported__=true!",
+        "app/(app)/messages/[conversationId]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/(app)/messages/page": "action-browser",
+        "app/(app)/messages/[conversationId]/page": "action-browser"
+      }
+    },
+    "d70a73f6f19fd678ca7f2c492e9f399454cb221e": {
+      "workers": {
+        "app/(app)/messages/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%5D&__client_imported__=true!",
+        "app/(app)/messages/[conversationId]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/(app)/messages/page": "action-browser",
+        "app/(app)/messages/[conversationId]/page": "action-browser"
+      }
+    },
+    "ff3de354fb92c0be48420a767f1882152bcb8643": {
+      "workers": {
+        "app/(app)/messages/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%5D&__client_imported__=true!",
+        "app/(app)/messages/[conversationId]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/(app)/messages/page": "action-browser",
+        "app/(app)/messages/[conversationId]/page": "action-browser"
+      }
     }
   },
   "edge": {},

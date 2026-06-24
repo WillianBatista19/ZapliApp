@@ -84,7 +84,7 @@ export default function JogarClient({
         {tab === 'contexto' && (
           <div>
             <p className="mb-4 text-xs text-zinc-500">
-              Encontre a palavra secreta por similaridade semântica. Quanto mais próxima do 100, mais perto você está!
+              Encontre a palavra secreta por similaridade semântica. Rank #1 é a palavra do dia — quanto menor o número, mais perto você está!
             </p>
             <ContextoGame currentUserId={currentUserId} />
           </div>
