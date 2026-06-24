@@ -56,6 +56,7 @@ export interface RankedAlbum {
   cover_url:    string | null
   avg_score:    number
   rating_count: number
+  release_year?: string | null
 }
 
 export interface RecentRating {
@@ -68,10 +69,13 @@ export interface RecentRating {
   display_name:  string | null
 }
 
+type HomeTab = 'top' | 'mais' | 'recentes' | '2026'
+
 interface Props {
   topAlbums:        RankedAlbum[]
   recentRatings:    RecentRating[]
   mostRated:        RankedAlbum[]
+  best2026:         RankedAlbum[]
   userId:           string | null
   initialAlbumId?:    string
   initialAlbumName?:  string
@@ -85,7 +89,7 @@ function fmt(ms: number) {
 }
 
 export default function AlbumRatingClient({
-  topAlbums, recentRatings, mostRated, userId,
+  topAlbums, recentRatings, mostRated, best2026, userId,
   initialAlbumId, initialAlbumName, initialArtistName, initialCoverUrl,
 }: Props) {
   const [query,         setQuery]         = useState('')
@@ -99,6 +103,7 @@ export default function AlbumRatingClient({
   const [saving,        setSaving]        = useState(false)
   const [saveError,     setSaveError]     = useState<string | null>(null)
   const [savedAlbumId,  setSavedAlbumId]  = useState<string | null>(null)
+  const [activeTab,     setActiveTab]     = useState<HomeTab>('top')
 
   const avgScore = useMemo(() => {
     const vals = Object.values(scores)
@@ -243,11 +248,12 @@ export default function AlbumRatingClient({
     setSaveError(null)
     try {
       await saveAlbumRating({
-        album_id:    selectedAlbum.id,
-        album_name:  selectedAlbum.name,
-        artist_name: selectedAlbum.artist,
-        cover_url:   selectedAlbum.coverUrl,
-        tracks:      selectedAlbum.tracks.map(t => ({
+        album_id:     selectedAlbum.id,
+        album_name:   selectedAlbum.name,
+        artist_name:  selectedAlbum.artist,
+        cover_url:    selectedAlbum.coverUrl,
+        release_year: selectedAlbum.year ? selectedAlbum.year.slice(0, 4) : null,
+        tracks:       selectedAlbum.tracks.map(t => ({
           track_id:     t.id,
           track_name:   t.name,
           track_number: t.track_number,
@@ -460,13 +466,35 @@ export default function AlbumRatingClient({
       {/* Rankings — shown when not typing */}
       {query.length < 2 && (
         <>
-          {topAlbums.length > 0 && (
+          {/* Tab switcher */}
+          <div className="no-scrollbar flex gap-1 overflow-x-auto rounded-xl bg-zinc-900 p-1 md:overflow-x-visible">
+            {(
+              [
+                { id: 'top',      label: '🏆 Top'     },
+                { id: 'mais',     label: '📊 + Avaliados'    },
+                { id: 'recentes', label: '🕐 Recentes' },
+                { id: '2026',     label: '🗓️ 2026'    },
+              ] as { id: HomeTab; label: string }[]
+            ).map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`shrink-0 rounded-lg px-4 py-2 text-xs font-semibold whitespace-nowrap transition-colors md:flex-1 ${
+                  activeTab === tab.id
+                    ? 'bg-[#D4537E] text-white shadow-sm'
+                    : 'text-zinc-500 hover:text-zinc-300'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Tab: Top Álbuns */}
+          {activeTab === 'top' && (
             <section>
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-3">
-                🏆 Top Álbuns da Comunidade
-              </h3>
               <div className="space-y-2">
-                {topAlbums.map((album, i) => (
+                {topAlbums.length > 0 ? topAlbums.map((album, i) => (
                   <Link
                     key={album.album_id}
                     href={`/communities/musica/avaliar/${album.album_id}`}
@@ -485,54 +513,22 @@ export default function AlbumRatingClient({
                       <p className="text-xs text-zinc-400 truncate">{album.artist_name}</p>
                     </div>
                     <div className="shrink-0 text-right">
-                      <p className="text-sm font-bold text-[#D4537E]">{album.avg_score.toFixed(1)}</p>
+                      <p className="text-sm font-bold text-[#D4537E]">⭐ {album.avg_score.toFixed(1)}</p>
                       <p className="text-xs text-zinc-600">{album.rating_count} aval.</p>
                     </div>
                   </Link>
-                ))}
+                )) : (
+                  <p className="py-8 text-center text-sm text-zinc-500">Nenhuma avaliação ainda.</p>
+                )}
               </div>
             </section>
           )}
 
-          {recentRatings.length > 0 && (
+          {/* Tab: Mais Avaliados */}
+          {activeTab === 'mais' && (
             <section>
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-3">
-                🕐 Avaliações Recentes
-              </h3>
               <div className="space-y-2">
-                {recentRatings.map((r, i) => (
-                  <Link
-                    key={i}
-                    href={`/communities/musica/avaliar/${r.album_id}`}
-                    className="flex items-center gap-3 rounded-xl bg-zinc-900/60 border border-zinc-800 p-3 hover:bg-zinc-800/60 transition-colors"
-                  >
-                    {r.cover_url ? (
-                      <Image src={r.cover_url} alt={r.album_name} width={40} height={40}
-                        className="rounded-lg shrink-0 object-cover"
-                      />
-                    ) : (
-                      <div className="w-10 h-10 rounded-lg bg-zinc-800 shrink-0" />
-                    )}
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-semibold text-zinc-100 truncate">{r.album_name}</p>
-                      <p className="text-xs text-zinc-400">{r.display_name ?? r.username} · {r.artist_name}</p>
-                    </div>
-                    {r.overall_score != null && (
-                      <span className="shrink-0 text-sm font-bold text-[#7F77DD]">{r.overall_score.toFixed(1)}</span>
-                    )}
-                  </Link>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {mostRated.length > 0 && topAlbums.length > 0 && (
-            <section>
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-3">
-                📊 Mais Avaliados
-              </h3>
-              <div className="space-y-2">
-                {mostRated.map(album => (
+                {mostRated.length > 0 ? mostRated.map(album => (
                   <Link
                     key={album.album_id}
                     href={`/communities/musica/avaliar/${album.album_id}`}
@@ -554,18 +550,93 @@ export default function AlbumRatingClient({
                       <p className="text-xs text-zinc-600">avaliações</p>
                     </div>
                   </Link>
-                ))}
+                )) : (
+                  <p className="py-8 text-center text-sm text-zinc-500">Nenhuma avaliação ainda.</p>
+                )}
               </div>
             </section>
           )}
 
-          {topAlbums.length === 0 && recentRatings.length === 0 && (
-            <div className="text-center py-10">
-              <p className="text-2xl mb-2">🎵</p>
-              <p className="text-sm text-zinc-500">
-                Nenhuma avaliação ainda. Seja a primeira a avaliar um álbum!
-              </p>
-            </div>
+          {/* Tab: Avaliações Recentes */}
+          {activeTab === 'recentes' && (
+            <section>
+              <div className="space-y-2">
+                {recentRatings.length > 0 ? recentRatings.map((r, i) => (
+                  <Link
+                    key={i}
+                    href={`/communities/musica/avaliar/${r.album_id}`}
+                    className="flex items-center gap-3 rounded-xl bg-zinc-900/60 border border-zinc-800 p-3 hover:bg-zinc-800/60 transition-colors"
+                  >
+                    {r.cover_url ? (
+                      <Image src={r.cover_url} alt={r.album_name} width={40} height={40}
+                        className="rounded-lg shrink-0 object-cover"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded-lg bg-zinc-800 shrink-0" />
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-zinc-100 truncate">{r.album_name}</p>
+                      <p className="text-xs text-zinc-400">{r.display_name ?? r.username} · {r.artist_name}</p>
+                    </div>
+                    {r.overall_score != null && (
+                      <span className="shrink-0 text-sm font-bold text-[#7F77DD]">{r.overall_score.toFixed(1)}</span>
+                    )}
+                  </Link>
+                )) : (
+                  <p className="py-8 text-center text-sm text-zinc-500">Nenhuma avaliação recente.</p>
+                )}
+              </div>
+            </section>
+          )}
+
+          {/* Tab: Melhores de 2026 */}
+          {activeTab === '2026' && (
+            <section>
+              {best2026.length > 0 ? (
+                <div className="space-y-2">
+                  {best2026.map((album, i) => (
+                    <div
+                      key={album.album_id}
+                      className="flex items-center gap-3 rounded-xl bg-zinc-900/60 border border-zinc-800 p-3"
+                    >
+                      <span className="text-sm font-bold text-zinc-600 w-5 shrink-0 text-right">{i + 1}</span>
+                      {album.cover_url ? (
+                        <Image src={album.cover_url} alt={album.album_name} width={48} height={48}
+                          className="rounded-lg shrink-0 object-cover"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 rounded-lg bg-zinc-800 shrink-0" />
+                      )}
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <p className="text-sm font-semibold text-zinc-100 truncate">{album.album_name}</p>
+                          <span className="shrink-0 rounded-full bg-[#D4537E]/20 px-2 py-0.5 text-[10px] font-bold text-[#D4537E]">
+                            2026
+                          </span>
+                        </div>
+                        <p className="text-xs text-zinc-400 truncate">{album.artist_name}</p>
+                        <p className="text-xs text-zinc-600 mt-0.5">
+                          ⭐ {album.avg_score.toFixed(1)} · {album.rating_count} {album.rating_count === 1 ? 'avaliação' : 'avaliações'}
+                        </p>
+                      </div>
+                      <Link
+                        href={`/communities/musica/avaliar/${album.album_id}`}
+                        className="shrink-0 rounded-xl bg-[#D4537E]/10 px-3 py-1.5 text-xs font-semibold text-[#D4537E] hover:bg-[#D4537E]/20 transition-colors"
+                      >
+                        Ver →
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-10">
+                  <p className="text-2xl mb-2">🗓️</p>
+                  <p className="text-sm text-zinc-500">
+                    Nenhum álbum de 2026 avaliado ainda. Seja o primeiro!
+                  </p>
+                </div>
+              )}
+            </section>
           )}
         </>
       )}

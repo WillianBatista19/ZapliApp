@@ -53,7 +53,7 @@ export default function LeftSidebar() {
   ]
 
   return (
-    <aside className="hidden xl:flex xl:w-52 xl:shrink-0 xl:flex-col sticky top-20 self-start h-fit">
+    <aside className="hidden xl:flex xl:w-52 xl:shrink-0 xl:flex-col sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto">
       <nav className="space-y-1">
         {items.map(({ href, label, icon: Icon, badge }) => {
           const active = isActive(href)

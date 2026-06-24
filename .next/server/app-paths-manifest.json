@@ -1,9 +1,7 @@
 {
-  "/api/contexto/similarity/route": "app/api/contexto/similarity/route.js",
-  "/icon.svg/route": "app/icon.svg/route.js",
-  "/(app)/jogar/page": "app/(app)/jogar/page.js",
-  "/(app)/messages/page": "app/(app)/messages/page.js",
-  "/(app)/post/[id]/page": "app/(app)/post/[id]/page.js",
   "/(app)/feed/page": "app/(app)/feed/page.js",
-  "/(app)/messages/[conversationId]/page": "app/(app)/messages/[conversationId]/page.js"
+  "/(app)/communities/page": "app/(app)/communities/page.js",
+  "/(app)/communities/[slug]/page": "app/(app)/communities/[slug]/page.js",
+  "/(app)/jogar/page": "app/(app)/jogar/page.js",
+  "/(app)/communities/musica/avaliar/page": "app/(app)/communities/musica/avaliar/page.js"
 }

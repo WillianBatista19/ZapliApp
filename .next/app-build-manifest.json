@@ -45,6 +45,21 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/(app)/messages/[conversationId]/page.js"
+    ],
+    "/(app)/communities/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(app)/communities/page.js"
+    ],
+    "/(app)/communities/[slug]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(app)/communities/[slug]/page.js"
+    ],
+    "/(app)/communities/musica/avaliar/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(app)/communities/musica/avaliar/page.js"
     ]
   }
 }

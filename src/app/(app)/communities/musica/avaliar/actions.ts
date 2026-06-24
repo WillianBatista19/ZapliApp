@@ -17,12 +17,13 @@ interface TrackInput {
 }
 
 interface SaveRatingInput {
-  album_id:    string
-  album_name:  string
-  artist_name: string
-  cover_url:   string | null
-  tracks:      TrackInput[]
-  markers:     Record<MarkerField, string | null>
+  album_id:     string
+  album_name:   string
+  artist_name:  string
+  cover_url:    string | null
+  release_year: string | null
+  tracks:       TrackInput[]
+  markers:      Record<MarkerField, string | null>
 }
 
 export async function saveAlbumRating(input: SaveRatingInput) {
@@ -45,6 +46,7 @@ export async function saveAlbumRating(input: SaveRatingInput) {
         album_name:   input.album_name,
         artist_name:  input.artist_name,
         cover_url:    input.cover_url,
+        release_year: input.release_year,
         overall_score,
         ...input.markers,
         updated_at: new Date().toISOString(),

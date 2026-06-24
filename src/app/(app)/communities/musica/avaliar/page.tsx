@@ -18,59 +18,67 @@ export default async function AvaliarPage({ searchParams }: { searchParams?: Sea
 
   const { data: allRatings } = await supabase
     .from('album_ratings')
-    .select('album_id, album_name, artist_name, cover_url, overall_score, created_at, user_id, profiles!album_ratings_user_id_fkey(username, display_name)')
+    .select('album_id, album_name, artist_name, cover_url, overall_score, created_at, user_id, release_year, profiles!album_ratings_user_id_fkey(username, display_name)')
     .order('created_at', { ascending: false })
 
-  // Aggregate rankings from raw rows (Supabase JS client has no GROUP BY)
+  // Aggregate per-album stats from raw rows (Supabase JS has no GROUP BY)
   const albumMap = new Map<string, {
     album_name:   string
     artist_name:  string
     cover_url:    string | null
+    release_year: string | null
     scores:       number[]
+    total_rows:   number
   }>()
 
   for (const r of allRatings ?? []) {
     if (!albumMap.has(r.album_id)) {
       albumMap.set(r.album_id, {
-        album_name:  r.album_name,
-        artist_name: r.artist_name,
-        cover_url:   r.cover_url,
-        scores:      [],
+        album_name:   r.album_name,
+        artist_name:  r.artist_name,
+        cover_url:    r.cover_url,
+        release_year: (r as Record<string, unknown>).release_year as string | null ?? null,
+        scores:       [],
+        total_rows:   0,
       })
     }
-    if (r.overall_score != null) albumMap.get(r.album_id)!.scores.push(r.overall_score)
+    const entry = albumMap.get(r.album_id)!
+    entry.total_rows++
+    if (r.overall_score != null) entry.scores.push(r.overall_score)
   }
 
-  const topAlbums: RankedAlbum[] = Array.from(albumMap.entries())
-    .filter(([, v]) => v.scores.length > 0)
-    .map(([id, v]) => ({
+  function makeRanked(id: string): RankedAlbum {
+    const v = albumMap.get(id)!
+    return {
       album_id:     id,
       album_name:   v.album_name,
       artist_name:  v.artist_name,
       cover_url:    v.cover_url,
-      avg_score:    Math.round((v.scores.reduce((a, b) => a + b, 0) / v.scores.length) * 10) / 10,
-      rating_count: v.scores.length,
-    }))
-    .sort((a, b) => b.avg_score - a.avg_score)
-    .slice(0, 10)
-
-  const mostRated: RankedAlbum[] = Array.from(albumMap.entries())
-    .map(([id, v]) => ({
-      album_id:     id,
-      album_name:   v.album_name,
-      artist_name:  v.artist_name,
-      cover_url:    v.cover_url,
+      release_year: v.release_year,
       avg_score:    v.scores.length
         ? Math.round((v.scores.reduce((a, b) => a + b, 0) / v.scores.length) * 10) / 10
         : 0,
-      rating_count: albumMap.get(id)
-        ? (allRatings ?? []).filter(r => r.album_id === id).length
-        : 0,
-    }))
+      rating_count: v.total_rows,
+    }
+  }
+
+  const topAlbums: RankedAlbum[] = Array.from(albumMap.keys())
+    .filter(id => albumMap.get(id)!.scores.length > 0)
+    .map(makeRanked)
+    .sort((a, b) => b.avg_score - a.avg_score)
+    .slice(0, 10)
+
+  const mostRated: RankedAlbum[] = Array.from(albumMap.keys())
+    .map(makeRanked)
     .sort((a, b) => b.rating_count - a.rating_count)
     .slice(0, 8)
 
-  // Recent: one row per rating (not de-duped by album), most recent first
+  const best2026: RankedAlbum[] = Array.from(albumMap.keys())
+    .filter(id => albumMap.get(id)!.release_year === '2026' && albumMap.get(id)!.scores.length > 0)
+    .map(makeRanked)
+    .sort((a, b) => b.avg_score - a.avg_score)
+
+  // Recent: one row per rating (not de-duped), most recent first
   const recentRatings: RecentRating[] = (allRatings ?? []).slice(0, 8).map(r => {
     const profileData = r.profiles
     const p = (Array.isArray(profileData) ? profileData[0] : profileData) as { username: string; display_name: string | null } | null
@@ -98,7 +106,7 @@ export default async function AvaliarPage({ searchParams }: { searchParams?: Sea
       </div>
 
       <div>
-        <h1 className="text-xl font-bold text-zinc-100">🎵 Avaliar Álbum</h1>
+        <h1 className="text-xl font-bold text-zinc-100">🎵 Avaliar Álbum — Comunidade Música</h1>
         <p className="text-sm text-zinc-500 mt-1">
           Avalie cada faixa de 0 a 10 e marque seus favoritos
         </p>
@@ -108,6 +116,7 @@ export default async function AvaliarPage({ searchParams }: { searchParams?: Sea
         topAlbums={topAlbums}
         recentRatings={recentRatings}
         mostRated={mostRated}
+        best2026={best2026}
         userId={user?.id ?? null}
         initialAlbumId={searchParams?.albumId}
         initialAlbumName={searchParams?.albumName}
