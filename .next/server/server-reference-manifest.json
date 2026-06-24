@@ -143,131 +143,157 @@
     "0bbf2ba5de9942af56dbf9b6babdabf445466ae6": {
       "workers": {
         "app/(app)/communities/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!",
-        "app/(app)/communities/[slug]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!"
+        "app/(app)/communities/[slug]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!",
+        "app/(app)/communities/[slug]/settings/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!"
       },
       "layer": {
         "app/(app)/communities/page": "action-browser",
-        "app/(app)/communities/[slug]/page": "action-browser"
+        "app/(app)/communities/[slug]/page": "action-browser",
+        "app/(app)/communities/[slug]/settings/page": "action-browser"
       }
     },
     "1bbb8148e04a9c1bbaf4cf8f9637434f5720e4bc": {
       "workers": {
         "app/(app)/communities/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!",
-        "app/(app)/communities/[slug]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!"
+        "app/(app)/communities/[slug]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!",
+        "app/(app)/communities/[slug]/settings/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!"
       },
       "layer": {
         "app/(app)/communities/page": "action-browser",
-        "app/(app)/communities/[slug]/page": "action-browser"
+        "app/(app)/communities/[slug]/page": "action-browser",
+        "app/(app)/communities/[slug]/settings/page": "action-browser"
       }
     },
     "370dd5fd7584d0c5ad76316142c0d8b08afc06fc": {
       "workers": {
         "app/(app)/communities/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!",
-        "app/(app)/communities/[slug]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!"
+        "app/(app)/communities/[slug]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!",
+        "app/(app)/communities/[slug]/settings/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!"
       },
       "layer": {
         "app/(app)/communities/page": "action-browser",
-        "app/(app)/communities/[slug]/page": "action-browser"
+        "app/(app)/communities/[slug]/page": "action-browser",
+        "app/(app)/communities/[slug]/settings/page": "action-browser"
       }
     },
     "4067b51aa01cf7ee5551c17352a6faf2abefaad4": {
       "workers": {
         "app/(app)/communities/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!",
-        "app/(app)/communities/[slug]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!"
+        "app/(app)/communities/[slug]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!",
+        "app/(app)/communities/[slug]/settings/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!"
       },
       "layer": {
         "app/(app)/communities/page": "action-browser",
-        "app/(app)/communities/[slug]/page": "action-browser"
+        "app/(app)/communities/[slug]/page": "action-browser",
+        "app/(app)/communities/[slug]/settings/page": "action-browser"
       }
     },
     "47661ed3d5a3b253e82c0ed1ff7c8ea60c292373": {
       "workers": {
         "app/(app)/communities/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!",
-        "app/(app)/communities/[slug]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!"
+        "app/(app)/communities/[slug]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!",
+        "app/(app)/communities/[slug]/settings/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!"
       },
       "layer": {
         "app/(app)/communities/page": "action-browser",
-        "app/(app)/communities/[slug]/page": "action-browser"
+        "app/(app)/communities/[slug]/page": "action-browser",
+        "app/(app)/communities/[slug]/settings/page": "action-browser"
       }
     },
     "50ce325d21787f7f93820669d5d997b3a8658d9f": {
       "workers": {
         "app/(app)/communities/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!",
-        "app/(app)/communities/[slug]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!"
+        "app/(app)/communities/[slug]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!",
+        "app/(app)/communities/[slug]/settings/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!"
       },
       "layer": {
         "app/(app)/communities/page": "action-browser",
-        "app/(app)/communities/[slug]/page": "action-browser"
+        "app/(app)/communities/[slug]/page": "action-browser",
+        "app/(app)/communities/[slug]/settings/page": "action-browser"
       }
     },
     "566f9b19ff44f7c18c74cc110f95aeda82cd0013": {
       "workers": {
         "app/(app)/communities/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!",
-        "app/(app)/communities/[slug]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!"
+        "app/(app)/communities/[slug]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!",
+        "app/(app)/communities/[slug]/settings/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!"
       },
       "layer": {
         "app/(app)/communities/page": "action-browser",
-        "app/(app)/communities/[slug]/page": "action-browser"
+        "app/(app)/communities/[slug]/page": "action-browser",
+        "app/(app)/communities/[slug]/settings/page": "action-browser"
       }
     },
     "5d636f1f85bed290c32c7c6dac30389e89ca9692": {
       "workers": {
         "app/(app)/communities/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!",
-        "app/(app)/communities/[slug]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!"
+        "app/(app)/communities/[slug]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!",
+        "app/(app)/communities/[slug]/settings/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!"
       },
       "layer": {
         "app/(app)/communities/page": "action-browser",
-        "app/(app)/communities/[slug]/page": "action-browser"
+        "app/(app)/communities/[slug]/page": "action-browser",
+        "app/(app)/communities/[slug]/settings/page": "action-browser"
       }
     },
     "7917fb1b9d6a45a11aeefd7c3a03547ace028d53": {
       "workers": {
         "app/(app)/communities/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!",
-        "app/(app)/communities/[slug]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!"
+        "app/(app)/communities/[slug]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!",
+        "app/(app)/communities/[slug]/settings/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!"
       },
       "layer": {
         "app/(app)/communities/page": "action-browser",
-        "app/(app)/communities/[slug]/page": "action-browser"
+        "app/(app)/communities/[slug]/page": "action-browser",
+        "app/(app)/communities/[slug]/settings/page": "action-browser"
       }
     },
     "b17d5221ae45091fa4d268422bfb68ebd81890aa": {
       "workers": {
         "app/(app)/communities/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!",
-        "app/(app)/communities/[slug]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!"
+        "app/(app)/communities/[slug]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!",
+        "app/(app)/communities/[slug]/settings/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!"
       },
       "layer": {
         "app/(app)/communities/page": "action-browser",
-        "app/(app)/communities/[slug]/page": "action-browser"
+        "app/(app)/communities/[slug]/page": "action-browser",
+        "app/(app)/communities/[slug]/settings/page": "action-browser"
       }
     },
     "c64962e7deff2c3e789f86ac13f466c23ce05b94": {
       "workers": {
         "app/(app)/communities/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!",
-        "app/(app)/communities/[slug]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!"
+        "app/(app)/communities/[slug]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!",
+        "app/(app)/communities/[slug]/settings/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!"
       },
       "layer": {
         "app/(app)/communities/page": "action-browser",
-        "app/(app)/communities/[slug]/page": "action-browser"
+        "app/(app)/communities/[slug]/page": "action-browser",
+        "app/(app)/communities/[slug]/settings/page": "action-browser"
       }
     },
     "cc5ddbf25142d9e61263698bfe0bc5271481b691": {
       "workers": {
         "app/(app)/communities/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!",
-        "app/(app)/communities/[slug]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!"
+        "app/(app)/communities/[slug]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!",
+        "app/(app)/communities/[slug]/settings/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!"
       },
       "layer": {
         "app/(app)/communities/page": "action-browser",
-        "app/(app)/communities/[slug]/page": "action-browser"
+        "app/(app)/communities/[slug]/page": "action-browser",
+        "app/(app)/communities/[slug]/settings/page": "action-browser"
       }
     },
     "f11304b8ea8e7a020b58f94dbabebf7b14dcac81": {
       "workers": {
         "app/(app)/communities/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!",
-        "app/(app)/communities/[slug]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!"
+        "app/(app)/communities/[slug]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!",
+        "app/(app)/communities/[slug]/settings/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cactions.ts%22%2C%5B%22createCommunityPost%22%2C%22toggleNotificationsMuted%22%2C%22joinCommunity%22%2C%22deleteCommunityPost%22%2C%22createCommunity%22%2C%22leaveCommunity%22%2C%22updateCommunitySettings%22%2C%22updateMemberRole%22%2C%22deleteCommunityComment%22%2C%22deleteCommunity%22%2C%22updateMemberCanPost%22%2C%22createCommunityComment%22%2C%22removeMember%22%5D%5D%5D&__client_imported__=true!"
       },
       "layer": {
         "app/(app)/communities/page": "action-browser",
-        "app/(app)/communities/[slug]/page": "action-browser"
+        "app/(app)/communities/[slug]/page": "action-browser",
+        "app/(app)/communities/[slug]/settings/page": "action-browser"
       }
     },
     "16d49ba18dec63923ba7763b5da60809ab11839c": {
@@ -284,6 +310,70 @@
       },
       "layer": {
         "app/(app)/communities/musica/avaliar/page": "action-browser"
+      }
+    },
+    "4561426f7ba1a50fa445a0e139ba24b4b887e9cb": {
+      "workers": {
+        "app/(app)/communities/musica/grammy/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cmusica%5C%5Cgrammy%5C%5Cactions.ts%22%2C%5B%22closeGrammyVoting%22%2C%22addGrammyNominee%22%2C%22revealGrammyWinners%22%2C%22deleteGrammyNominee%22%2C%22saveGrammyVotes%22%2C%22createGrammyEdition%22%2C%22deleteGrammyCategory%22%2C%22addGrammyCategory%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/(app)/communities/musica/grammy/page": "action-browser"
+      }
+    },
+    "49e38fb15ee6050c6bc3c93dd22756f91d857b59": {
+      "workers": {
+        "app/(app)/communities/musica/grammy/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cmusica%5C%5Cgrammy%5C%5Cactions.ts%22%2C%5B%22closeGrammyVoting%22%2C%22addGrammyNominee%22%2C%22revealGrammyWinners%22%2C%22deleteGrammyNominee%22%2C%22saveGrammyVotes%22%2C%22createGrammyEdition%22%2C%22deleteGrammyCategory%22%2C%22addGrammyCategory%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/(app)/communities/musica/grammy/page": "action-browser"
+      }
+    },
+    "5179f5ec1055039b317998696db0db071870036e": {
+      "workers": {
+        "app/(app)/communities/musica/grammy/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cmusica%5C%5Cgrammy%5C%5Cactions.ts%22%2C%5B%22closeGrammyVoting%22%2C%22addGrammyNominee%22%2C%22revealGrammyWinners%22%2C%22deleteGrammyNominee%22%2C%22saveGrammyVotes%22%2C%22createGrammyEdition%22%2C%22deleteGrammyCategory%22%2C%22addGrammyCategory%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/(app)/communities/musica/grammy/page": "action-browser"
+      }
+    },
+    "5e093914f0fa01a57e2a00618869e6d03d0b09df": {
+      "workers": {
+        "app/(app)/communities/musica/grammy/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cmusica%5C%5Cgrammy%5C%5Cactions.ts%22%2C%5B%22closeGrammyVoting%22%2C%22addGrammyNominee%22%2C%22revealGrammyWinners%22%2C%22deleteGrammyNominee%22%2C%22saveGrammyVotes%22%2C%22createGrammyEdition%22%2C%22deleteGrammyCategory%22%2C%22addGrammyCategory%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/(app)/communities/musica/grammy/page": "action-browser"
+      }
+    },
+    "75a93921a26bd7a9d193ea4bbf051c9aec69a55c": {
+      "workers": {
+        "app/(app)/communities/musica/grammy/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cmusica%5C%5Cgrammy%5C%5Cactions.ts%22%2C%5B%22closeGrammyVoting%22%2C%22addGrammyNominee%22%2C%22revealGrammyWinners%22%2C%22deleteGrammyNominee%22%2C%22saveGrammyVotes%22%2C%22createGrammyEdition%22%2C%22deleteGrammyCategory%22%2C%22addGrammyCategory%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/(app)/communities/musica/grammy/page": "action-browser"
+      }
+    },
+    "79a56958f02062d0669abcdee63db7fb4c6750dc": {
+      "workers": {
+        "app/(app)/communities/musica/grammy/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cmusica%5C%5Cgrammy%5C%5Cactions.ts%22%2C%5B%22closeGrammyVoting%22%2C%22addGrammyNominee%22%2C%22revealGrammyWinners%22%2C%22deleteGrammyNominee%22%2C%22saveGrammyVotes%22%2C%22createGrammyEdition%22%2C%22deleteGrammyCategory%22%2C%22addGrammyCategory%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/(app)/communities/musica/grammy/page": "action-browser"
+      }
+    },
+    "83049172a71ef436bda2182c06fd14ebecbbe47b": {
+      "workers": {
+        "app/(app)/communities/musica/grammy/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cmusica%5C%5Cgrammy%5C%5Cactions.ts%22%2C%5B%22closeGrammyVoting%22%2C%22addGrammyNominee%22%2C%22revealGrammyWinners%22%2C%22deleteGrammyNominee%22%2C%22saveGrammyVotes%22%2C%22createGrammyEdition%22%2C%22deleteGrammyCategory%22%2C%22addGrammyCategory%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/(app)/communities/musica/grammy/page": "action-browser"
+      }
+    },
+    "d1c459d25eb42a96489344693b2043c44b021860": {
+      "workers": {
+        "app/(app)/communities/musica/grammy/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cmusica%5C%5Cgrammy%5C%5Cactions.ts%22%2C%5B%22closeGrammyVoting%22%2C%22addGrammyNominee%22%2C%22revealGrammyWinners%22%2C%22deleteGrammyNominee%22%2C%22saveGrammyVotes%22%2C%22createGrammyEdition%22%2C%22deleteGrammyCategory%22%2C%22addGrammyCategory%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/(app)/communities/musica/grammy/page": "action-browser"
       }
     }
   },

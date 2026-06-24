@@ -1,7 +1,10 @@
 {
-  "/(app)/feed/page": "app/(app)/feed/page.js",
+  "/icon.svg/route": "app/icon.svg/route.js",
   "/(app)/communities/page": "app/(app)/communities/page.js",
+  "/(app)/notifications/page": "app/(app)/notifications/page.js",
+  "/(app)/post/[id]/page": "app/(app)/post/[id]/page.js",
+  "/(app)/communities/musica/avaliar/[albumId]/page": "app/(app)/communities/musica/avaliar/[albumId]/page.js",
+  "/(app)/feed/page": "app/(app)/feed/page.js",
   "/(app)/communities/[slug]/page": "app/(app)/communities/[slug]/page.js",
-  "/(app)/jogar/page": "app/(app)/jogar/page.js",
-  "/(app)/communities/musica/avaliar/page": "app/(app)/communities/musica/avaliar/page.js"
+  "/(app)/communities/musica/grammy/page": "app/(app)/communities/musica/grammy/page.js"
 }

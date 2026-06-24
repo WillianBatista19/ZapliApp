@@ -221,6 +221,22 @@ export default function CommunityPageClient({
             </div>
             <span className="text-zinc-600 shrink-0">→</span>
           </Link>
+
+          <Link
+            href="/communities/musica/grammy"
+            className="flex items-center gap-4 rounded-xl bg-zinc-900/60 border border-zinc-800 p-4 hover:bg-zinc-800/60 transition-colors"
+          >
+            <div className="w-14 h-14 rounded-xl bg-yellow-500/10 flex items-center justify-center text-3xl shrink-0">
+              🎙️
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-zinc-100">Grammy Predictions</p>
+              <p className="text-sm text-zinc-400 mt-0.5">
+                Faça suas previsões e veja quem acertou mais
+              </p>
+            </div>
+            <span className="text-zinc-600 shrink-0">→</span>
+          </Link>
         </div>
       )}
 

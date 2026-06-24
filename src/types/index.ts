@@ -230,6 +230,43 @@ export interface SurvivorTrack {
   created_at:          string
 }
 
+export interface GrammyEdition {
+  id:             string
+  year:           number
+  ceremony_date:  string
+  status:         'voting' | 'closed' | 'revealed'
+  created_by:     string
+  created_at:     string
+}
+
+export interface GrammyCategory {
+  id:                string
+  edition_id:        string
+  name:              string
+  display_order:     number
+  winner_nominee_id: string | null
+  created_at:        string
+}
+
+export interface GrammyNominee {
+  id:          string
+  category_id: string
+  name:        string
+  artist:      string | null
+  cover_url:   string | null
+  created_at:  string
+}
+
+export interface GrammyVote {
+  id:                    string
+  edition_id:            string
+  category_id:           string
+  user_id:               string
+  prediction_nominee_id: string
+  wish_nominee_id:       string | null
+  created_at:            string
+}
+
 export interface Post {
   id:             string
   user_id:        string
