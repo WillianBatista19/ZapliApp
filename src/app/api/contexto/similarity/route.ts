@@ -1,19 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient }             from '@/lib/supabase/server'
-import { cosineSimilarity, parseEmbedding } from '@/lib/transformers'
 
-export const runtime     = 'nodejs'
-export const dynamic     = 'force-dynamic'
-export const maxDuration = 60
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-let _pipe: any = null
-async function getPipeline() {
-  if (_pipe) return _pipe
-  const { pipeline } = await import('@xenova/transformers')
-  _pipe = await pipeline('feature-extraction', 'Xenova/paraphrase-multilingual-MiniLM-L12-v2', { quantized: true })
-  return _pipe
-}
+const HF_MODEL = 'sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2'
 
 export async function POST(req: NextRequest) {
   try {
@@ -30,12 +21,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'guess e playDate são obrigatórios' }, { status: 400 })
     }
 
-    console.log('[similarity] guess:', guess, 'date:', playDate)
-
     const supabase = await createClient()
     const { data: wordData, error: dbErr } = await supabase
       .from('contexto_words')
-      .select('word, embedding')
+      .select('word')
       .eq('play_date', playDate)
       .maybeSingle()
 
@@ -51,34 +40,53 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    if (!wordData.embedding) {
-      return NextResponse.json(
-        { error: 'Embedding não gerado para a palavra de hoje. O admin precisa recriar a palavra.' },
-        { status: 422 },
-      )
-    }
+    const secretWord = wordData.word.toLowerCase().trim()
 
-    if (guess === wordData.word.toLowerCase()) {
+    // Exact match — no API call needed
+    if (guess === secretWord) {
       return NextResponse.json({ similarity: 100, isCorrect: true })
     }
 
-    console.log('[similarity] loading pipeline...')
-    const pipe     = await getPipeline()
-    const output   = await pipe(guess, { pooling: 'mean', normalize: true })
-    const guessEmb = output.data as Float32Array
-    const wordEmb  = parseEmbedding(wordData.embedding)
+    const apiKey = process.env.HUGGING_FACE_API_KEY
+    if (!apiKey) {
+      console.error('[similarity] HUGGING_FACE_API_KEY not set')
+      return NextResponse.json({ error: 'Configuração de API ausente.' }, { status: 500 })
+    }
 
-    const sim   = cosineSimilarity(guessEmb, wordEmb)
-    const score = Math.max(0, Math.min(99, Math.round(sim * 100)))
-    console.log('[similarity] score:', score)
+    const hfRes = await fetch(
+      `https://api-inference.huggingface.co/models/${HF_MODEL}`,
+      {
+        method:  'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type':  'application/json',
+        },
+        body: JSON.stringify({
+          inputs: {
+            source_sentence: secretWord,
+            sentences:       [guess],
+          },
+        }),
+      },
+    )
 
-    return NextResponse.json({ similarity: score, isCorrect: false })
+    if (!hfRes.ok) {
+      const text = await hfRes.text()
+      console.error('[similarity] HF API error:', hfRes.status, text)
+      return NextResponse.json({ error: `Erro na API de similaridade: ${hfRes.status}` }, { status: 502 })
+    }
+
+    const result = await hfRes.json() as unknown
+    const rawScore = Array.isArray(result) ? (result[0] as number) : 0
+    const similarity = Math.max(0, Math.min(99, Math.round(rawScore * 100)))
+
+    console.log(`[similarity] "${guess}" vs "${secretWord}" → raw: ${rawScore.toFixed(4)}, score: ${similarity}`)
+
+    return NextResponse.json({ similarity, isCorrect: false })
 
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err)
-    const stack   = err instanceof Error ? err.stack   : undefined
     console.error('[similarity] UNCAUGHT ERROR:', message)
-    console.error(stack)
-    return NextResponse.json({ error: message, stack }, { status: 500 })
+    return NextResponse.json({ error: message }, { status: 500 })
   }
 }

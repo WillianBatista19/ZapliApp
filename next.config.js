@@ -1,12 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  serverExternalPackages: ['@xenova/transformers', 'onnxruntime-node'],
-  webpack: (config, { isServer }) => {
-    if (isServer) {
-      config.externals.push('@xenova/transformers', 'onnxruntime-node')
-    }
-    return config
-  },
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: '**.supabase.co' },
