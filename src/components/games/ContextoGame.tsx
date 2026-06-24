@@ -36,6 +36,7 @@ export default function ContextoGame({ currentUserId }: { currentUserId: string 
   const [solved,      setSolved]      = useState(false)
   const [message,     setMessage]     = useState('')
   const [shared,      setShared]      = useState(false)
+  const [warming,     setWarming]     = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
   // Load saved state
@@ -88,12 +89,22 @@ export default function ContextoGame({ currentUserId }: { currentUserId: string 
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({ guess: word, playDate: today }),
       })
-      const json = await res.json() as { similarity?: number; isCorrect?: boolean; error?: string }
+      const json = await res.json() as { similarity?: number; isCorrect?: boolean; error?: string; retryAfter?: number }
+
+      // Model warming up — don't count as an attempt, let user retry
+      if (res.status === 503) {
+        setWarming(true)
+        setInput(word)   // restore input so user can just press Enter again
+        setTimeout(() => setWarming(false), (json.retryAfter ?? 10) * 1000)
+        return
+      }
 
       if (!res.ok || typeof json.similarity !== 'number') {
         setMessage(json.error ?? 'Erro ao calcular similaridade.')
         return
       }
+
+      setWarming(false)
 
       const newGuess: Guess  = { word, similarity: json.similarity }
       const newGuesses       = [...guesses, newGuess]
@@ -169,6 +180,14 @@ export default function ContextoGame({ currentUserId }: { currentUserId: string 
               </span>
             ) : 'Tentar'}
           </button>
+        </div>
+      )}
+
+      {/* Model warming banner */}
+      {warming && (
+        <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-center">
+          <p className="text-sm font-semibold text-amber-400">⏳ Modelo carregando…</p>
+          <p className="mt-0.5 text-xs text-zinc-400">Aguarde alguns segundos e tente novamente. A tentativa não foi contada.</p>
         </div>
       )}
 

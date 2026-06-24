@@ -1,73 +1,69 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient }             from '@/lib/supabase/server'
 
-export const runtime = 'nodejs'
-export const dynamic = 'force-dynamic'
+export const runtime     = 'nodejs'
+export const dynamic     = 'force-dynamic'
+export const maxDuration = 30
 
-const HF_MODEL = 'sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2'
-const HF_URL   = `https://api-inference.huggingface.co/models/${HF_MODEL}`
+const HF_URL = 'https://api-inference.huggingface.co/models/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2'
 
-async function callHuggingFace(
-  sourceWord: string,
-  guess:      string,
-  apiKey:     string,
-  attempt = 1,
-): Promise<number> {
+// Pre-warm the model on cold start so the first real guess doesn't hit a 503
+fetch(HF_URL, {
+  method:  'POST',
+  headers: {
+    'Authorization': `Bearer ${process.env.HUGGING_FACE_API_KEY}`,
+    'Content-Type':  'application/json',
+  },
+  body: JSON.stringify({ inputs: { source_sentence: 'test', sentences: ['test'] } }),
+}).catch(() => {})
+
+async function fetchHuggingFace(word: string, guess: string): Promise<number> {
   const controller = new AbortController()
-  const timer      = setTimeout(() => controller.abort(), 15_000)
+  const timeoutId  = setTimeout(() => controller.abort(), 20_000)
 
-  let hfRes: Response
+  let response: Response
   try {
-    hfRes = await fetch(HF_URL, {
+    response = await fetch(HF_URL, {
       method:  'POST',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
+        'Authorization': `Bearer ${process.env.HUGGING_FACE_API_KEY}`,
         'Content-Type':  'application/json',
       },
-      body:   JSON.stringify({ inputs: { source_sentence: sourceWord, sentences: [guess] } }),
+      body:   JSON.stringify({ inputs: { source_sentence: word, sentences: [guess] } }),
       signal: controller.signal,
     })
-  } finally {
-    clearTimeout(timer)
-  }
-
-  console.log(`[similarity] HF status: ${hfRes.status} (attempt ${attempt})`)
-
-  // Model warming up — retry once after a short wait
-  if (hfRes.status === 503 && attempt === 1) {
-    const body = await hfRes.text()
-    console.log('[similarity] HF 503 body:', body)
-    await new Promise(r => setTimeout(r, 5_000))
-    return callHuggingFace(sourceWord, guess, apiKey, 2)
-  }
-
-  if (!hfRes.ok) {
-    const body = await hfRes.text()
-    console.error(`[similarity] HF error ${hfRes.status}:`, body)
-    throw new Error(`HF API ${hfRes.status}: ${body.slice(0, 200)}`)
-  }
-
-  const result = await hfRes.json() as unknown
-  console.log('[similarity] HF result:', JSON.stringify(result))
-
-  // Check for loading error in successful-status responses
-  if (
-    result !== null &&
-    typeof result === 'object' &&
-    'error' in result &&
-    typeof (result as Record<string, unknown>).error === 'string' &&
-    ((result as Record<string, unknown>).error as string).toLowerCase().includes('loading')
-  ) {
-    if (attempt === 1) {
-      console.log('[similarity] model still loading, retrying in 5s...')
-      await new Promise(r => setTimeout(r, 5_000))
-      return callHuggingFace(sourceWord, guess, apiKey, 2)
+  } catch (err) {
+    clearTimeout(timeoutId)
+    if (err instanceof Error && err.name === 'AbortError') {
+      throw Object.assign(new Error('timeout'), { status: 503 })
     }
-    throw new Error('Model still loading after retry')
+    throw err
+  }
+  clearTimeout(timeoutId)
+
+  const data = await response.json() as unknown
+  console.log('[HF] status:', response.status, 'data:', JSON.stringify(data))
+
+  if (response.status === 503) {
+    throw Object.assign(new Error('model_loading'), { status: 503 })
   }
 
-  const rawScore = Array.isArray(result) ? (result[0] as number) : 0
-  return Math.max(0, Math.min(99, Math.round(rawScore * 100)))
+  const isLoadingError =
+    data !== null &&
+    typeof data === 'object' &&
+    'error' in data &&
+    typeof (data as Record<string, unknown>).error === 'string' &&
+    ((data as Record<string, unknown>).error as string).toLowerCase().includes('loading')
+
+  if (isLoadingError) {
+    throw Object.assign(new Error('model_loading'), { status: 503 })
+  }
+
+  if (Array.isArray(data) && typeof data[0] === 'number') {
+    return Math.min(99, Math.round(data[0] * 100))
+  }
+
+  throw new Error(`HF API error: ${JSON.stringify(data)}`)
 }
 
 export async function POST(req: NextRequest) {
@@ -106,25 +102,37 @@ export async function POST(req: NextRequest) {
 
     const secretWord = wordData.word.toLowerCase().trim()
 
-    // Exact match — no API call needed
     if (guess === secretWord) {
       return NextResponse.json({ similarity: 100, isCorrect: true })
     }
 
-    const apiKey = process.env.HUGGING_FACE_API_KEY
-    if (!apiKey) {
+    if (!process.env.HUGGING_FACE_API_KEY) {
       console.error('[similarity] HUGGING_FACE_API_KEY not set')
       return NextResponse.json({ error: 'Configuração de API ausente.' }, { status: 500 })
     }
 
     try {
-      const similarity = await callHuggingFace(secretWord, guess, apiKey)
+      const similarity = await fetchHuggingFace(secretWord, guess)
       console.log(`[similarity] "${guess}" vs "${secretWord}" → ${similarity}`)
       return NextResponse.json({ similarity, isCorrect: false })
     } catch (err) {
-      const message = err instanceof Error ? err.message : String(err)
-      console.error('[similarity] HF call failed:', message)
-      return NextResponse.json({ error: `Erro na API de similaridade: ${message}` }, { status: 502 })
+      const msg = err instanceof Error ? err.message : String(err)
+      if (msg === 'model_loading') {
+        console.log('[similarity] HF model warming up')
+        return NextResponse.json(
+          { error: 'Modelo carregando, tente novamente em alguns segundos', retryAfter: 10 },
+          { status: 503 },
+        )
+      }
+      if (msg === 'timeout') {
+        console.log('[similarity] HF fetch timed out after 20s')
+        return NextResponse.json(
+          { error: 'Tempo esgotado. Tente novamente.', retryAfter: 5 },
+          { status: 503 },
+        )
+      }
+      console.error('[similarity] HF failed:', msg)
+      return NextResponse.json({ error: `Erro na API de similaridade: ${msg}` }, { status: 502 })
     }
 
   } catch (err: unknown) {
