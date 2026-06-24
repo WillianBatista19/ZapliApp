@@ -5,17 +5,26 @@ let pipelineCache: any = null
 let pipelinePromise: Promise<any> | null = null
 
 export async function getEmbeddingPipeline(): Promise<any> {
-  if (pipelineCache) return pipelineCache
+  if (pipelineCache) { console.log('[transformers] returning cached pipeline'); return pipelineCache }
   if (!pipelinePromise) {
     pipelinePromise = (async () => {
-      const { pipeline } = await import('@xenova/transformers')
-      const p = await pipeline(
-        'feature-extraction',
-        'Xenova/paraphrase-multilingual-MiniLM-L12-v2',
-      )
-      pipelineCache = p
-      pipelinePromise = null
-      return p
+      try {
+        console.log('[transformers] importing @xenova/transformers...')
+        const { pipeline } = await import('@xenova/transformers')
+        console.log('[transformers] import ok — loading model...')
+        const p = await pipeline(
+          'feature-extraction',
+          'Xenova/paraphrase-multilingual-MiniLM-L12-v2',
+        )
+        console.log('[transformers] model loaded ok')
+        pipelineCache = p
+        pipelinePromise = null
+        return p
+      } catch (err) {
+        pipelinePromise = null  // allow retry
+        console.error('[transformers] FAILED to load pipeline:', err)
+        throw err
+      }
     })()
   }
   return pipelinePromise

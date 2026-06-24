@@ -34,7 +34,7 @@ function isMatch(guess: string, answerTitle: string): boolean {
 
 export default function MusicGame({ currentUserId }: { currentUserId: string | null }) {
   const supabase     = useMemo(() => createClient(), [])
-  const today        = new Date().toISOString().split('T')[0]
+  const today        = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' })
   const audioRef     = useRef<HTMLAudioElement>(null)
   const revealAudioRef = useRef<HTMLAudioElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)

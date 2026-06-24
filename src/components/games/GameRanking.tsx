@@ -5,16 +5,17 @@ import { createClient } from '@/lib/supabase/client'
 import Avatar from '@/components/Avatar'
 
 type RankRow = {
-  user_id:      string
-  username:     string
-  display_name: string | null
-  avatar_url:   string | null
-  music_total:  number
-  word_total:   number
-  total:        number
+  user_id:        string
+  username:       string
+  display_name:   string | null
+  avatar_url:     string | null
+  music_total:    number
+  word_total:     number
+  contexto_total: number
+  total:          number
 }
 
-type Tab = 'total' | 'music' | 'word'
+type Tab = 'total' | 'music' | 'word' | 'contexto'
 
 export default function GameRanking({ currentUserId }: { currentUserId: string | null }) {
   const supabase            = useMemo(() => createClient(), [])
@@ -28,7 +29,8 @@ export default function GameRanking({ currentUserId }: { currentUserId: string |
       if (!error && data) {
         setRows((data as RankRow[]).map(r => ({
           ...r,
-          total: r.music_total + r.word_total,
+          contexto_total: r.contexto_total ?? 0,
+          total: r.music_total + r.word_total + (r.contexto_total ?? 0),
         })))
       }
       setLoad(false)
@@ -36,21 +38,26 @@ export default function GameRanking({ currentUserId }: { currentUserId: string |
     void load()
   }, [supabase])
 
+  const TAB_KEY: Record<Tab, keyof RankRow> = {
+    total:    'total',
+    music:    'music_total',
+    word:     'word_total',
+    contexto: 'contexto_total',
+  }
+
   const sorted = useMemo(() => {
-    const key: Record<Tab, keyof RankRow> = { total: 'total', music: 'music_total', word: 'word_total' }
-    return [...rows].sort((a, b) => (b[key[tab]] as number) - (a[key[tab]] as number)).slice(0, 10)
+    return [...rows].sort((a, b) => (b[TAB_KEY[tab]] as number) - (a[TAB_KEY[tab]] as number)).slice(0, 10)
   }, [rows, tab])
 
   const myRow = useMemo(() => {
     if (!currentUserId) return null
-    const key: Record<Tab, keyof RankRow> = { total: 'total', music: 'music_total', word: 'word_total' }
-    const all = [...rows].sort((a, b) => (b[key[tab]] as number) - (a[key[tab]] as number))
+    const all = [...rows].sort((a, b) => (b[TAB_KEY[tab]] as number) - (a[TAB_KEY[tab]] as number))
     const idx = all.findIndex(r => r.user_id === currentUserId)
     return idx >= 10 ? { rank: idx + 1, row: all[idx] } : null
   }, [rows, tab, currentUserId])
 
   function getScore(r: RankRow) {
-    return tab === 'music' ? r.music_total : tab === 'word' ? r.word_total : r.total
+    return r[TAB_KEY[tab]] as number
   }
 
   const MEDALS = ['🥇','🥈','🥉']
@@ -61,7 +68,7 @@ export default function GameRanking({ currentUserId }: { currentUserId: string |
 
       {/* Tab switcher */}
       <div className="mb-3 flex gap-1 rounded-xl bg-zinc-800 p-0.5">
-        {(['total','music','word'] as Tab[]).map(t => (
+        {(['total','music','word','contexto'] as Tab[]).map(t => (
           <button
             key={t}
             onClick={() => setTab(t)}
@@ -69,7 +76,7 @@ export default function GameRanking({ currentUserId }: { currentUserId: string |
               tab === t ? 'bg-zinc-700 text-zinc-100' : 'text-zinc-500 hover:text-zinc-300'
             }`}
           >
-            {t === 'total' ? 'Geral' : t === 'music' ? '🎵 Música' : '📝 Termo'}
+            {t === 'total' ? 'Geral' : t === 'music' ? '🎵' : t === 'word' ? '📝' : '🧠'}
           </button>
         ))}
       </div>

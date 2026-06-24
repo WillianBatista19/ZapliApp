@@ -1,7 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverComponentsExternalPackages: ['@xenova/transformers', 'onnxruntime-node'],
+  serverExternalPackages: ['@xenova/transformers', 'onnxruntime-node'],
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.externals.push({
+        'onnxruntime-node': 'commonjs onnxruntime-node',
+        '@xenova/transformers': 'commonjs @xenova/transformers',
+      })
+    }
+    return config
   },
   images: {
     remotePatterns: [

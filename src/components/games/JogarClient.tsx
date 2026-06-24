@@ -31,9 +31,10 @@ export default function JogarClient({
   const [tab, setTab] = useState<Tab>('word')
 
   const today = new Date().toLocaleDateString('pt-BR', {
-    weekday: 'long',
-    day:     'numeric',
-    month:   'long',
+    timeZone: 'America/Sao_Paulo',
+    weekday:  'long',
+    day:      'numeric',
+    month:    'long',
   })
 
   return (

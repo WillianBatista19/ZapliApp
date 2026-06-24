@@ -27,7 +27,7 @@ function computeScore(attemptsCount: number): number {
 
 export default function ContextoGame({ currentUserId }: { currentUserId: string | null }) {
   const supabase = useMemo(() => createClient(), [])
-  const today    = new Date().toISOString().split('T')[0]
+  const today    = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' })
 
   const [guesses,     setGuesses]     = useState<Guess[]>([])
   const [input,       setInput]       = useState('')

@@ -52,7 +52,7 @@ const KB_ROWS = [
 
 export default function WordGame({ currentUserId }: { currentUserId: string | null }) {
   const supabase = useMemo(() => createClient(), [])
-  const today    = new Date().toISOString().split('T')[0]
+  const today    = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' })
 
   const [word,         setWord]         = useState('')
   const [guesses,      setGuesses]      = useState<string[]>([])

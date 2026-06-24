@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { postOfficialMessage, submitChangelogEntry } from '@/app/(app)/jogar/admin/actions'
@@ -27,6 +27,16 @@ export default function AdminClient() {
   const [wordMsg,    setWordMsg]    = useState('')
   const [wordSaving, setWordSaving] = useState(false)
 
+  // Contexto word form
+  const [ctxWord,   setCtxWord]   = useState('')
+  const [ctxDate,   setCtxDate]   = useState(() => {
+    const tomorrow = new Date(Date.now() + 86_400_000)
+    return tomorrow.toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' })
+  })
+  const [ctxMsg,    setCtxMsg]    = useState('')
+  const [ctxSaving, setCtxSaving] = useState(false)
+  const [ctxCount,  setCtxCount]  = useState<number | null>(null)
+
   // Official post form
   const [officialContent, setOfficialContent] = useState('')
   const [officialMsg,     setOfficialMsg]     = useState('')
@@ -36,7 +46,7 @@ export default function AdminClient() {
   const [clVersion, setClVersion] = useState('')
   const [clTitle,   setClTitle]   = useState('')
   const [clItems,   setClItems]   = useState('')
-  const [clDate,    setClDate]    = useState(() => new Date().toISOString().split('T')[0])
+  const [clDate,    setClDate]    = useState(() => new Date().toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' }))
   const [clMsg,     setClMsg]     = useState('')
   const [clSaving,  setClSaving]  = useState(false)
 
@@ -121,6 +131,42 @@ export default function AdminClient() {
     if (error) setWordMsg(error.code === '23505' ? 'Palavra já existe.' : `Erro: ${error.message}`)
     else { setWordMsg(`✓ "${w}" adicionada!`); setWordInput('') }
     setWordSaving(false)
+  }
+
+  useEffect(() => {
+    async function loadCtxCount() {
+      const { count } = await supabase
+        .from('contexto_words')
+        .select('*', { count: 'exact', head: true })
+      setCtxCount(count ?? 0)
+    }
+    void loadCtxCount()
+  }, [supabase])
+
+  async function saveContextoWord() {
+    const word = ctxWord.trim().toLowerCase()
+    if (!word) { setCtxMsg('Digite uma palavra.'); return }
+    setCtxSaving(true)
+    setCtxMsg('Gerando embedding — pode demorar até 1 min na primeira vez...')
+    try {
+      const res  = await fetch('/api/contexto/generate-embedding', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ word, playDate: ctxDate }),
+      })
+      const json = await res.json() as { ok?: boolean; error?: string }
+      if (!res.ok || !json.ok) {
+        setCtxMsg(`Erro: ${json.error ?? 'desconhecido'}`)
+      } else {
+        setCtxMsg(`✓ "${word}" salva para ${ctxDate}!`)
+        setCtxWord('')
+        setCtxCount(prev => (prev ?? 0) + 1)
+      }
+    } catch {
+      setCtxMsg('Erro de rede.')
+    } finally {
+      setCtxSaving(false)
+    }
   }
 
   const songMsgColor = songMsg.startsWith('✓')
@@ -231,6 +277,49 @@ export default function AdminClient() {
         {wordMsg && (
           <p className={`mt-2 text-xs ${wordMsg.startsWith('✓') ? 'text-[#1D9E75]' : 'text-red-400'}`}>
             {wordMsg}
+          </p>
+        )}
+      </div>
+
+      {/* CONTEXTO SECTION */}
+      <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-5">
+        <h2 className="mb-1 text-sm font-semibold text-zinc-100">🧠 Palavra do Contexto</h2>
+        <p className="mb-4 text-xs text-zinc-500">
+          Define a palavra secreta e gera o embedding para o jogo do dia.
+          {ctxCount !== null && (
+            <span className="ml-1 font-medium text-zinc-400">
+              {ctxCount} palavra{ctxCount !== 1 ? 's' : ''} no banco.
+            </span>
+          )}
+        </p>
+
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={ctxWord}
+            onChange={e => setCtxWord(e.target.value.toLowerCase())}
+            onKeyDown={e => { if (e.key === 'Enter' && !ctxSaving) void saveContextoWord() }}
+            placeholder="palavra secreta..."
+            className="flex-1 rounded-xl border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-600 outline-none focus:border-[#1D9E75]"
+          />
+          <input
+            type="date"
+            value={ctxDate}
+            onChange={e => setCtxDate(e.target.value)}
+            className="rounded-xl border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-100 outline-none focus:border-[#1D9E75]"
+          />
+          <button
+            onClick={() => void saveContextoWord()}
+            disabled={ctxSaving || !ctxWord.trim()}
+            className="rounded-xl bg-[#1D9E75] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#178a63] disabled:opacity-40"
+          >
+            {ctxSaving ? '...' : 'Gerar'}
+          </button>
+        </div>
+
+        {ctxMsg && (
+          <p className={`mt-2 text-xs ${ctxMsg.startsWith('✓') ? 'text-[#1D9E75]' : ctxMsg.startsWith('Gerando') ? 'text-zinc-400' : 'text-red-400'}`}>
+            {ctxMsg}
           </p>
         )}
       </div>

@@ -2,9 +2,10 @@ import Link from 'next/link'
 
 export default function DailyGameCard() {
   const today = new Date().toLocaleDateString('pt-BR', {
-    weekday: 'long',
-    day:     'numeric',
-    month:   'long',
+    timeZone: 'America/Sao_Paulo',
+    weekday:  'long',
+    day:      'numeric',
+    month:    'long',
   })
 
   return (
