@@ -33,9 +33,12 @@ export default function AdminClient() {
     const tomorrow = new Date(Date.now() + 86_400_000)
     return tomorrow.toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' })
   })
-  const [ctxMsg,    setCtxMsg]    = useState('')
-  const [ctxSaving, setCtxSaving] = useState(false)
-  const [ctxCount,  setCtxCount]  = useState<number | null>(null)
+  const [ctxMsg,       setCtxMsg]       = useState('')
+  const [ctxSaving,    setCtxSaving]    = useState(false)
+  const [ctxCount,     setCtxCount]     = useState<number | null>(null)
+  const [ctxPending,   setCtxPending]   = useState<number | null>(null)
+  const [ctxAllRunning, setCtxAllRunning] = useState(false)
+  const [ctxAllMsg,    setCtxAllMsg]    = useState('')
 
   // Official post form
   const [officialContent, setOfficialContent] = useState('')
@@ -135,10 +138,12 @@ export default function AdminClient() {
 
   useEffect(() => {
     async function loadCtxCount() {
-      const { count } = await supabase
-        .from('contexto_words')
-        .select('*', { count: 'exact', head: true })
-      setCtxCount(count ?? 0)
+      const [totalRes, pendingRes] = await Promise.all([
+        supabase.from('contexto_words').select('*', { count: 'exact', head: true }),
+        supabase.from('contexto_words').select('*', { count: 'exact', head: true }).is('embedding', null),
+      ])
+      setCtxCount(totalRes.count ?? 0)
+      setCtxPending(pendingRes.count ?? 0)
     }
     void loadCtxCount()
   }, [supabase])
@@ -166,6 +171,31 @@ export default function AdminClient() {
       setCtxMsg('Erro de rede.')
     } finally {
       setCtxSaving(false)
+    }
+  }
+
+  async function generateAllEmbeddings() {
+    setCtxAllRunning(true)
+    setCtxAllMsg('Processando — pode demorar alguns minutos...')
+    try {
+      const res  = await fetch('/api/contexto/generate-all-embeddings', { method: 'POST' })
+      const json = await res.json() as { total?: number; processed?: number; errors?: number; error?: string }
+      if (!res.ok) {
+        setCtxAllMsg(`Erro: ${json.error ?? 'desconhecido'}`)
+      } else if (json.total === 0) {
+        setCtxAllMsg('✓ Nenhuma palavra pendente.')
+      } else {
+        setCtxAllMsg(
+          `✓ ${json.processed}/${json.total} processadas` +
+          (json.errors ? ` — ${json.errors} erro(s)` : '') + '.'
+        )
+        setCtxPending(json.errors ?? 0)
+        setCtxCount(prev => prev)   // unchanged total
+      }
+    } catch {
+      setCtxAllMsg('Erro de rede.')
+    } finally {
+      setCtxAllRunning(false)
     }
   }
 
@@ -320,6 +350,36 @@ export default function AdminClient() {
         {ctxMsg && (
           <p className={`mt-2 text-xs ${ctxMsg.startsWith('✓') ? 'text-[#1D9E75]' : ctxMsg.startsWith('Gerando') ? 'text-zinc-400' : 'text-red-400'}`}>
             {ctxMsg}
+          </p>
+        )}
+
+        {/* Pending embeddings */}
+        {ctxPending !== null && ctxPending > 0 && (
+          <div className="mt-4 flex items-center justify-between rounded-xl border border-amber-500/20 bg-amber-500/10 px-4 py-3">
+            <div>
+              <p className="text-xs font-semibold text-amber-400">
+                {ctxPending} palavra{ctxPending !== 1 ? 's' : ''} sem embedding
+              </p>
+              <p className="mt-0.5 text-xs text-zinc-500">
+                Palavras salvas sem gerar o vetor de similaridade.
+              </p>
+            </div>
+            <button
+              onClick={() => void generateAllEmbeddings()}
+              disabled={ctxAllRunning}
+              className="ml-4 shrink-0 rounded-xl bg-amber-500 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-amber-400 disabled:opacity-40"
+            >
+              {ctxAllRunning ? 'Processando...' : 'Gerar pendentes'}
+            </button>
+          </div>
+        )}
+        {ctxPending === 0 && ctxCount !== null && ctxCount > 0 && (
+          <p className="mt-3 text-xs text-[#1D9E75]">✓ Todos os embeddings gerados.</p>
+        )}
+
+        {ctxAllMsg && (
+          <p className={`mt-2 text-xs ${ctxAllMsg.startsWith('✓') ? 'text-[#1D9E75]' : ctxAllMsg.startsWith('Processando') ? 'text-zinc-400' : 'text-red-400'}`}>
+            {ctxAllMsg}
           </p>
         )}
       </div>

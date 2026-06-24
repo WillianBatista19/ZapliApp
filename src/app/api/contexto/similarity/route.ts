@@ -1,9 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
-import { getEmbeddingPipeline, cosineSimilarity, parseEmbedding } from '@/lib/transformers'
+import { createClient }             from '@/lib/supabase/server'
+import { cosineSimilarity, parseEmbedding } from '@/lib/transformers'
 
 export const runtime     = 'nodejs'
+export const dynamic     = 'force-dynamic'
 export const maxDuration = 60
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+let _pipe: any = null
+async function getPipeline() {
+  if (_pipe) return _pipe
+  const { pipeline } = await import('@xenova/transformers')
+  _pipe = await pipeline('feature-extraction', 'Xenova/paraphrase-multilingual-MiniLM-L12-v2', { quantized: true })
+  return _pipe
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -53,7 +63,7 @@ export async function POST(req: NextRequest) {
     }
 
     console.log('[similarity] loading pipeline...')
-    const pipe     = await getEmbeddingPipeline()
+    const pipe     = await getPipeline()
     const output   = await pipe(guess, { pooling: 'mean', normalize: true })
     const guessEmb = output.data as Float32Array
     const wordEmb  = parseEmbedding(wordData.embedding)

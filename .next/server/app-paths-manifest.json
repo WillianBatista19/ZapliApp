@@ -1,9 +1,6 @@
 {
-  "/icon.svg/route": "app/icon.svg/route.js",
-  "/_not-found/page": "app/_not-found/page.js",
-  "/api/spotify/route": "app/api/spotify/route.js",
   "/api/contexto/similarity/route": "app/api/contexto/similarity/route.js",
-  "/api/contexto/generate-embedding/route": "app/api/contexto/generate-embedding/route.js",
   "/(app)/jogar/page": "app/(app)/jogar/page.js",
-  "/(app)/jogar/admin/page": "app/(app)/jogar/admin/page.js"
+  "/(app)/jogar/admin/page": "app/(app)/jogar/admin/page.js",
+  "/(app)/notifications/page": "app/(app)/notifications/page.js"
 }

@@ -1,11 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient }             from '@/lib/supabase/server'
-import { getEmbeddingPipeline }     from '@/lib/transformers'
 
 export const runtime     = 'nodejs'
+export const dynamic     = 'force-dynamic'
 export const maxDuration = 60
 
 const ADMIN_USERNAME = 'incelicasappoficial'
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+let _pipe: any = null
+async function getPipeline() {
+  if (_pipe) return _pipe
+  const { pipeline } = await import('@xenova/transformers')
+  _pipe = await pipeline('feature-extraction', 'Xenova/paraphrase-multilingual-MiniLM-L12-v2', { quantized: true })
+  return _pipe
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -41,10 +50,10 @@ export async function POST(req: NextRequest) {
     }
 
     console.log('[generate-embedding] loading pipeline...')
-    const pipe = await getEmbeddingPipeline()
+    const pipe = await getPipeline()
     console.log('[generate-embedding] pipeline ready — running inference...')
 
-    const output   = await pipe(word, { pooling: 'mean', normalize: true })
+    const output    = await pipe(word, { pooling: 'mean', normalize: true })
     const embedding = Array.from(output.data as Float32Array) as number[]
     console.log('[generate-embedding] embedding dims:', embedding.length)
 
