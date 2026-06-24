@@ -82,6 +82,7 @@ export default function ContextoGame({ currentUserId }: { currentUserId: string 
 
     setLoading(true)
     setMessage('')
+    let didSolve = false
 
     try {
       const res  = await fetch('/api/contexto/similarity', {
@@ -94,7 +95,7 @@ export default function ContextoGame({ currentUserId }: { currentUserId: string 
       // Model warming up — don't count as an attempt, let user retry
       if (res.status === 503) {
         setWarming(true)
-        setInput(word)   // restore input so user can just press Enter again
+        setInput(word)
         setTimeout(() => setWarming(false), (json.retryAfter ?? 10) * 1000)
         return
       }
@@ -106,22 +107,22 @@ export default function ContextoGame({ currentUserId }: { currentUserId: string 
 
       setWarming(false)
 
-      const newGuess: Guess  = { word, similarity: json.similarity }
-      const newGuesses       = [...guesses, newGuess]
-      const isSolved         = json.isCorrect === true
+      const newGuess: Guess = { word, similarity: json.similarity }
+      const newGuesses      = [...guesses, newGuess]
+      const isSolved        = json.isCorrect === true
 
       setGuesses(newGuesses)
       setInput('')
-      inputRef.current?.focus()
 
       if (isSolved) {
+        didSolve = true
         setSolved(true)
         const score = computeScore(newGuesses.length)
         setMessage(`Encontrou! 🎉 +${score} pts`)
         if (currentUserId) {
           await saveAttempt(newGuesses, true)
           await supabase.rpc('add_game_score', {
-            p_user_id:  currentUserId,
+            p_user_id:   currentUserId,
             p_game_type: 'contexto',
             p_score:     score,
           })
@@ -131,6 +132,8 @@ export default function ContextoGame({ currentUserId }: { currentUserId: string 
       }
     } finally {
       setLoading(false)
+      // Re-focus after loading clears so the input is enabled again when focus fires
+      if (!didSolve) setTimeout(() => document.getElementById('contexto-input')?.focus(), 100)
     }
   }
 
@@ -156,6 +159,7 @@ export default function ContextoGame({ currentUserId }: { currentUserId: string 
         <div className="flex gap-2">
           <input
             ref={inputRef}
+            id="contexto-input"
             type="text"
             value={input}
             onChange={e => setInput(e.target.value.toLowerCase())}

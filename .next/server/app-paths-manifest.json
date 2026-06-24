@@ -1,6 +1,5 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/icon.svg/route": "app/icon.svg/route.js",
   "/api/contexto/similarity/route": "app/api/contexto/similarity/route.js",
+  "/icon.svg/route": "app/icon.svg/route.js",
   "/(app)/jogar/page": "app/(app)/jogar/page.js"
 }
