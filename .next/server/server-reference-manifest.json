@@ -1,45 +1,5 @@
 {
   "node": {
-    "3baac2ca49cc18e4bc34661da28a76e514e0f277": {
-      "workers": {
-        "app/(app)/feed/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cprofile%5C%5Cactions.ts%22%2C%5B%22declineFollowRequest%22%2C%22cancelFollowRequest%22%2C%22acceptFollowRequest%22%2C%22sendFollowRequest%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cstories%5C%5Cactions.ts%22%2C%5B%22createStoryLikeNotification%22%5D%5D%5D&__client_imported__=true!"
-      },
-      "layer": {
-        "app/(app)/feed/page": "action-browser"
-      }
-    },
-    "5e06993faf3fd07f7525812543ddf45b24a75f94": {
-      "workers": {
-        "app/(app)/feed/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cprofile%5C%5Cactions.ts%22%2C%5B%22declineFollowRequest%22%2C%22cancelFollowRequest%22%2C%22acceptFollowRequest%22%2C%22sendFollowRequest%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cstories%5C%5Cactions.ts%22%2C%5B%22createStoryLikeNotification%22%5D%5D%5D&__client_imported__=true!"
-      },
-      "layer": {
-        "app/(app)/feed/page": "action-browser"
-      }
-    },
-    "b7bde1c682b587bbcc38893c711f3ecb8a0fc57a": {
-      "workers": {
-        "app/(app)/feed/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cprofile%5C%5Cactions.ts%22%2C%5B%22declineFollowRequest%22%2C%22cancelFollowRequest%22%2C%22acceptFollowRequest%22%2C%22sendFollowRequest%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cstories%5C%5Cactions.ts%22%2C%5B%22createStoryLikeNotification%22%5D%5D%5D&__client_imported__=true!"
-      },
-      "layer": {
-        "app/(app)/feed/page": "action-browser"
-      }
-    },
-    "f2436a816d97f1675b32119820f41ba6af15b45b": {
-      "workers": {
-        "app/(app)/feed/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cprofile%5C%5Cactions.ts%22%2C%5B%22declineFollowRequest%22%2C%22cancelFollowRequest%22%2C%22acceptFollowRequest%22%2C%22sendFollowRequest%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cstories%5C%5Cactions.ts%22%2C%5B%22createStoryLikeNotification%22%5D%5D%5D&__client_imported__=true!"
-      },
-      "layer": {
-        "app/(app)/feed/page": "action-browser"
-      }
-    },
-    "9e29da5644f52cd329185d4f69b6be2ae33bbd8c": {
-      "workers": {
-        "app/(app)/feed/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cprofile%5C%5Cactions.ts%22%2C%5B%22declineFollowRequest%22%2C%22cancelFollowRequest%22%2C%22acceptFollowRequest%22%2C%22sendFollowRequest%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cstories%5C%5Cactions.ts%22%2C%5B%22createStoryLikeNotification%22%5D%5D%5D&__client_imported__=true!"
-      },
-      "layer": {
-        "app/(app)/feed/page": "action-browser"
-      }
-    },
     "2fefde594b8648ecf313511acf0d99254f9f61ed": {
       "workers": {
         "app/(app)/communities/musica/batalha/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Ccommunities%5C%5Cmusica%5C%5Cbatalha%5C%5Cactions.ts%22%2C%5B%22submitTrackVotes%22%2C%22createBatalhaEvent%22%2C%22submitCategoryVote%22%2C%22finishBatalhaEvent%22%5D%5D%5D&__client_imported__=true!"
@@ -74,5 +34,5 @@
     }
   },
   "edge": {},
-  "encryptionKey": "yZFRhbFOSBhXkRBV947dDNdeYN0ybsfP+XvErdW6QuA="
+  "encryptionKey": "3KKb25oKNiSmqPRk/Lob9sy+9/sjHdGACVOXeWYu2Xc="
 }

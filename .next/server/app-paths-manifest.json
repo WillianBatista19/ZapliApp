@@ -1,6 +1,7 @@
 {
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/spotify/artist/route": "app/api/spotify/artist/route.js",
   "/icon.svg/route": "app/icon.svg/route.js",
-  "/(app)/notifications/page": "app/(app)/notifications/page.js",
   "/(app)/communities/musica/batalha/page": "app/(app)/communities/musica/batalha/page.js",
-  "/(app)/feed/page": "app/(app)/feed/page.js"
+  "/(app)/notifications/page": "app/(app)/notifications/page.js"
 }

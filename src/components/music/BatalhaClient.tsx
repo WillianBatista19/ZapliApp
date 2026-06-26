@@ -1031,6 +1031,7 @@ function ResultsView({
   minTracks,
   maxTracks,
   totalParticipants,
+  artistName,
   isFinished,
 }: ResultsViewProps) {
   const [expandedPos, setExpandedPos] = useState<number | null>(null)
