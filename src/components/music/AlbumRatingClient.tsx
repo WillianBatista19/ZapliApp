@@ -99,6 +99,7 @@ export default function AlbumRatingClient({
   const [loadingAlbum,  setLoadingAlbum]  = useState(false)
   const [scores,        setScores]        = useState<Record<string, string>>({})
   const [markers,       setMarkers]       = useState<Record<MarkerField, string | null>>(EMPTY_MARKERS)
+  const [reviewText,    setReviewText]    = useState('')
   const [hasExisting,   setHasExisting]   = useState(false)
   const [saving,        setSaving]        = useState(false)
   const [saveError,     setSaveError]     = useState<string | null>(null)
@@ -133,6 +134,7 @@ export default function AlbumRatingClient({
     setSelectedAlbum(null)
     setScores({})
     setMarkers(EMPTY_MARKERS)
+    setReviewText('')
     setHasExisting(false)
     setSaveError(null)
     setSavedAlbumId(null)
@@ -169,6 +171,7 @@ export default function AlbumRatingClient({
           best_vocal_track_id:        existing.best_vocal_track_id        ?? null,
           best_instrumental_track_id: existing.best_instrumental_track_id ?? null,
         })
+        setReviewText((existing as { review_text?: string | null }).review_text ?? '')
       }
     } catch {
       setSaveError('Erro ao carregar álbum. Tenta novamente.')
@@ -194,6 +197,7 @@ export default function AlbumRatingClient({
     setSelectedAlbum(null)
     setScores({})
     setMarkers(EMPTY_MARKERS)
+    setReviewText('')
     setHasExisting(false)
     setSaveError(null)
     setSavedAlbumId(null)
@@ -230,6 +234,7 @@ export default function AlbumRatingClient({
           best_vocal_track_id:        existing.best_vocal_track_id        ?? null,
           best_instrumental_track_id: existing.best_instrumental_track_id ?? null,
         })
+        setReviewText((existing as { review_text?: string | null }).review_text ?? '')
       }
     } catch {
       setSaveError('Erro ao carregar álbum. Tenta novamente.')
@@ -262,6 +267,7 @@ export default function AlbumRatingClient({
             : null,
         })),
         markers,
+        review_text: reviewText.trim() || null,
       })
       setSavedAlbumId(selectedAlbum.id)
     } catch (e) {
@@ -401,6 +407,21 @@ export default function AlbumRatingClient({
             </div>
           ))}
         </div>
+
+        {/* Review text */}
+        <section className="space-y-2">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-500">📝 Review</h3>
+          <textarea
+            value={reviewText}
+            onChange={e => {
+              if (e.target.value.length <= 1000) setReviewText(e.target.value)
+            }}
+            placeholder="Escreva sua opinião sobre o álbum... (opcional)"
+            rows={4}
+            className="w-full rounded-xl bg-zinc-900/60 border border-zinc-800 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#D4537E] resize-none"
+          />
+          <p className="text-right text-xs text-zinc-600">{reviewText.length}/1000 caracteres</p>
+        </section>
 
         {saveError && <p className="text-sm text-red-400 text-center">{saveError}</p>}
 

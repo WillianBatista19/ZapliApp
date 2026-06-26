@@ -1,5 +1,8 @@
 {
-  "/api/spotify/artist/route": "app/api/spotify/artist/route.js",
+  "/page": "app/page.js",
   "/icon.svg/route": "app/icon.svg/route.js",
-  "/(app)/communities/musica/batalha/page": "app/(app)/communities/musica/batalha/page.js"
+  "/api/spotify/albums/route": "app/api/spotify/albums/route.js",
+  "/(app)/communities/musica/avaliar/page": "app/(app)/communities/musica/avaliar/page.js",
+  "/(app)/feed/page": "app/(app)/feed/page.js",
+  "/(app)/communities/musica/avaliar/[albumId]/page": "app/(app)/communities/musica/avaliar/[albumId]/page.js"
 }

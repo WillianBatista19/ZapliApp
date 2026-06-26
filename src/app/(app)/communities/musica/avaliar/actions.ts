@@ -24,6 +24,7 @@ interface SaveRatingInput {
   release_year: string | null
   tracks:       TrackInput[]
   markers:      Record<MarkerField, string | null>
+  review_text:  string | null
 }
 
 export async function saveAlbumRating(input: SaveRatingInput) {
@@ -48,6 +49,7 @@ export async function saveAlbumRating(input: SaveRatingInput) {
         cover_url:    input.cover_url,
         release_year: input.release_year,
         overall_score,
+        review_text: input.review_text,
         ...input.markers,
         updated_at: new Date().toISOString(),
       },
@@ -84,7 +86,7 @@ export async function getUserAlbumRating(albumId: string) {
   const { data } = await supabase
     .from('album_ratings')
     .select(`
-      id, album_id, overall_score,
+      id, album_id, overall_score, review_text,
       favorite_track_id, best_composition_track_id, most_addictive_track_id,
       best_vocal_track_id, best_instrumental_track_id,
       track_ratings (track_id, track_name, track_number, score)

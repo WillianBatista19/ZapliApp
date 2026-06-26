@@ -2,6 +2,8 @@ import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import AlbumReviews from '@/components/music/AlbumReviews'
+import type { AlbumReview } from '@/components/music/AlbumReviews'
 
 export const dynamic = 'force-dynamic'
 
@@ -25,7 +27,7 @@ export default async function AlbumResultsPage({ params }: Props) {
   const { data: rows } = await supabase
     .from('album_ratings')
     .select(`
-      id, user_id, album_name, artist_name, cover_url, overall_score, created_at,
+      id, user_id, album_name, artist_name, cover_url, overall_score, review_text, created_at,
       favorite_track_id, best_composition_track_id, most_addictive_track_id,
       best_vocal_track_id, best_instrumental_track_id,
       profiles!album_ratings_user_id_fkey (username, display_name, avatar_url),
@@ -95,6 +97,22 @@ export default async function AlbumResultsPage({ params }: Props) {
   })
 
   const isOwn = !!user && rows.some(r => r.user_id === user.id)
+
+  const reviews: AlbumReview[] = rows
+    .filter(r => r.review_text && r.review_text.trim())
+    .map(r => {
+      const profileData = r.profiles
+      const p = (Array.isArray(profileData) ? profileData[0] : profileData) as { username: string; display_name: string | null; avatar_url: string | null } | null
+      return {
+        id:            r.id,
+        review_text:   r.review_text as string,
+        overall_score: r.overall_score as number | null,
+        created_at:    r.created_at,
+        username:      p?.username ?? 'incelica',
+        display_name:  p?.display_name ?? null,
+        avatar_url:    p?.avatar_url ?? null,
+      }
+    })
 
   return (
     <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
@@ -197,6 +215,12 @@ export default async function AlbumResultsPage({ params }: Props) {
           </div>
         </section>
       )}
+
+      {/* Community reviews */}
+      <section className="space-y-3">
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-500">💬 Reviews da comunidade</h2>
+        <AlbumReviews reviews={reviews} />
+      </section>
 
       {/* User ratings list */}
       <section className="space-y-3">
