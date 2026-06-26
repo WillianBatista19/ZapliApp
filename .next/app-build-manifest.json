@@ -1,14 +1,9 @@
 {
   "pages": {
-    "/(app)/communities/musica/batalha/page": [
+    "/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(app)/communities/musica/batalha/page.js"
-    ],
-    "/(app)/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(app)/layout.js"
+      "static/chunks/app/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
@@ -16,35 +11,20 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/(app)/communities/[slug]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(app)/communities/[slug]/page.js"
-    ],
-    "/(app)/notifications/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(app)/notifications/page.js"
-    ],
-    "/(app)/communities/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(app)/communities/page.js"
-    ],
     "/(app)/feed/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/(app)/feed/page.js"
     ],
-    "/(app)/communities/musica/avaliar/page": [
+    "/(app)/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(app)/communities/musica/avaliar/page.js"
+      "static/chunks/app/(app)/layout.js"
     ],
-    "/(app)/communities/musica/survivor/page": [
+    "/(app)/communities/musica/batalha/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(app)/communities/musica/survivor/page.js"
+      "static/chunks/app/(app)/communities/musica/batalha/page.js"
     ]
   }
 }
