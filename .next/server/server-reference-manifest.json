@@ -2,135 +2,61 @@
   "node": {
     "3baac2ca49cc18e4bc34661da28a76e514e0f277": {
       "workers": {
-        "app/(app)/feed/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cprofile%5C%5Cactions.ts%22%2C%5B%22declineFollowRequest%22%2C%22cancelFollowRequest%22%2C%22acceptFollowRequest%22%2C%22sendFollowRequest%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cstories%5C%5Cactions.ts%22%2C%5B%22createStoryLikeNotification%22%5D%5D%5D&__client_imported__=true!",
-        "app/(app)/profile/[username]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cprofile%5C%5Cactions.ts%22%2C%5B%22declineFollowRequest%22%2C%22cancelFollowRequest%22%2C%22acceptFollowRequest%22%2C%22sendFollowRequest%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cstories%5C%5Cactions.ts%22%2C%5B%22createStoryLikeNotification%22%5D%5D%5D&__client_imported__=true!"
+        "app/(app)/feed/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cprofile%5C%5Cactions.ts%22%2C%5B%22declineFollowRequest%22%2C%22cancelFollowRequest%22%2C%22acceptFollowRequest%22%2C%22sendFollowRequest%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cstories%5C%5Cactions.ts%22%2C%5B%22createStoryLikeNotification%22%5D%5D%5D&__client_imported__=true!"
       },
       "layer": {
-        "app/(app)/feed/page": "action-browser",
-        "app/(app)/profile/[username]/page": "action-browser"
+        "app/(app)/feed/page": "action-browser"
       }
     },
     "5e06993faf3fd07f7525812543ddf45b24a75f94": {
       "workers": {
-        "app/(app)/feed/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cprofile%5C%5Cactions.ts%22%2C%5B%22declineFollowRequest%22%2C%22cancelFollowRequest%22%2C%22acceptFollowRequest%22%2C%22sendFollowRequest%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cstories%5C%5Cactions.ts%22%2C%5B%22createStoryLikeNotification%22%5D%5D%5D&__client_imported__=true!",
-        "app/(app)/profile/[username]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cprofile%5C%5Cactions.ts%22%2C%5B%22declineFollowRequest%22%2C%22cancelFollowRequest%22%2C%22acceptFollowRequest%22%2C%22sendFollowRequest%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cstories%5C%5Cactions.ts%22%2C%5B%22createStoryLikeNotification%22%5D%5D%5D&__client_imported__=true!"
+        "app/(app)/feed/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cprofile%5C%5Cactions.ts%22%2C%5B%22declineFollowRequest%22%2C%22cancelFollowRequest%22%2C%22acceptFollowRequest%22%2C%22sendFollowRequest%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cstories%5C%5Cactions.ts%22%2C%5B%22createStoryLikeNotification%22%5D%5D%5D&__client_imported__=true!"
       },
       "layer": {
-        "app/(app)/feed/page": "action-browser",
-        "app/(app)/profile/[username]/page": "action-browser"
+        "app/(app)/feed/page": "action-browser"
       }
     },
     "b7bde1c682b587bbcc38893c711f3ecb8a0fc57a": {
       "workers": {
-        "app/(app)/feed/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cprofile%5C%5Cactions.ts%22%2C%5B%22declineFollowRequest%22%2C%22cancelFollowRequest%22%2C%22acceptFollowRequest%22%2C%22sendFollowRequest%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cstories%5C%5Cactions.ts%22%2C%5B%22createStoryLikeNotification%22%5D%5D%5D&__client_imported__=true!",
-        "app/(app)/profile/[username]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cprofile%5C%5Cactions.ts%22%2C%5B%22declineFollowRequest%22%2C%22cancelFollowRequest%22%2C%22acceptFollowRequest%22%2C%22sendFollowRequest%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cstories%5C%5Cactions.ts%22%2C%5B%22createStoryLikeNotification%22%5D%5D%5D&__client_imported__=true!"
+        "app/(app)/feed/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cprofile%5C%5Cactions.ts%22%2C%5B%22declineFollowRequest%22%2C%22cancelFollowRequest%22%2C%22acceptFollowRequest%22%2C%22sendFollowRequest%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cstories%5C%5Cactions.ts%22%2C%5B%22createStoryLikeNotification%22%5D%5D%5D&__client_imported__=true!"
       },
       "layer": {
-        "app/(app)/feed/page": "action-browser",
-        "app/(app)/profile/[username]/page": "action-browser"
+        "app/(app)/feed/page": "action-browser"
       }
     },
     "f2436a816d97f1675b32119820f41ba6af15b45b": {
       "workers": {
-        "app/(app)/feed/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cprofile%5C%5Cactions.ts%22%2C%5B%22declineFollowRequest%22%2C%22cancelFollowRequest%22%2C%22acceptFollowRequest%22%2C%22sendFollowRequest%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cstories%5C%5Cactions.ts%22%2C%5B%22createStoryLikeNotification%22%5D%5D%5D&__client_imported__=true!",
-        "app/(app)/profile/[username]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cprofile%5C%5Cactions.ts%22%2C%5B%22declineFollowRequest%22%2C%22cancelFollowRequest%22%2C%22acceptFollowRequest%22%2C%22sendFollowRequest%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cstories%5C%5Cactions.ts%22%2C%5B%22createStoryLikeNotification%22%5D%5D%5D&__client_imported__=true!"
+        "app/(app)/feed/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cprofile%5C%5Cactions.ts%22%2C%5B%22declineFollowRequest%22%2C%22cancelFollowRequest%22%2C%22acceptFollowRequest%22%2C%22sendFollowRequest%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cstories%5C%5Cactions.ts%22%2C%5B%22createStoryLikeNotification%22%5D%5D%5D&__client_imported__=true!"
       },
       "layer": {
-        "app/(app)/feed/page": "action-browser",
-        "app/(app)/profile/[username]/page": "action-browser"
+        "app/(app)/feed/page": "action-browser"
       }
     },
     "9e29da5644f52cd329185d4f69b6be2ae33bbd8c": {
       "workers": {
-        "app/(app)/feed/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cprofile%5C%5Cactions.ts%22%2C%5B%22declineFollowRequest%22%2C%22cancelFollowRequest%22%2C%22acceptFollowRequest%22%2C%22sendFollowRequest%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cstories%5C%5Cactions.ts%22%2C%5B%22createStoryLikeNotification%22%5D%5D%5D&__client_imported__=true!",
-        "app/(app)/profile/[username]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cprofile%5C%5Cactions.ts%22%2C%5B%22declineFollowRequest%22%2C%22cancelFollowRequest%22%2C%22acceptFollowRequest%22%2C%22sendFollowRequest%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cstories%5C%5Cactions.ts%22%2C%5B%22createStoryLikeNotification%22%5D%5D%5D&__client_imported__=true!"
+        "app/(app)/feed/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cprofile%5C%5Cactions.ts%22%2C%5B%22declineFollowRequest%22%2C%22cancelFollowRequest%22%2C%22acceptFollowRequest%22%2C%22sendFollowRequest%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cstories%5C%5Cactions.ts%22%2C%5B%22createStoryLikeNotification%22%5D%5D%5D&__client_imported__=true!"
       },
       "layer": {
-        "app/(app)/feed/page": "action-browser",
-        "app/(app)/profile/[username]/page": "action-browser"
+        "app/(app)/feed/page": "action-browser"
       }
     },
-    "52ac1761e0fef6a31995a3325cf085e44b59f500": {
+    "118f9bd2ef33376bb6878ab45622446653fa9799": {
       "workers": {
-        "app/(app)/profile/[username]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cprofile%5C%5Cactions.ts%22%2C%5B%22declineFollowRequest%22%2C%22cancelFollowRequest%22%2C%22acceptFollowRequest%22%2C%22sendFollowRequest%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cstories%5C%5Cactions.ts%22%2C%5B%22createStoryLikeNotification%22%5D%5D%5D&__client_imported__=true!"
+        "app/(app)/jogar/admin/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cjogar%5C%5Cadmin%5C%5Cactions.ts%22%2C%5B%22submitChangelogEntry%22%2C%22postOfficialMessage%22%5D%5D%5D&__client_imported__=true!"
       },
       "layer": {
-        "app/(app)/profile/[username]/page": "action-browser"
+        "app/(app)/jogar/admin/page": "action-browser"
       }
     },
-    "5822ffe260675c2e5bdcafc23013cc6ac2e7ace9": {
+    "17959e06565199195c4e3146c2748e1c82acf791": {
       "workers": {
-        "app/(app)/profile/[username]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cprofile%5C%5Cactions.ts%22%2C%5B%22declineFollowRequest%22%2C%22cancelFollowRequest%22%2C%22acceptFollowRequest%22%2C%22sendFollowRequest%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cstories%5C%5Cactions.ts%22%2C%5B%22createStoryLikeNotification%22%5D%5D%5D&__client_imported__=true!"
+        "app/(app)/jogar/admin/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cjogar%5C%5Cadmin%5C%5Cactions.ts%22%2C%5B%22submitChangelogEntry%22%2C%22postOfficialMessage%22%5D%5D%5D&__client_imported__=true!"
       },
       "layer": {
-        "app/(app)/profile/[username]/page": "action-browser"
-      }
-    },
-    "5b4c73ea4a1bb7dc473f1e5cdc54c5630f038351": {
-      "workers": {
-        "app/(app)/profile/[username]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cprofile%5C%5Cactions.ts%22%2C%5B%22declineFollowRequest%22%2C%22cancelFollowRequest%22%2C%22acceptFollowRequest%22%2C%22sendFollowRequest%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cstories%5C%5Cactions.ts%22%2C%5B%22createStoryLikeNotification%22%5D%5D%5D&__client_imported__=true!"
-      },
-      "layer": {
-        "app/(app)/profile/[username]/page": "action-browser"
-      }
-    },
-    "61364cbf61fb1fde8ce5d234e093f6c2755d40de": {
-      "workers": {
-        "app/(app)/profile/[username]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cprofile%5C%5Cactions.ts%22%2C%5B%22declineFollowRequest%22%2C%22cancelFollowRequest%22%2C%22acceptFollowRequest%22%2C%22sendFollowRequest%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cstories%5C%5Cactions.ts%22%2C%5B%22createStoryLikeNotification%22%5D%5D%5D&__client_imported__=true!"
-      },
-      "layer": {
-        "app/(app)/profile/[username]/page": "action-browser"
-      }
-    },
-    "7693d04cb8ec15247a7896563b8013fb16104318": {
-      "workers": {
-        "app/(app)/profile/[username]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cprofile%5C%5Cactions.ts%22%2C%5B%22declineFollowRequest%22%2C%22cancelFollowRequest%22%2C%22acceptFollowRequest%22%2C%22sendFollowRequest%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cstories%5C%5Cactions.ts%22%2C%5B%22createStoryLikeNotification%22%5D%5D%5D&__client_imported__=true!"
-      },
-      "layer": {
-        "app/(app)/profile/[username]/page": "action-browser"
-      }
-    },
-    "7747a5814540daada69c6999d976d1ce10137199": {
-      "workers": {
-        "app/(app)/profile/[username]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cprofile%5C%5Cactions.ts%22%2C%5B%22declineFollowRequest%22%2C%22cancelFollowRequest%22%2C%22acceptFollowRequest%22%2C%22sendFollowRequest%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cstories%5C%5Cactions.ts%22%2C%5B%22createStoryLikeNotification%22%5D%5D%5D&__client_imported__=true!"
-      },
-      "layer": {
-        "app/(app)/profile/[username]/page": "action-browser"
-      }
-    },
-    "b769bcbad97cd6ddb83eceb53a1aea5a707e6fbc": {
-      "workers": {
-        "app/(app)/profile/[username]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cprofile%5C%5Cactions.ts%22%2C%5B%22declineFollowRequest%22%2C%22cancelFollowRequest%22%2C%22acceptFollowRequest%22%2C%22sendFollowRequest%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cstories%5C%5Cactions.ts%22%2C%5B%22createStoryLikeNotification%22%5D%5D%5D&__client_imported__=true!"
-      },
-      "layer": {
-        "app/(app)/profile/[username]/page": "action-browser"
-      }
-    },
-    "ccf4166e77c6e2aaa23fb2aa6f82752a11cb3d81": {
-      "workers": {
-        "app/(app)/profile/[username]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cprofile%5C%5Cactions.ts%22%2C%5B%22declineFollowRequest%22%2C%22cancelFollowRequest%22%2C%22acceptFollowRequest%22%2C%22sendFollowRequest%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cstories%5C%5Cactions.ts%22%2C%5B%22createStoryLikeNotification%22%5D%5D%5D&__client_imported__=true!"
-      },
-      "layer": {
-        "app/(app)/profile/[username]/page": "action-browser"
-      }
-    },
-    "d70a73f6f19fd678ca7f2c492e9f399454cb221e": {
-      "workers": {
-        "app/(app)/profile/[username]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cprofile%5C%5Cactions.ts%22%2C%5B%22declineFollowRequest%22%2C%22cancelFollowRequest%22%2C%22acceptFollowRequest%22%2C%22sendFollowRequest%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cstories%5C%5Cactions.ts%22%2C%5B%22createStoryLikeNotification%22%5D%5D%5D&__client_imported__=true!"
-      },
-      "layer": {
-        "app/(app)/profile/[username]/page": "action-browser"
-      }
-    },
-    "ff3de354fb92c0be48420a767f1882152bcb8643": {
-      "workers": {
-        "app/(app)/profile/[username]/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cprofile%5C%5Cactions.ts%22%2C%5B%22declineFollowRequest%22%2C%22cancelFollowRequest%22%2C%22acceptFollowRequest%22%2C%22sendFollowRequest%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cmessages%5C%5Cactions.ts%22%2C%5B%22updateGroupDescription%22%2C%22createGroupConversation%22%2C%22createMessageNotification%22%2C%22getOrCreateConversation%22%2C%22updateGroupAvatar%22%2C%22markConversationRead%22%2C%22addGroupMember%22%2C%22removeGroupMember%22%2C%22createGroupMessageNotifications%22%2C%22updateGroupName%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5CWillian%5C%5CDocuments%5C%5Cincelicas_rede%5C%5Csrc%5C%5Capp%5C%5C(app)%5C%5Cstories%5C%5Cactions.ts%22%2C%5B%22createStoryLikeNotification%22%5D%5D%5D&__client_imported__=true!"
-      },
-      "layer": {
-        "app/(app)/profile/[username]/page": "action-browser"
+        "app/(app)/jogar/admin/page": "action-browser"
       }
     }
   },
   "edge": {},
-  "encryptionKey": "8qtrWDrcVCjTBsZL4i5rRSZyVDDVAans5/yT3P0aDp0="
+  "encryptionKey": "blGRCrHI4tSZ1Y7e0iJnPR3uYx3BuyuEH4qyQgZoF2I="
 }

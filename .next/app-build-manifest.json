@@ -21,20 +21,15 @@
       "static/chunks/main-app.js",
       "static/chunks/app/(app)/layout.js"
     ],
-    "/(app)/profile/[username]/page": [
+    "/(app)/jogar/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(app)/profile/[username]/page.js"
+      "static/chunks/app/(app)/jogar/page.js"
     ],
-    "/(app)/profile/edit/page": [
+    "/(app)/jogar/admin/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(app)/profile/edit/page.js"
-    ],
-    "/_not-found/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/_not-found/page.js"
+      "static/chunks/app/(app)/jogar/admin/page.js"
     ]
   }
 }

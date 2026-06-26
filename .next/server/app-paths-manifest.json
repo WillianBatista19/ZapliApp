@@ -1,9 +1,7 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/page": "app/page.js",
-  "/api/lastfm/route": "app/api/lastfm/route.js",
-  "/api/spotify/albums/route": "app/api/spotify/albums/route.js",
-  "/(app)/profile/[username]/page": "app/(app)/profile/[username]/page.js",
+  "/icon.svg/route": "app/icon.svg/route.js",
+  "/api/deezer/route": "app/api/deezer/route.js",
+  "/(app)/jogar/admin/page": "app/(app)/jogar/admin/page.js",
   "/(app)/feed/page": "app/(app)/feed/page.js",
-  "/(app)/profile/edit/page": "app/(app)/profile/edit/page.js"
+  "/(app)/jogar/page": "app/(app)/jogar/page.js"
 }

@@ -17,10 +17,23 @@ export default function AdminClient() {
   const supabase = useMemo(() => createClient(), [])
 
   // Song form
+  const [songMode,    setSongMode]    = useState<'spotify' | 'manual'>('spotify')
   const [spotifyUrl,  setSpotifyUrl]  = useState('')
   const [trackResult, setTrackResult] = useState<TrackResult | null>(null)
   const [songLoading, setSongLoading] = useState(false)
   const [songMsg,     setSongMsg]     = useState('')
+
+  // Manual upload form
+  const [manualTitle,        setManualTitle]        = useState('')
+  const [manualArtist,       setManualArtist]       = useState('')
+  const [manualSpotifyUrl,   setManualSpotifyUrl]   = useState('')
+  const [manualAudioFile,    setManualAudioFile]    = useState<File | null>(null)
+  const [manualAudioPreview, setManualAudioPreview] = useState<string | null>(null)
+  const [manualCoverMode,    setManualCoverMode]    = useState<'url' | 'file'>('url')
+  const [manualCoverFile,    setManualCoverFile]    = useState<File | null>(null)
+  const [manualCoverUrl,     setManualCoverUrl]     = useState('')
+  const [manualCoverPreview, setManualCoverPreview] = useState<string | null>(null)
+  const [manualSaving,       setManualSaving]       = useState(false)
 
   // Word form
   const [wordInput,  setWordInput]  = useState('')
@@ -49,6 +62,87 @@ export default function AdminClient() {
   const [clDate,    setClDate]    = useState(() => new Date().toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' }))
   const [clMsg,     setClMsg]     = useState('')
   const [clSaving,  setClSaving]  = useState(false)
+
+  function handleAudioFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (file.size > 5 * 1024 * 1024) {
+      setSongMsg('Arquivo muito grande. Máximo 5MB.')
+      return
+    }
+    if (manualAudioPreview) URL.revokeObjectURL(manualAudioPreview)
+    setManualAudioFile(file)
+    setManualAudioPreview(URL.createObjectURL(file))
+    setSongMsg('')
+  }
+
+  function handleCoverFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (manualCoverPreview && manualCoverMode === 'file') URL.revokeObjectURL(manualCoverPreview)
+    setManualCoverFile(file)
+    setManualCoverPreview(URL.createObjectURL(file))
+  }
+
+  async function saveManualSong() {
+    if (!manualAudioFile || !manualTitle.trim() || !manualArtist.trim()) return
+    setManualSaving(true)
+    setSongMsg('')
+    try {
+      const audioExt  = manualAudioFile.name.split('.').pop() ?? 'mp3'
+      const audioPath = `${Date.now()}-${Math.random().toString(36).slice(2)}.${audioExt}`
+      const { error: audioErr } = await supabase.storage
+        .from('daily-songs-audio')
+        .upload(audioPath, manualAudioFile, { contentType: manualAudioFile.type })
+      if (audioErr) { setSongMsg(`Erro upload áudio: ${audioErr.message}`); return }
+
+      const { data: { publicUrl: audioUrl } } = supabase.storage
+        .from('daily-songs-audio')
+        .getPublicUrl(audioPath)
+
+      let coverUrl: string | null = null
+      if (manualCoverMode === 'file' && manualCoverFile) {
+        const coverExt  = manualCoverFile.name.split('.').pop() ?? 'jpg'
+        const coverPath = `covers/${Date.now()}-${Math.random().toString(36).slice(2)}.${coverExt}`
+        const { error: coverErr } = await supabase.storage
+          .from('daily-songs-audio')
+          .upload(coverPath, manualCoverFile, { contentType: manualCoverFile.type })
+        if (!coverErr) {
+          const { data: { publicUrl } } = supabase.storage
+            .from('daily-songs-audio')
+            .getPublicUrl(coverPath)
+          coverUrl = publicUrl
+        }
+      } else if (manualCoverMode === 'url' && manualCoverUrl.trim()) {
+        coverUrl = manualCoverUrl.trim()
+      }
+
+      const { error } = await supabase.from('daily_songs').insert({
+        audio_url:     audioUrl,
+        preview_url:   audioUrl,
+        answer_title:  manualTitle.trim(),
+        answer_artist: manualArtist.trim(),
+        cover_url:     coverUrl,
+        spotify_url:   manualSpotifyUrl.trim() || null,
+      })
+
+      if (error) {
+        setSongMsg(`Erro ao salvar: ${error.message}`)
+      } else {
+        setSongMsg('✓ Música adicionada ao banco!')
+        setManualTitle('')
+        setManualArtist('')
+        setManualSpotifyUrl('')
+        setManualAudioFile(null)
+        setManualAudioPreview(null)
+        setManualCoverFile(null)
+        setManualCoverUrl('')
+        setManualCoverPreview(null)
+      }
+    } finally {
+      setManualSaving(false)
+    }
+  }
 
   async function fetchTrack() {
     if (!spotifyUrl.trim()) return
@@ -184,63 +278,206 @@ export default function AdminClient() {
 
       {/* SONG SECTION */}
       <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-5">
-        <h2 className="mb-1 text-sm font-semibold text-zinc-100">🎵 Adicionar Música</h2>
-        <p className="mb-4 text-xs text-zinc-500">
-          Cole a URL do Spotify — o título e artista vêm do Spotify, o preview vem do Deezer.
-        </p>
+        <h2 className="mb-3 text-sm font-semibold text-zinc-100">🎵 Adicionar Música</h2>
 
-        <div className="flex gap-2">
-          <input
-            type="text"
-            value={spotifyUrl}
-            onChange={e => setSpotifyUrl(e.target.value)}
-            placeholder="https://open.spotify.com/track/..."
-            className="flex-1 rounded-xl border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-600 outline-none focus:border-[#D4537E]"
-          />
+        {/* Mode toggle */}
+        <div className="mb-4 flex gap-1 rounded-xl bg-zinc-800 p-1">
           <button
-            onClick={() => void fetchTrack()}
-            disabled={songLoading || !spotifyUrl.trim()}
-            className="rounded-xl bg-[#D4537E] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#c0456e] disabled:opacity-40"
+            onClick={() => { setSongMode('spotify'); setSongMsg('') }}
+            className={`flex-1 rounded-lg py-1.5 text-xs font-semibold transition-colors ${
+              songMode === 'spotify' ? 'bg-zinc-700 text-zinc-100' : 'text-zinc-500 hover:text-zinc-300'
+            }`}
           >
-            {songLoading ? '...' : 'Buscar'}
+            🔍 Buscar no Spotify
+          </button>
+          <button
+            onClick={() => { setSongMode('manual'); setSongMsg('') }}
+            className={`flex-1 rounded-lg py-1.5 text-xs font-semibold transition-colors ${
+              songMode === 'manual' ? 'bg-zinc-700 text-zinc-100' : 'text-zinc-500 hover:text-zinc-300'
+            }`}
+          >
+            📁 Upload manual
           </button>
         </div>
 
-        {trackResult && (
-          <div className="mt-4 rounded-xl border border-zinc-700 bg-zinc-800 p-3">
-            <div className="flex items-center gap-3">
-              {trackResult.cover_url && (
-                <img
-                  src={trackResult.cover_url}
-                  alt={trackResult.title}
-                  className="h-14 w-14 shrink-0 rounded-lg object-cover"
-                />
-              )}
-              <div className="min-w-0 flex-1">
-                <p className="truncate font-semibold text-zinc-100">{trackResult.title}</p>
-                <p className="truncate text-sm text-zinc-400">{trackResult.artist}</p>
-                <div className="mt-1 flex items-center gap-1.5">
-                  {trackResult.deezer_found ? (
-                    <>
-                      <span className="h-1.5 w-1.5 rounded-full bg-[#1D9E75]" />
-                      <p className="truncate text-xs text-zinc-600">{trackResult.preview_url}</p>
-                    </>
-                  ) : (
-                    <>
-                      <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
-                      <p className="text-xs text-amber-500">Preview não encontrado no Deezer</p>
-                    </>
-                  )}
-                </div>
-              </div>
+        {/* Spotify mode */}
+        {songMode === 'spotify' && (
+          <>
+            <p className="mb-4 text-xs text-zinc-500">
+              Cole a URL do Spotify — o título e artista vêm do Spotify, o preview vem do Deezer.
+            </p>
+
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={spotifyUrl}
+                onChange={e => setSpotifyUrl(e.target.value)}
+                placeholder="https://open.spotify.com/track/..."
+                className="flex-1 rounded-xl border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-600 outline-none focus:border-[#D4537E]"
+              />
+              <button
+                onClick={() => void fetchTrack()}
+                disabled={songLoading || !spotifyUrl.trim()}
+                className="rounded-xl bg-[#D4537E] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#c0456e] disabled:opacity-40"
+              >
+                {songLoading ? '...' : 'Buscar'}
+              </button>
             </div>
 
+            {trackResult && (
+              <div className="mt-4 rounded-xl border border-zinc-700 bg-zinc-800 p-3">
+                <div className="flex items-center gap-3">
+                  {trackResult.cover_url && (
+                    <img
+                      src={trackResult.cover_url}
+                      alt={trackResult.title}
+                      className="h-14 w-14 shrink-0 rounded-lg object-cover"
+                    />
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-semibold text-zinc-100">{trackResult.title}</p>
+                    <p className="truncate text-sm text-zinc-400">{trackResult.artist}</p>
+                    <div className="mt-1 flex items-center gap-1.5">
+                      {trackResult.deezer_found ? (
+                        <>
+                          <span className="h-1.5 w-1.5 rounded-full bg-[#1D9E75]" />
+                          <p className="truncate text-xs text-zinc-600">{trackResult.preview_url}</p>
+                        </>
+                      ) : (
+                        <>
+                          <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                          <p className="text-xs text-amber-500">Preview não encontrado no Deezer</p>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => void saveSong()}
+                  disabled={!trackResult.deezer_found}
+                  className="mt-3 w-full rounded-xl bg-[#1D9E75] py-2 text-sm font-semibold text-white transition-colors hover:bg-[#178a63] disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  {trackResult.deezer_found ? 'Salvar no banco' : 'Sem preview — não é possível salvar'}
+                </button>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Manual upload mode */}
+        {songMode === 'manual' && (
+          <div className="space-y-3">
+            <div>
+              <label className="mb-1 block text-xs text-zinc-400">Arquivo de áudio *</label>
+              <input
+                type="file"
+                accept=".mp3,.wav,.ogg"
+                onChange={handleAudioFile}
+                className="w-full rounded-xl border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-100 file:mr-3 file:rounded-lg file:border-0 file:bg-zinc-700 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-zinc-200 hover:file:bg-zinc-600"
+              />
+              <p className="mt-0.5 text-xs text-zinc-600">MP3, WAV ou OGG — máx. 5MB</p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <input
+                type="text"
+                value={manualTitle}
+                onChange={e => setManualTitle(e.target.value)}
+                placeholder="Título *"
+                className="rounded-xl border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-600 outline-none focus:border-[#D4537E]"
+              />
+              <input
+                type="text"
+                value={manualArtist}
+                onChange={e => setManualArtist(e.target.value)}
+                placeholder="Artista *"
+                className="rounded-xl border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-600 outline-none focus:border-[#D4537E]"
+              />
+            </div>
+
+            <input
+              type="text"
+              value={manualSpotifyUrl}
+              onChange={e => setManualSpotifyUrl(e.target.value)}
+              placeholder="URL do Spotify (opcional — para botão após o jogo)"
+              className="w-full rounded-xl border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-600 outline-none focus:border-[#D4537E]"
+            />
+
+            <div>
+              <div className="mb-1.5 flex items-center gap-2">
+                <span className="text-xs text-zinc-400">Capa (opcional)</span>
+                <div className="flex gap-0.5 rounded-lg bg-zinc-800 p-0.5">
+                  <button
+                    onClick={() => setManualCoverMode('url')}
+                    className={`rounded-md px-2 py-0.5 text-xs transition-colors ${
+                      manualCoverMode === 'url' ? 'bg-zinc-600 text-zinc-100' : 'text-zinc-500 hover:text-zinc-300'
+                    }`}
+                  >
+                    URL
+                  </button>
+                  <button
+                    onClick={() => setManualCoverMode('file')}
+                    className={`rounded-md px-2 py-0.5 text-xs transition-colors ${
+                      manualCoverMode === 'file' ? 'bg-zinc-600 text-zinc-100' : 'text-zinc-500 hover:text-zinc-300'
+                    }`}
+                  >
+                    Arquivo
+                  </button>
+                </div>
+              </div>
+              {manualCoverMode === 'url' ? (
+                <input
+                  type="text"
+                  value={manualCoverUrl}
+                  onChange={e => {
+                    setManualCoverUrl(e.target.value)
+                    setManualCoverPreview(e.target.value.trim() || null)
+                  }}
+                  placeholder="https://... (opcional)"
+                  className="w-full rounded-xl border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-600 outline-none focus:border-[#D4537E]"
+                />
+              ) : (
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleCoverFile}
+                  className="w-full rounded-xl border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-zinc-100 file:mr-3 file:rounded-lg file:border-0 file:bg-zinc-700 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-zinc-200 hover:file:bg-zinc-600"
+                />
+              )}
+            </div>
+
+            {(manualAudioPreview || manualCoverPreview) && (
+              <div className="rounded-xl border border-zinc-700 bg-zinc-800 p-3">
+                <p className="mb-2 text-xs font-medium text-zinc-500">Preview</p>
+                <div className="flex items-start gap-3">
+                  {manualCoverPreview && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={manualCoverPreview}
+                      alt="capa"
+                      className="h-14 w-14 shrink-0 rounded-lg object-cover"
+                      onError={() => setManualCoverPreview(null)}
+                    />
+                  )}
+                  <div className="min-w-0 flex-1 space-y-1">
+                    {manualTitle  && <p className="truncate text-sm font-semibold text-zinc-100">{manualTitle}</p>}
+                    {manualArtist && <p className="truncate text-xs text-zinc-400">{manualArtist}</p>}
+                    {manualAudioPreview && (
+                      // eslint-disable-next-line jsx-a11y/media-has-caption
+                      <audio src={manualAudioPreview} controls className="mt-1 h-8 w-full" />
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
             <button
-              onClick={() => void saveSong()}
-              disabled={!trackResult.deezer_found}
-              className="mt-3 w-full rounded-xl bg-[#1D9E75] py-2 text-sm font-semibold text-white transition-colors hover:bg-[#178a63] disabled:cursor-not-allowed disabled:opacity-40"
+              onClick={() => void saveManualSong()}
+              disabled={manualSaving || !manualAudioFile || !manualTitle.trim() || !manualArtist.trim()}
+              className="w-full rounded-xl bg-[#1D9E75] py-2 text-sm font-semibold text-white transition-colors hover:bg-[#178a63] disabled:opacity-40"
             >
-              {trackResult.deezer_found ? 'Salvar no banco' : 'Sem preview — não é possível salvar'}
+              {manualSaving ? 'Enviando...' : 'Salvar no banco'}
             </button>
           </div>
         )}

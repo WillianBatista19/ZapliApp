@@ -9,10 +9,12 @@ const MAX_TRIES = 6
 
 type DailySong = {
   id:            string
-  preview_url:   string
+  preview_url:   string | null
+  audio_url:     string | null
   answer_title:  string
   answer_artist: string
   cover_url:     string | null
+  spotify_url:   string | null
 }
 
 type DeezerTrack = {
@@ -68,7 +70,7 @@ export default function MusicGame({ currentUserId }: { currentUserId: string | n
       } else {
         const rows = Array.isArray(data) ? data : (data ? [data] : [])
         const row  = rows[0] as DailySong | undefined
-        if (row?.preview_url) setSong(row)
+        if (row?.preview_url || row?.audio_url) setSong(row)
       }
 
       if (currentUserId) {
@@ -95,8 +97,13 @@ export default function MusicGame({ currentUserId }: { currentUserId: string | n
   // ─── Re-fetch fresh Deezer preview URL on each game load ─────────────────────
   // Stored URLs from cdnt-preview.dzcdn.net can expire. We always grab a fresh
   // one at load time using the stored title+artist as the search query.
+  // For manual uploads (audio_url set), skip Deezer and use the stored file directly.
   useEffect(() => {
     if (!song) return
+    if (song.audio_url) {
+      setLivePreviewUrl(song.audio_url)
+      return
+    }
     async function refreshPreview() {
       const q = encodeURIComponent(`${song!.answer_title} ${song!.answer_artist}`)
       console.log('[MusicGame] stored preview_url:', song!.preview_url)
@@ -325,8 +332,9 @@ export default function MusicGame({ currentUserId }: { currentUserId: string | n
     )
   }
 
-  const activePreview = livePreviewUrl ?? song.preview_url
-  const spotifyUrl    = `https://open.spotify.com/search/${encodeURIComponent(`${song.answer_title} ${song.answer_artist}`)}`
+  const activePreview = livePreviewUrl ?? song.audio_url ?? song.preview_url ?? undefined
+  const spotifyUrl    = song.spotify_url
+    ?? `https://open.spotify.com/search/${encodeURIComponent(`${song.answer_title} ${song.answer_artist}`)}`
   const revealPct     = Math.min((revealProgress / 30) * 100, 100)
   const revealTimeFmt = `${Math.floor(revealProgress)}s`
 
